@@ -48,3 +48,7 @@ def edit_profile(request):
         'user': request.user
     }
     return render(request, 'Farmer/edit_profile.html', context)
+
+
+def index(request):
+    return render(request, 'Farmer/index.html')
