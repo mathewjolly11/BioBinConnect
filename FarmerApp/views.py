@@ -51,4 +51,9 @@ def edit_profile(request):
 
 
 def index(request):
+
+    return render(request, 'Farmer/index.html')
+
+def index2(request):
+    
     return render(request, 'Farmer/index.html')
