@@ -107,11 +107,12 @@ def log_collection(request, pickup_id):
             
             collection.save()
             
-            # Update Pickup Request status
+            # Update Pickup Request status AND actual weight
             pickup_request.status = 'Completed'
+            pickup_request.actual_weight_kg = collection.total_quantity_kg  # Save actual weight
             pickup_request.save()
             
-            messages.success(request, "Collection logged successfully!")
+            messages.success(request, f"Collection logged successfully! Collected {collection.total_quantity_kg} kg.")
             return redirect('view_assigned_pickups')
     else:
         form = CollectionLogForm()
@@ -120,6 +121,7 @@ def log_collection(request, pickup_id):
         'form': form, 
         'pickup': pickup_request
     })
+
 
 @login_required(login_url='login')
 @never_cache

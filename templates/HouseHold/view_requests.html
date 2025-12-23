@@ -70,4 +70,33 @@
         </div>
     </div>
 </section>
+
+<script>
+    // Show success message if redirected from pickup request
+    {% if request.session.pickup_success %}
+    Swal.fire({
+        icon: '{{ request.session.pickup_success.warning|yesno:"warning,success" }}',
+        title: 'Pickup Request Created!',
+        html: `
+            <p><strong>Payment Successful!</strong></p>
+            <p>Amount Paid: <strong>₹{{ request.session.pickup_success.amount }}</strong></p>
+            <p>Payment Method: <strong>{{ request.session.pickup_success.payment_method }}</strong></p>
+            <p>Transaction ID: <strong>{{ request.session.pickup_success.transaction_id }}</strong></p>
+            <p>Scheduled Date: <strong>{{ request.session.pickup_success.date }}</strong></p>
+            {% if request.session.pickup_success.collector %}
+            <hr>
+            <p class="text-success"><i class="fa fa-check-circle"></i> <strong>Collector Assigned:</strong> {{ request.session.pickup_success.collector }}</p>
+            <p class="text-success">Status: <strong>Approved</strong></p>
+            {% endif %}
+            {% if request.session.pickup_success.warning %}
+            <hr>
+            <p class="text-warning"><i class="fa fa-exclamation-triangle"></i> {{ request.session.pickup_success.warning }}</p>
+            {% endif %}
+        `,
+        confirmButtonColor: '#6c9a2e',
+        confirmButtonText: 'Great!',
+        width: '600px'
+    });
+    {% endif %}
+</script>
 {% endblock %}

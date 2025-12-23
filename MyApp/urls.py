@@ -24,6 +24,7 @@ urlpatterns = [
     path('view_assignments/', views.view_assignments, name='view_assignments'),
     path('add_route/', views.add_route, name='add_route'),
     path('view_routes/', views.view_routes, name='view_routes'),
-
+    path('payment_report/', views.payment_report, name='payment_report'),
+    path('export_payment_report/', views.export_payment_report, name='export_payment_report'),
 ]
 

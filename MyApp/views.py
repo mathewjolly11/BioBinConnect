@@ -207,3 +207,96 @@ def view_routes(request):
     routes = tbl_Route.objects.select_related('location').all()
     return render(request, 'Admin/view_routes.html', {'routes': routes})
 
+def payment_report(request):
+    """View payment reports with summary and filters"""
+    from MyApp.models import tbl_HouseholdPayment
+    from django.db.models import Sum
+    from datetime import date
+    
+    # Base queryset
+    payments = tbl_HouseholdPayment.objects.select_related('household', 'bin_type').order_by('-payment_date')
+    
+    # Filters
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+    status = request.GET.get('status')
+    
+    if from_date:
+        payments = payments.filter(payment_date__date__gte=from_date)
+    if to_date:
+        payments = payments.filter(payment_date__date__lte=to_date)
+    if status:
+        payments = payments.filter(status=status)
+        
+    # Calculate filtered totals
+    filtered_total = payments.aggregate(Sum('amount'))['amount__sum'] or 0
+    
+    # Daily statistics (for cards)
+    today = date.today()
+    all_payments = tbl_HouseholdPayment.objects.all()
+    today_payments = all_payments.filter(payment_date__date=today)
+    
+    today_total = today_payments.aggregate(Sum('amount'))['amount__sum'] or 0
+    today_count = today_payments.count()
+    today_completed = today_payments.filter(status='Completed').count()
+    
+    all_total = all_payments.aggregate(Sum('amount'))['amount__sum'] or 0
+    all_count = all_payments.count()
+    
+    context = {
+        'payments': payments,
+        'today_total': today_total,
+        'today_count': today_count,
+        'today_completed': today_completed,
+        'all_total': all_total,
+        'all_count': all_count,
+        'filtered_total': filtered_total,
+        'from_date': from_date or '',
+        'to_date': to_date or '',
+        'status': status or '',
+        'check_completed': status == 'Completed',
+        'check_pending': status == 'Pending',
+    }
+    
+    return render(request, 'Admin/payment_report_v3.html', context)
+
+def export_payment_report(request):
+    """Export payment report to CSV"""
+    import csv
+    from django.http import HttpResponse
+    from MyApp.models import tbl_HouseholdPayment
+    
+    response = HttpResponse(content_type='text/csv')
+    response['Content-Disposition'] = 'attachment; filename="payment_report.csv"'
+    
+    writer = csv.writer(response)
+    writer.writerow(['ID', 'Date', 'Household', 'House No', 'Bin Type', 'Amount', 'Transaction ID', 'Status'])
+    
+    # Re-apply filters
+    payments = tbl_HouseholdPayment.objects.select_related('household', 'bin_type').order_by('-payment_date')
+    
+    from_date = request.GET.get('from_date')
+    to_date = request.GET.get('to_date')
+    status = request.GET.get('status')
+    
+    if from_date:
+        payments = payments.filter(payment_date__date__gte=from_date)
+    if to_date:
+        payments = payments.filter(payment_date__date__lte=to_date)
+    if status:
+        payments = payments.filter(status=status)
+    
+    for payment in payments:
+        writer.writerow([
+            payment.Payment_id,
+            payment.payment_date.strftime('%Y-%m-%d %H:%M') if payment.payment_date else '',
+            payment.household.household_name if payment.household else 'N/A',
+            payment.household.house_no if payment.household else 'N/A',
+            payment.bin_type.name if payment.bin_type else 'N/A',
+            payment.amount,
+            payment.transaction_id,
+            payment.status
+        ])
+        
+    return response
+

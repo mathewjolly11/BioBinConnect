@@ -18,40 +18,123 @@
     <div class="container">
         <div class="row">
             <div class="col-md-8 offset-md-2">
-                <div class="de_testi bg-white p-5 wow fadeInUp">
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div
-                        class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
-                        {{ message }}
-                    </div>
-                    {% endfor %}
-                    {% endif %}
+                <!-- Step 1: Pickup Request Details -->
+                <div class="de_testi bg-white p-5 wow fadeInUp" id="step1">
 
-                    <form method="post" class="form-border">
-                        {% csrf_token %}
-                        <div class="row g-4">
-                            <div class="col-md-6">
-                                <label for="id_scheduled_date" class="form-label">Date:</label>
-                                {{ form.scheduled_date }}
-                                {% if form.scheduled_date.errors %}
-                                <div class="text-danger small">{{ form.scheduled_date.errors.0 }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6">
-                                <label for="id_request_time" class="form-label">Time:</label>
-                                {{ form.request_time }}
-                                {% if form.request_time.errors %}
-                                <div class="text-danger small">{{ form.request_time.errors.0 }}</div>
-                                {% endif %}
-                            </div>
+                    <h4 class="mb-4">Step 1: Pickup Request Details</h4>
 
-                            <div class="col-md-12 text-center mt-4">
-                                <button type="submit" class="btn-main">Request Pickup</button>
+                    <div class="row g-4">
+                        <div class="col-md-6">
+                            <label for="id_scheduled_date" class="form-label">Date:</label>
+                            {{ form.scheduled_date }}
+                        </div>
+                        <div class="col-md-6">
+                            <label for="id_request_time" class="form-label">Time:</label>
+                            {{ form.request_time }}
+                        </div>
+                        <div class="col-md-12">
+                            <label for="id_bin_type" class="form-label">Bin Type:</label>
+                            {{ form.bin_type }}
+                            <small class="text-muted d-block mt-1">Medium: 25kg - ₹50 | Large: 50kg - ₹100</small>
+                        </div>
+
+                        <!-- Payment Amount Display -->
+                        <div class="col-md-12">
+                            <div class="alert alert-info">
+                                <strong>Payment Amount: ₹<span id="payment-amount">0</span></strong>
                             </div>
                         </div>
-                    </form>
+
+                        <div class="col-md-12 text-center mt-4">
+                            <button type="button" class="btn-main" id="proceedToPayment">
+                                Proceed to Payment <i class="fa fa-arrow-right ms-2"></i>
+                            </button>
+                        </div>
+                    </div>
                 </div>
+
+                <!-- Step 2: Payment Gateway -->
+                <div class="de_testi bg-white p-5 wow fadeInUp" id="step2" style="display: none;">
+                    <h4 class="mb-4">Step 2: Choose Payment Method</h4>
+
+                    <div class="alert alert-success mb-4">
+                        <strong>Amount to Pay:</strong> <span id="finalAmount" class="fs-4">₹0</span>
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card payment-method-card" data-method="UPI" style="cursor: pointer;">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-mobile fa-3x text-primary mb-3"></i>
+                                    <h5>UPI Payment</h5>
+                                    <p class="text-muted">Pay using UPI ID</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card payment-method-card" data-method="COD" style="cursor: pointer;">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-money fa-3x text-success mb-3"></i>
+                                    <h5>Cash on Delivery</h5>
+                                    <p class="text-muted">Pay to collector</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- UPI Payment Form -->
+                    <div id="upiForm" style="display: none;">
+                        <h5 class="mb-3">Enter UPI Details</h5>
+                        <div class="mb-3">
+                            <label class="form-label">UPI ID</label>
+                            <input type="text" id="upiId" class="form-control" placeholder="example@upi">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">UPI PIN (4 digits)</label>
+                            <input type="password" id="upiPin" class="form-control" placeholder="****" maxlength="4">
+                        </div>
+                        <button type="button" class="btn-main w-100" id="payWithUPI">
+                            <i class="fa fa-lock me-2"></i> Pay Securely
+                        </button>
+                    </div>
+
+                    <!-- COD Confirmation -->
+                    <div id="codForm" style="display: none;">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-info-circle me-2"></i>
+                            <strong>Cash on Delivery Selected</strong><br>
+                            You will pay the collector when they arrive for pickup.
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" id="codName" class="form-control" placeholder="Enter your name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="codPhone" class="form-control" placeholder="Enter phone number">
+                        </div>
+                        <button type="button" class="btn-main w-100" id="confirmCOD">
+                            <i class="fa fa-check me-2"></i> Confirm COD Payment
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn-line" id="backToStep1">
+                            <i class="fa fa-arrow-left me-2"></i> Back
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hidden form for actual submission -->
+                <form method="post" id="actualRequestForm">
+                    {% csrf_token %}
+                    <input type="hidden" name="scheduled_date" id="hiddenScheduledDate">
+                    <input type="hidden" name="request_time" id="hiddenRequestTime">
+                    <input type="hidden" name="bin_type" id="hiddenBinType">
+                    <input type="hidden" name="payment_method" id="hiddenPaymentMethod">
+                </form>
+
                 <div class="text-center mt-4">
                     <a href="{% url 'view_requests' %}" class="btn-line">View My Past Requests</a>
                 </div>
@@ -59,4 +142,269 @@
         </div>
     </div>
 </section>
+
+<!-- Payment Processing Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div id="processingState">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4>Processing Payment...</h4>
+                    <p class="text-muted" id="processingMessage">Please wait while we process your payment</p>
+                </div>
+                <div id="successState" style="display: none;">
+                    <i class="fa fa-check-circle text-success mb-3" style="font-size: 4rem;"></i>
+                    <h4>Payment Successful!</h4>
+                    <p class="text-muted">Your pickup request has been created successfully</p>
+                    <p class="text-muted"><strong>Transaction ID:</strong> <span id="transactionId"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-method-card {
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+
+    .payment-method-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border-color: #007bff;
+    }
+
+    .payment-method-card.selected {
+        border-color: #28a745;
+        border-width: 3px;
+        background-color: #f8f9fa;
+    }
+
+    .spinner-border {
+        border-width: 0.3em;
+    }
+
+    #paymentModal .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .fa-check-circle {
+        animation: scaleIn 0.5s ease-in-out;
+    }
+
+    @keyframes scaleIn {
+        0% {
+            transform: scale(0);
+        }
+
+        50% {
+            transform: scale(1.2);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+
+<script>
+    let selectedPaymentMethod = '';
+    let paymentAmount = 0;
+
+    // Update payment amount when bin type changes
+    document.getElementById('id_bin_type').addEventListener('change', function () {
+        const selectedOption = this.options[this.selectedIndex];
+        const binText = selectedOption.text;
+
+        // Extract price from bin type text
+        if (binText.includes('₹50')) {
+            paymentAmount = 50;
+        } else if (binText.includes('₹100')) {
+            paymentAmount = 100;
+        }
+
+        document.getElementById('payment-amount').textContent = paymentAmount;
+        document.getElementById('finalAmount').textContent = '₹' + paymentAmount;
+    });
+
+    // Proceed to payment step
+    document.getElementById('proceedToPayment').addEventListener('click', function () {
+        const date = document.getElementById('id_scheduled_date').value;
+        const time = document.getElementById('id_request_time').value;
+        const binType = document.getElementById('id_bin_type').value;
+
+        if (!date || !time || !binType) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Missing Information',
+                text: 'Please fill all fields before proceeding to payment',
+                confirmButtonColor: '#6c9a2e'
+            });
+            return;
+        }
+
+        if (paymentAmount === 0) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Bin Type Required',
+                text: 'Please select a bin type',
+                confirmButtonColor: '#6c9a2e'
+            });
+            return;
+        }
+
+        // Show step 2
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+    });
+
+    // Back to step 1
+    document.getElementById('backToStep1').addEventListener('click', function () {
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step1').style.display = 'block';
+
+        // Reset payment method selection
+        selectedPaymentMethod = '';
+        document.querySelectorAll('.payment-method-card').forEach(card => {
+            card.classList.remove('selected');
+        });
+        document.getElementById('upiForm').style.display = 'none';
+        document.getElementById('codForm').style.display = 'none';
+    });
+
+    // Payment method selection
+    document.querySelectorAll('.payment-method-card').forEach(card => {
+        card.addEventListener('click', function () {
+            const method = this.getAttribute('data-method');
+            selectedPaymentMethod = method;
+
+            // Remove selected class from all cards
+            document.querySelectorAll('.payment-method-card').forEach(c => {
+                c.classList.remove('selected');
+            });
+
+            // Add selected class to clicked card
+            this.classList.add('selected');
+
+            // Show appropriate form
+            if (method === 'UPI') {
+                document.getElementById('upiForm').style.display = 'block';
+                document.getElementById('codForm').style.display = 'none';
+            } else {
+                document.getElementById('codForm').style.display = 'block';
+                document.getElementById('upiForm').style.display = 'none';
+            }
+        });
+    });
+
+    // Pay with UPI
+    document.getElementById('payWithUPI').addEventListener('click', function () {
+        const upiId = document.getElementById('upiId').value;
+        const upiPin = document.getElementById('upiPin').value;
+
+        if (!upiId || !upiPin) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'UPI Details Required',
+                text: 'Please enter UPI ID and PIN',
+                confirmButtonColor: '#6c9a2e'
+            });
+            return;
+        }
+
+        if (upiPin.length !== 4) {
+            Swal.fire({
+                icon: 'error',
+                title: 'Invalid PIN',
+                text: 'UPI PIN must be 4 digits',
+                confirmButtonColor: '#6c9a2e'
+            });
+            return;
+        }
+
+        // Set payment method to UPI
+        selectedPaymentMethod = 'UPI';
+        processPayment();
+    });
+
+    // Confirm COD
+    document.getElementById('confirmCOD').addEventListener('click', function () {
+        const name = document.getElementById('codName').value;
+        const phone = document.getElementById('codPhone').value;
+
+        if (!name || !phone) {
+            Swal.fire({
+                icon: 'warning',
+                title: 'Details Required',
+                text: 'Please enter your name and phone number',
+                confirmButtonColor: '#6c9a2e'
+            });
+            return;
+        }
+
+        // Set payment method to COD
+        selectedPaymentMethod = 'COD';
+        processPayment();
+    });
+
+    // Process payment and submit form
+    function processPayment() {
+
+        // Show modal with loader
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+
+        // Simulate payment processing
+        setTimeout(function () {
+            // Generate transaction ID
+            const txnId = 'TXN' + Date.now() + Math.floor(Math.random() * 1000);
+
+            // Show success state
+            document.getElementById('processingState').style.display = 'none';
+            document.getElementById('successState').style.display = 'block';
+            document.getElementById('transactionId').textContent = txnId;
+
+            // Populate all hidden form fields
+            document.getElementById('hiddenScheduledDate').value = document.getElementById('id_scheduled_date').value;
+            document.getElementById('hiddenRequestTime').value = document.getElementById('id_request_time').value;
+            document.getElementById('hiddenBinType').value = document.getElementById('id_bin_type').value;
+            document.getElementById('hiddenPaymentMethod').value = selectedPaymentMethod;
+
+            // Submit the form after 2 seconds
+            setTimeout(function () {
+                document.getElementById('actualRequestForm').submit();
+            }, 2000);
+        }, 2000); // 2 second loader
+    }
+
+    // Trigger change event on page load if bin type is already selected
+    window.addEventListener('DOMContentLoaded', function () {
+        const binTypeSelect = document.getElementById('id_bin_type');
+        if (binTypeSelect.value) {
+            binTypeSelect.dispatchEvent(new Event('change'));
+        }
+
+        // Show form errors if any
+        {% if request.session.form_errors %}
+        Swal.fire({
+            icon: 'error',
+            title: 'Form Validation Error',
+            html: `
+                <ul style="text-align: left;">
+                    {% for error in request.session.form_errors %}
+                    <li>{{ error }}</li>
+                    {% endfor %}
+                </ul>
+            `,
+            confirmButtonColor: '#6c9a2e'
+        });
+        {% endif %}
+    });
+</script>
 {% endblock %}

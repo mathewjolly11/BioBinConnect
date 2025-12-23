@@ -30,8 +30,7 @@
                             <tbody>
                                 {% for item in history %}
                                 <tr>
-                                    <td>#{{ item.collection_request_id }}</td> {# Tip: Check model field name, might be
-                                    Request_id #}
+                                    <td>#{{ item.collection_request_id }}</td>
                                     <td>{{ item.collection_date }}</td>
                                     <td>
                                         <strong>{{ item.household.household_name }}</strong><br>

@@ -1,0 +1,405 @@
+{% extends 'HouseHold/base.html' %}
+{% load static %}
+
+{% block title %}Make Payment - BioBinConnect{% endblock %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">Make Payment</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Pay for your waste pickup service</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <!-- Step 1: Select Bin and Date -->
+                <div class="de_testi bg-white p-5 wow fadeInUp" id="step1">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div
+                        class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <h4 class="mb-4">Step 1: Select Bin Type & Date</h4>
+
+                    <div class="mb-4">
+                        <div class="row mt-3">
+                            <div class="col-md-6">
+                                <div class="card border-success mb-3 bin-card" data-bin="medium" data-price="50"
+                                    style="cursor: pointer;">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-trash fa-3x text-success mb-3"></i>
+                                        <h5 class="card-title">Medium Bin</h5>
+                                        <p class="card-text">
+                                            <strong>Capacity:</strong> 25 kg<br>
+                                            <strong>Price:</strong> <span class="text-success fs-4">₹50</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="card border-primary mb-3 bin-card" data-bin="large" data-price="100"
+                                    style="cursor: pointer;">
+                                    <div class="card-body text-center">
+                                        <i class="fa fa-trash fa-3x text-primary mb-3"></i>
+                                        <h5 class="card-title">Large Bin</h5>
+                                        <p class="card-text">
+                                            <strong>Capacity:</strong> 50 kg<br>
+                                            <strong>Price:</strong> <span class="text-primary fs-4">₹100</span>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="binSelectionForm">
+                        {% csrf_token %}
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label class="form-label">Selected Bin Type:</label>
+                                <input type="text" id="selectedBinDisplay" class="form-control" readonly
+                                    placeholder="Click a bin above">
+                                <input type="hidden" id="selectedBinType" name="bin_type">
+                            </div>
+                            <div class="col-md-6">
+                                <label for="payment_for_date" class="form-label">Payment For Date:</label>
+                                <input type="date" id="payment_for_date" name="payment_for_date" class="form-control"
+                                    required>
+                            </div>
+                            <div class="col-md-12">
+                                <div class="alert alert-info">
+                                    <strong>Amount to Pay:</strong> <span id="amountDisplay" class="fs-5">₹0</span>
+                                </div>
+                            </div>
+                            <div class="col-md-12 text-center">
+                                <button type="button" class="btn-main" id="proceedToPayment" disabled>
+                                    Proceed to Payment <i class="fa fa-arrow-right ms-2"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+
+                <!-- Step 2: Payment Gateway -->
+                <div class="de_testi bg-white p-5 wow fadeInUp" id="step2" style="display: none;">
+                    <h4 class="mb-4">Step 2: Choose Payment Method</h4>
+
+                    <div class="alert alert-success mb-4">
+                        <strong>Amount to Pay:</strong> <span id="finalAmount" class="fs-4">₹0</span>
+                    </div>
+
+                    <!-- Payment Method Selection -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card payment-method-card" data-method="upi" style="cursor: pointer;">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-mobile fa-3x text-primary mb-3"></i>
+                                    <h5>UPI Payment</h5>
+                                    <p class="text-muted">Pay using UPI ID</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card payment-method-card" data-method="cod" style="cursor: pointer;">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-money fa-3x text-success mb-3"></i>
+                                    <h5>Cash on Delivery</h5>
+                                    <p class="text-muted">Pay to collector</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- UPI Payment Form -->
+                    <div id="upiForm" style="display: none;">
+                        <h5 class="mb-3">Enter UPI Details</h5>
+                        <div class="mb-3">
+                            <label class="form-label">UPI ID</label>
+                            <input type="text" id="upiId" class="form-control" placeholder="example@upi">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">UPI PIN (4 digits)</label>
+                            <input type="password" id="upiPin" class="form-control" placeholder="****" maxlength="4">
+                        </div>
+                        <button type="button" class="btn-main w-100" id="payWithUPI">
+                            <i class="fa fa-lock me-2"></i> Pay Securely
+                        </button>
+                    </div>
+
+                    <!-- COD Confirmation -->
+                    <div id="codForm" style="display: none;">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-info-circle me-2"></i>
+                            <strong>Cash on Delivery Selected</strong><br>
+                            You will pay the collector when they arrive for pickup.
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Your Name</label>
+                            <input type="text" id="codName" class="form-control" placeholder="Enter your name">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">Phone Number</label>
+                            <input type="tel" id="codPhone" class="form-control" placeholder="Enter phone number">
+                        </div>
+                        <button type="button" class="btn-main w-100" id="confirmCOD">
+                            <i class="fa fa-check me-2"></i> Confirm COD Payment
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <button type="button" class="btn-line" id="backToStep1">
+                            <i class="fa fa-arrow-left me-2"></i> Back
+                        </button>
+                    </div>
+                </div>
+
+                <!-- Hidden form for actual submission -->
+                <form method="post" id="actualPaymentForm" style="display: none;">
+                    {% csrf_token %}
+                    {{ form.bin_type }}
+                    {{ form.payment_for_date }}
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Payment Processing Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div id="processingState">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4>Processing Payment...</h4>
+                    <p class="text-muted" id="processingMessage">Please wait while we process your payment</p>
+                </div>
+                <div id="successState" style="display: none;">
+                    <i class="fa fa-check-circle text-success mb-3" style="font-size: 4rem;"></i>
+                    <h4>Payment Successful!</h4>
+                    <p class="text-muted">Your payment has been processed successfully</p>
+                    <p class="text-muted"><strong>Transaction ID:</strong> <span id="transactionId"></span></p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .bin-card {
+        transition: all 0.3s ease;
+    }
+
+    .bin-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .bin-card.selected {
+        border-width: 3px !important;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .payment-method-card {
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+
+    .payment-method-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border-color: #007bff;
+    }
+
+    .payment-method-card.selected {
+        border-color: #28a745;
+        border-width: 3px;
+        background-color: #f8f9fa;
+    }
+
+    .spinner-border {
+        border-width: 0.3em;
+    }
+
+    #paymentModal .modal-content {
+        border-radius: 15px;
+        border: none;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+    }
+
+    .fa-check-circle {
+        animation: scaleIn 0.5s ease-in-out;
+    }
+
+    @keyframes scaleIn {
+        0% {
+            transform: scale(0);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+
+<script>
+    let selectedBin = null;
+    let selectedPrice = 0;
+    let selectedPaymentMethod = null;
+    let paymentDate = null;
+
+    // Bin selection
+    document.querySelectorAll('.bin-card').forEach(card => {
+        card.addEventListener('click', function () {
+            document.querySelectorAll('.bin-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+
+            selectedBin = this.dataset.bin;
+            selectedPrice = this.dataset.price;
+
+            document.getElementById('selectedBinDisplay').value = selectedBin.charAt(0).toUpperCase() + selectedBin.slice(1) + ' Bin';
+            document.getElementById('selectedBinType').value = selectedBin;
+            document.getElementById('amountDisplay').textContent = '₹' + selectedPrice;
+
+            checkStep1Complete();
+        });
+    });
+
+    // Date selection
+    document.getElementById('payment_for_date').addEventListener('change', function () {
+        paymentDate = this.value;
+        checkStep1Complete();
+    });
+
+    function checkStep1Complete() {
+        const btn = document.getElementById('proceedToPayment');
+        if (selectedBin && paymentDate) {
+            btn.disabled = false;
+        } else {
+            btn.disabled = true;
+        }
+    }
+
+    // Proceed to payment
+    document.getElementById('proceedToPayment').addEventListener('click', function () {
+        document.getElementById('step1').style.display = 'none';
+        document.getElementById('step2').style.display = 'block';
+        document.getElementById('finalAmount').textContent = '₹' + selectedPrice;
+    });
+
+    // Back to step 1
+    document.getElementById('backToStep1').addEventListener('click', function () {
+        document.getElementById('step2').style.display = 'none';
+        document.getElementById('step1').style.display = 'block';
+        selectedPaymentMethod = null;
+        document.getElementById('upiForm').style.display = 'none';
+        document.getElementById('codForm').style.display = 'none';
+    });
+
+    // Payment method selection
+    document.querySelectorAll('.payment-method-card').forEach(card => {
+        card.addEventListener('click', function () {
+            document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+
+            selectedPaymentMethod = this.dataset.method;
+
+            document.getElementById('upiForm').style.display = 'none';
+            document.getElementById('codForm').style.display = 'none';
+
+            if (selectedPaymentMethod === 'upi') {
+                document.getElementById('upiForm').style.display = 'block';
+            } else {
+                document.getElementById('codForm').style.display = 'block';
+            }
+        });
+    });
+
+    // UPI Payment
+    document.getElementById('payWithUPI').addEventListener('click', function () {
+        const upiId = document.getElementById('upiId').value;
+        const upiPin = document.getElementById('upiPin').value;
+
+        if (!upiId || !upiPin) {
+            alert('Please enter UPI ID and PIN');
+            return;
+        }
+
+        if (upiPin.length !== 4) {
+            alert('UPI PIN must be 4 digits');
+            return;
+        }
+
+        processPayment('UPI: ' + upiId);
+    });
+
+    // COD Payment
+    document.getElementById('confirmCOD').addEventListener('click', function () {
+        const name = document.getElementById('codName').value;
+        const phone = document.getElementById('codPhone').value;
+
+        if (!name || !phone) {
+            alert('Please enter your name and phone number');
+            return;
+        }
+
+        processPayment('COD: ' + name);
+    });
+
+    function processPayment(method) {
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+
+        document.getElementById('processingMessage').textContent = 'Processing ' + (selectedPaymentMethod === 'upi' ? 'UPI' : 'Cash on Delivery') + ' payment...';
+
+        // Generate transaction ID
+        const transactionId = 'TXN' + Date.now() + Math.floor(Math.random() * 1000);
+
+        // Simulate payment processing (2.5 seconds)
+        setTimeout(function () {
+            document.getElementById('processingState').style.display = 'none';
+            document.getElementById('successState').style.display = 'block';
+            document.getElementById('transactionId').textContent = transactionId;
+
+            // After showing success (2 seconds), submit the form
+            setTimeout(function () {
+                // Set form values
+                const form = document.getElementById('actualPaymentForm');
+                const binTypeInput = form.querySelector('[name="bin_type"]');
+                const dateInput = form.querySelector('[name="payment_for_date"]');
+
+                // Get the actual bin type ID from the form options
+                const binTypeSelect = document.querySelector('#id_bin_type');
+                if (binTypeSelect) {
+                    for (let option of binTypeSelect.options) {
+                        if (option.text.toLowerCase().includes(selectedBin)) {
+                            binTypeInput.value = option.value;
+                            break;
+                        }
+                    }
+                }
+
+                dateInput.value = paymentDate;
+
+                // Submit the form
+                form.submit();
+            }, 2000);
+        }, 2500);
+    }
+</script>
+{% endblock %}

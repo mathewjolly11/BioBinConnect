@@ -8,4 +8,6 @@ urlpatterns = [
     path('profile/delete/', views.delete_account, name='household_delete_account'),
     path('request-pickup/', views.request_pickup, name='request_pickup'),
     path('my-requests/', views.view_requests, name='view_requests'),
+    path('make-payment/', views.make_payment, name='make_payment'),
+    path('payment-history/', views.payment_history, name='payment_history'),
 ]

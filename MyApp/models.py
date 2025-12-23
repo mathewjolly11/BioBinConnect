@@ -52,12 +52,56 @@ class tbl_CollectorAssignment(models.Model):
     def __str__(self):
         return f"{self.collector} - {self.Route_id} ({self.day_of_week})"
 
+class tbl_BinType(models.Model):
+    """Bin types with capacity and pricing"""
+    BinType_id = models.AutoField(primary_key=True)
+    name = models.CharField(max_length=50)  # "Medium" or "Large"
+    capacity_kg = models.IntegerField()  # 25 or 50
+    price_rs = models.DecimalField(max_digits=10, decimal_places=2)  # 50.00 or 100.00
+    
+    def __str__(self):
+        return f"{self.name} ({self.capacity_kg}kg - ₹{self.price_rs})"
+
+class tbl_HouseholdPayment(models.Model):
+    """Track payments made by households for waste pickup service"""
+    PAYMENT_STATUS = [
+        ('Pending', 'Pending'),
+        ('Completed', 'Completed'),
+        ('Failed', 'Failed'),
+    ]
+    
+    Payment_id = models.AutoField(primary_key=True)
+    household = models.ForeignKey('GuestApp.Household', on_delete=models.CASCADE)
+    bin_type = models.ForeignKey(tbl_BinType, on_delete=models.CASCADE)
+    amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_date = models.DateTimeField(auto_now_add=True)
+    payment_for_date = models.DateField()  # Which date this payment covers
+    status = models.CharField(max_length=20, choices=PAYMENT_STATUS, default='Completed')
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    
+    class Meta:
+        ordering = ['-payment_date']
+    
+    def __str__(self):
+        return f"Payment {self.Payment_id} - {self.household} - ₹{self.amount} ({self.payment_for_date})"
+
 class tbl_PickupRequest(models.Model):
     STATUS_CHOICES = [
         ('Pending', 'Pending'),
         ('Approved', 'Approved'),
         ('Rejected', 'Rejected'),
         ('Completed', 'Completed'),
+    ]
+    
+    PAYMENT_METHOD_CHOICES = [
+        ('UPI', 'UPI'),
+        ('COD', 'Cash on Delivery'),
+    ]
+    
+    PAYMENT_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Completed', 'Completed'),
+        ('Failed', 'Failed'),
     ]
 
     Pickup_id = models.AutoField(primary_key=True)
@@ -66,6 +110,16 @@ class tbl_PickupRequest(models.Model):
     request_time = models.TimeField()
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     assigned_collector = models.ForeignKey('GuestApp.Collector', on_delete=models.CASCADE, null=True, blank=True)
+    bin_type = models.ForeignKey(tbl_BinType, on_delete=models.CASCADE, null=True)
+    payment = models.ForeignKey(tbl_HouseholdPayment, on_delete=models.SET_NULL, null=True, blank=True)
+    actual_weight_kg = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    
+    # Payment fields
+    payment_method = models.CharField(max_length=20, choices=PAYMENT_METHOD_CHOICES, null=True, blank=True)
+    payment_amount = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    transaction_id = models.CharField(max_length=100, blank=True, null=True)
+    payment_date = models.DateTimeField(null=True, blank=True)
 
     def __str__(self):
         return f"Request {self.Pickup_id} - {self.household}"

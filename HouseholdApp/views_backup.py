@@ -69,9 +69,6 @@ def request_pickup(request):
     from HouseholdApp.forms import PickupRequestForm
     from MyApp.models import tbl_Route, tbl_CollectorAssignment, tbl_HouseholdPayment
     from datetime import datetime
-    from django.utils import timezone
-    import time
-    import random
     
     household = Household.objects.get(user=request.user)
     
@@ -82,40 +79,30 @@ def request_pickup(request):
         if form.is_valid():
             scheduled_date = form.cleaned_data['scheduled_date']
             bin_type = form.cleaned_data['bin_type']
-            payment_method = request.POST.get('payment_method', '')
             
-            # Generate transaction ID
-            transaction_id = f'TXN{int(time.time())}{random.randint(100, 999)}'
-            
-            # Create payment record in tbl_HouseholdPayment
-            payment_record = tbl_HouseholdPayment.objects.create(
+            # Check if payment exists for this date
+            payment = tbl_HouseholdPayment.objects.filter(
                 household=household,
-                bin_type=bin_type,
-                amount=bin_type.price_rs,
                 payment_for_date=scheduled_date,
-                status='Completed',
-                transaction_id=transaction_id
-            )
+                status='Completed'
+            ).first()
             
-            # Create pickup request
+            if not payment:
+                messages.error(request, f'Payment required! Please make payment for {scheduled_date} before requesting pickup.')
+                return redirect('make_payment')
+            
+            # Verify bin type matches payment
+            if payment.bin_type != bin_type:
+                messages.error(request, f'Bin type mismatch! You paid for {payment.bin_type.name} bin but selected {bin_type.name} bin.')
+                return redirect('request_pickup')
+            
             req = form.save(commit=False)
             req.household = household
-            req.status = 'Pending'  # Default status
-            
-            # Set payment details in pickup request
-            req.payment_method = payment_method
-            req.payment_amount = bin_type.price_rs
-            req.payment_status = 'Completed'
-            req.payment_date = timezone.now()
-            req.transaction_id = transaction_id
-            req.payment = payment_record  # Link to payment record
+            req.payment = payment
             
             # Logic to auto-assign collector based on Route/Range and Day
-            collector_info = None
-            warning_message = None
-            
             if household.house_no is None:
-                warning_message = "Please update your profile with your House Number to enable auto-assignment."
+                messages.error(request, "Please update your profile with your House Number to enable auto-assignment.")
             else:
                 # Find Route matching RA and House Range
                 routes = tbl_Route.objects.filter(residents_association=household.residents_association)
@@ -136,42 +123,26 @@ def request_pickup(request):
                      if assignment:
                          req.assigned_collector = assignment.collector
                          req.status = 'Approved'
-                         collector_info = assignment.collector.collector_name
+                         messages.success(request, f"Pickup request submitted successfully! Assigned to {assignment.collector.collector_name}.")
                      else:
-                         warning_message = f"No collector is explicitly assigned to your route ({target_route.name}) on {day_name}. Status is Pending."
+                         messages.warning(request, f"Request submitted. No collector is explicitly assigned to your route ({target_route.name}) on {day_name}. Status is Pending.")
                 else:
-                    warning_message = "Your house is not currently mapped to a specific pickup route. Admin will review."
+                    messages.warning(request, "Request submitted. Your house is not currently mapped to a specific pickup route. Admin will review.")
             
+            print(f"DEBUG: Saving pickup request for household {household}")
             req.save()
-            
-            # Store success message in session for SweetAlert
-            request.session['pickup_success'] = {
-                'amount': str(req.payment_amount),
-                'transaction_id': req.transaction_id,
-                'date': str(req.scheduled_date),
-                'payment_method': req.payment_method,
-                'collector': collector_info,
-                'warning': warning_message
-            }
-            
+            print(f"DEBUG: Pickup request saved! ID: {req.Pickup_id}")
+            messages.success(request, 'Pickup request created successfully!')
             return redirect('view_requests')
         else:
-            # Form is not valid - show errors with SweetAlert
-            error_list = []
+            # Form is not valid - show errors
             for field, errors in form.errors.items():
                 for error in errors:
-                    error_list.append(f'{field}: {error}')
-            
-            request.session['form_errors'] = error_list
+                    messages.error(request, f'{field}: {error}')
     else:
         form = PickupRequestForm()
     
-    # Clear form errors after displaying
-    context = {'form': form}
-    if 'form_errors' in request.session:
-        del request.session['form_errors']
-    
-    return render(request, 'HouseHold/request_pickup.html', context)
+    return render(request, 'HouseHold/request_pickup.html', {'form': form})
 
 @login_required(login_url='login')
 @never_cache
@@ -179,11 +150,6 @@ def view_requests(request):
     from MyApp.models import tbl_PickupRequest
     household = Household.objects.get(user=request.user)
     requests = tbl_PickupRequest.objects.filter(household=household).order_by('-scheduled_date')
-    
-    # Clear the success message after displaying
-    if 'pickup_success' in request.session:
-        del request.session['pickup_success']
-    
     return render(request, 'HouseHold/view_requests.html', {'requests': requests})
 
 @login_required(login_url='login')

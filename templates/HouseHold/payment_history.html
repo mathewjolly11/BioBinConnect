@@ -1,0 +1,74 @@
+{% extends 'HouseHold/base.html' %}
+{% load static %}
+
+{% block title %}Payment History - BioBinConnect{% endblock %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">Payment History</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">View all your payment transactions</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="de_testi bg-white p-5 wow fadeInUp">
+                    {% if payments %}
+                    <div class="table-responsive">
+                        <table class="table table-striped">
+                            <thead>
+                                <tr>
+                                    <th>Payment ID</th>
+                                    <th>Bin Type</th>
+                                    <th>Amount</th>
+                                    <th>Payment Date</th>
+                                    <th>For Date</th>
+                                    <th>Status</th>
+                                    <th>Transaction ID</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for payment in payments %}
+                                <tr>
+                                    <td>{{ payment.Payment_id }}</td>
+                                    <td>{{ payment.bin_type.name }}</td>
+                                    <td>₹{{ payment.amount }}</td>
+                                    <td>{{ payment.payment_date|date:"d M Y, h:i A" }}</td>
+                                    <td>{{ payment.payment_for_date|date:"d M Y" }}</td>
+                                    <td>
+                                        <span class="badge 
+                                            {% if payment.status == 'Completed' %}bg-success
+                                            {% elif payment.status == 'Pending' %}bg-warning
+                                            {% else %}bg-danger{% endif %}">
+                                            {{ payment.status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ payment.transaction_id|default:"-" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    {% else %}
+                    <div class="text-center py-5">
+                        <i class="fa fa-receipt fa-3x text-muted mb-3"></i>
+                        <h4>No Payment History</h4>
+                        <p class="text-muted">You haven't made any payments yet.</p>
+                        <a href="{% url 'make_payment' %}" class="btn-main mt-3">Make Your First Payment</a>
+                    </div>
+                    {% endif %}
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'make_payment' %}" class="btn-main">Make New Payment</a>
+                    <a href="{% url 'household_dashboard' %}" class="btn-line ms-3">Back to Dashboard</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
