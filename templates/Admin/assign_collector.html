@@ -1,0 +1,50 @@
+{% extends "Admin/base.html" %}
+{% load static %}
+{% block content %}
+<section id="main-content" class=" ">
+    <section class="wrapper main-wrapper">
+        <div class="col-lg-8 offset-lg-2">
+            <section class="box ">
+                <header class="panel_header">
+                    <h2 class="title text-center">Assign Collector to Route</h2>
+                </header>
+                <div class="content-body">
+                    <div class="row justify-content-center">
+                        <div class="col-md-8">
+                            <form action="" method="post">
+                                {% csrf_token %}
+
+                                <style>
+                                    /* Quick custom basic styling for form elements if not globally applied */
+                                    p {
+                                        margin-bottom: 15px;
+                                    }
+
+                                    label {
+                                        display: block;
+                                        font-weight: bold;
+                                        margin-bottom: 5px;
+                                    }
+
+                                    input[type='text'],
+                                    select {
+                                        width: 100%;
+                                        padding: 8px;
+                                        border: 1px solid #ccc;
+                                        border-radius: 4px;
+                                    }
+                                </style>
+
+                                {{ form.as_p }}
+                                <div class="text-center" style="margin-top: 20px;">
+                                    <button type="submit" class="btn btn-primary">Assign Collector</button>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+{% endblock %}

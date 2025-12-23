@@ -172,3 +172,38 @@ def reject_user(request, user_id):
     user.save()
     messages.warning(request, f'User {user.name} has been rejected!')
     return redirect('view_users')
+
+def assign_collector(request):
+    from MyApp.forms import CollectorAssignmentForm
+    if request.method == 'POST':
+        form = CollectorAssignmentForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Collector assigned successfully!')
+            return redirect('view_assignments')
+    else:
+        form = CollectorAssignmentForm()
+    return render(request, 'Admin/assign_collector.html', {'form': form})
+
+def view_assignments(request):
+    from MyApp.models import tbl_CollectorAssignment
+    assignments = tbl_CollectorAssignment.objects.select_related('collector', 'Route_id').all()
+    return render(request, 'Admin/view_assignments.html', {'assignments': assignments})
+
+def add_route(request):
+    from MyApp.forms import RouteForm
+    if request.method == 'POST':
+        form = RouteForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Route added successfully!')
+            return redirect('view_routes')
+    else:
+        form = RouteForm()
+    return render(request, 'Admin/add_route.html', {'form': form})
+
+def view_routes(request):
+    from MyApp.models import tbl_Route
+    routes = tbl_Route.objects.select_related('location').all()
+    return render(request, 'Admin/view_routes.html', {'routes': routes})
+

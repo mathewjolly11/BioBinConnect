@@ -20,6 +20,10 @@ urlpatterns = [
     path('view_users/', views.view_users, name='view_users'),
     path('approve_user/<int:user_id>/', views.approve_user, name='approve_user'),
     path('reject_user/<int:user_id>/', views.reject_user, name='reject_user'),
+    path('assign_collector/', views.assign_collector, name='assign_collector'),
+    path('view_assignments/', views.view_assignments, name='view_assignments'),
+    path('add_route/', views.add_route, name='add_route'),
+    path('view_routes/', views.view_routes, name='view_routes'),
 
 ]
 

@@ -1,6 +1,7 @@
 from django.db import models
 from MyApp.models import  tbl_District, tbl_location, tbl_residentsassociation
 
+
 # Create your models here.
 from django.contrib.auth.models import AbstractBaseUser, BaseUserManager, PermissionsMixin
 from django.utils import timezone
@@ -60,6 +61,7 @@ class Household(models.Model):
         tbl_residentsassociation,
         on_delete=models.CASCADE
     )
+    house_no = models.IntegerField(verbose_name="House Number", null=True, blank=True)
     registered_on = models.DateTimeField(default=timezone.now)
 
     def __str__(self):
