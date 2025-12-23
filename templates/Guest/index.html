@@ -1,0 +1,594 @@
+{% extends 'Guest/base.html' %}
+
+{% block title %}Home - Waste Management{% endblock %}
+
+{% block content %}
+{% load static %}
+
+        <!-- content begin -->
+        <div class="no-bottom no-top" id="content">
+
+            <div id="top"></div>
+
+            <section id="section-intro" class="text-light no-top no-bottom relative overflow-hidden z-1000">
+
+                <div class="v-center relative">
+                    <div class="abs bottom-10 z-1000 w-100">
+                        <div class="container">
+                            <div class="row g-4 align-items-center justify-content-between">
+
+                                <div class="col-lg-5">
+                                    <h1>Smart Bio-Waste Management for Cleaner Communities</h1>
+                                </div>
+
+                                <div class="col-lg-4">
+                                    <p class="lead">BioBinConnect connects households, waste collectors, compost managers, and farmers on a single digital platform to convert organic waste into animal feed and compost.</p>
+                    <a class="btn-main btn-line" href="{% url 'booking' %}">Schedule Waste Pickup</a>
+
+                                </div>
+                            </div>
+
+                            </div>
+                        </div>
+
+                    <div class="swiper wow scaleIn">
+                      <!-- Additional required wrapper -->
+                      <div class="swiper-wrapper">
+                        <!-- Slides -->
+                        <div class="swiper-slide">
+                            <div class="swiper-inner" data-bgimage="url({% static 'frontend/images/slider/3.jpg' %})">
+                                <div class="sw-overlay op-1"></div>
+                            </div>
+                        </div>
+                        <!-- Slides -->
+
+                        <!-- Slides -->
+                        <div class="swiper-slide">
+                            <div class="swiper-inner" data-bgimage="url({% static 'frontend/images/slider/4.jpg' %})">
+                                <div class="sw-overlay op-1"></div>
+                            </div>
+                        </div>
+                        <!-- Slides -->
+
+                        <!-- Slides -->
+                        <div class="swiper-slide">
+                            <div class="swiper-inner" data-bgimage="url({% static 'frontend/images/slider/5.jpg' %})">
+                                <div class="sw-overlay op-1"></div>
+                            </div>
+                        </div>
+                        <!-- Slides -->
+
+                      </div>
+
+                    </div>
+                </div>
+
+            </section>
+
+            <section aria-label="section" class="pt-4 pb-4 bg-color">
+                <div class="wow fadeInRight d-flex">
+                  <div class="de-marquee-list relative wow">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Household Waste Pickup</span>
+                    <img src="{% static 'frontend/images/logo-icon-line.webp' %}" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Collector Route Management</span>
+                    <img src="{% static 'frontend/images/logo-icon-line.webp' %}" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Compost Processing</span>
+                    <img src="{% static 'frontend/images/logo-icon-line.webp' %}" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Kitchen Waste Management</span>
+                    <img src="{% static 'frontend/images/logo-icon-line.webp' %}" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Feed & Compost Supply</span>
+                    <img src="{% static 'frontend/images/logo-icon-line.webp' %}" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font"> Sustainable Community Model</span>
+                    <img src="{% static 'frontend/images/logo-icon-line.webp' %}" class="abs abs-middle w-40px" alt="">
+                  </div>
+                </div>
+            </section>
+
+            <section class="bg-dark p-0">
+                <div class="container-fluid">
+                    <div class="row g-0">
+                        <!-- service item begin -->
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="hover overflow-hidden relative text-light text-center wow fadeInRight" data-wow-delay=".0s">
+                                <img src="{% static 'frontend/images/services/1.jpg' %}" class="hover-scale-1-1 w-100 wow scaleIn" alt="">
+                                <div class="abs w-100 px-4 hover-op-1 z-4 hover-mt-40 abs-centered">
+                                    <div class="mb-3">Doorstep biodegradable waste pickup for registered households with scheduled time slots and status updates.</div>
+                                    <a class="btn-line" href="service-single.html">View Details</a>
+                                </div>
+                                <div class="abs bg-color z-2 top-0 w-100 h-100 hover-op-1"></div>
+                                <div class="abs abs-centered z-2 mt-3 w-100 text-center hover-op-0">
+                                    <h4 class="mb-3">Household Waste Collection</h4>
+                                </div>
+                                <div class="gradient-trans-dark-bottom abs w-100 h-80 bottom-0"></div>
+                            </div>
+                        </div>
+                        <!-- service item end -->
+
+                        <!-- service item begin -->
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="hover overflow-hidden relative text-light text-center wow fadeInRight" data-wow-delay=".3s">
+                                <img src="{% static 'frontend/images/services/2.jpg' %}" class="hover-scale-1-1 w-100 wow scaleIn" alt="">
+                                <div class="abs w-100 px-4 hover-op-1 z-4 hover-mt-40 abs-centered">
+                                    <div class="mb-3">Compost managers record incoming waste, monitor composting stages, and maintain batch quality and stock levels.</div>
+                                    <a class="btn-line" href="service-single.html">View Details</a>
+                                </div>
+                                <div class="abs bg-color z-2 top-0 w-100 h-100 hover-op-1"></div>
+                                <div class="abs abs-centered z-2 mt-3 w-100 text-center hover-op-0">
+                                    <h4 class="mb-3">Compost Processing & Bins</h4>
+                                </div>
+                                <div class="gradient-trans-dark-bottom abs w-100 h-80 bottom-0"></div>
+                            </div>
+                        </div>
+                        <!-- service item end -->
+
+                        <!-- service item begin -->
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="hover overflow-hidden relative text-light text-center wow fadeInRight" data-wow-delay=".6s">
+                                <img src="{% static 'frontend/images/services/3.jpg' %}" class="hover-scale-1-1 w-100 wow scaleIn" alt="">
+                                <div class="abs w-100 px-4 hover-op-1 z-4 hover-mt-40 abs-centered">
+                                    <div class="mb-3">Usable waste is supplied as animal feed while the rest becomes compost that farmers can order through BioBinConnect.</div>
+                                    <a class="btn-line" href="service-single.html">View Details</a>
+                                </div>
+                                <div class="abs bg-color z-2 top-0 w-100 h-100 hover-op-1"></div>
+                                <div class="abs abs-centered z-2 mt-3 w-100 text-center hover-op-0">
+                                    <h4 class="mb-3">Feed & Compost for Farmers</h4>
+                                </div>
+                                <div class="gradient-trans-dark-bottom abs w-100 h-80 bottom-0"></div>
+                            </div>
+                        </div>
+                        <!-- service item end -->
+
+                        <!-- service item begin -->
+                        <div class="col-lg-3 col-sm-6">
+                            <div class="hover overflow-hidden relative text-light text-center wow fadeInRight" data-wow-delay=".9s">
+                                <img src="{% static 'frontend/images/services/4.jpg' %}" class="hover-scale-1-1 w-100 wow scaleIn" alt="">
+                                <div class="abs w-100 px-4 hover-op-1 z-4 hover-mt-40 abs-centered">
+                                    <div class="mb-3">Admin assigns collectors to specific wards and routes, ensuring regular coverage and minimizing missed pickups.</div>
+                                    <a class="btn-line" href="service-single.html">View Details</a>
+                                </div>
+                                <div class="abs bg-color z-2 top-0 w-100 h-100 hover-op-1"></div>
+                                <div class="abs abs-centered z-2 mt-3 w-100 text-center hover-op-0">
+                                    <h4 class="mb-3">Collector Route Management</h4>
+                                </div>
+                                <div class="gradient-trans-dark-bottom abs w-100 h-80 bottom-0"></div>
+                            </div>
+                        </div>
+                        <!-- service item end -->
+
+                    </div>
+                </div>
+            </section>
+
+
+            <section>
+                <div class="container">
+                    <div class="row g-4 align-items-end justify-content-between">
+                        <div class="col-lg-5">
+                            <div class="subtitle">How It Works?</div>
+                            <h2>Digital Flow of Biodegradable Waste</h2>
+                        </div>
+
+                        <div class="col-lg-4">
+                            <p class="lead">BioBinConnect manages every step from household waste pickup to feed supply and compost production inside a single platform.</p>
+                        </div>
+                    </div>
+
+                    <div class="spacer-single"></div>
+
+                    <div class="row g-4 align-items-center">
+                        <div class="col-lg-6">
+                            <div class="wow zoomIn overflow-hidden">
+                                <img src="{% static 'frontend/images/slider/3.jpg' %}" class="w-100 wow scaleIn" alt="">
+                            </div>
+                        </div>
+
+                        <div class="col-lg-6">
+                            <div class="row">
+                                <div class="col-md-6">
+                                    <div class="px-4 py-2">
+                                        <img src="images/icons/phones.png" class="w-70px mb-4 wow scaleIn" alt="">
+                                        <h4>Request & Pickup</h4>
+                                        <p>Households log in, schedule biodegradable waste pickup, and receive confirmations and alerts online.</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="px-4 py-2">
+                                        <img src="images/icons/lorry.png" class="w-70px mb-4 wow scaleIn" alt="">
+                                        <h4>Collector Routing</h4>
+                                        <p>Collectors follow assigned routes, collect segregated waste, and update pickup status in real time.</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="px-4 py-2">
+                                        <img src="images/icons/recycle-bin.png" class="w-70px mb-4 wow scaleIn" alt="">
+                                        <h4>Feed & Compost Processing</h4>
+                                        <p>Collected waste is sorted so usable portions go to farmers as feed and the rest to compost bins.</p>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-6">
+                                    <div class="px-4 py-2">
+                                        <img src="images/icons/recycle.png" class="w-70px mb-4 wow scaleIn" alt="">
+                                        <h4>Compost Listing & Delivery</h4>
+                                        <p>Ready compost batches are listed in the system, and farmers place orders and track their deliveries.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+
+
+            <section class="pt-100 bg-dark text-light">
+                <div class="container">
+                    <div class="row g-4 mb-sm-30">
+                        <div class="col-md-3 col-6">
+                            <div class="de_count text-center pl-50 fs-15 wow fadeInRight" data-wow-delay=".0s">
+                                <h2 class="fs-48 mb-2"><span class="timer fs-40" data-to="200" data-speed="3000">0</span><span class="id-color">+</span></h2>
+                              Active Households
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="de_count text-center pl-50 fs-15 wow fadeInRight" data-wow-delay=".2s">
+                                <h2 class="fs-48 mb-2"><span class="timer fs-40" data-to="70" data-speed="3000">0</span><span class="id-color">+</span></h2>
+                                Pickup Points
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="de_count text-center pl-50 fs-15 wow fadeInRight" data-wow-delay=".4s">
+                                <h2 class="fs-48 mb-2"><span class="timer fs-40" data-to="50" data-speed="3000">0</span><span class="id-color">+</span></h2>
+                              Registered Collectors
+                            </div>
+                        </div>
+                        <div class="col-md-3 col-6">
+                            <div class="de_count text-center pl-50 fs-15 wow fadeInRight" data-wow-delay=".6s">
+                                <h2 class="fs-48 mb-2"><span class="timer fs-40" data-to="50" data-speed="3000">0</span><span class="id-color">+</span></h2>
+                               Compost Bins Managed
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="spacer-double"></div>
+
+            </section>
+
+
+            <section class="p-0">
+                <div class="container relative z-1000 mt-min-100">
+                    <div class="row">
+                        <div class="col-lg-12">
+                            <div class="bg-color-2 jarallax text-light p-lg-5 p-4 relative overflow-hidden">
+                                <div class="sw-overlay op-3"></div>
+                                <img src="{% static 'frontend/images/background/1.jpg' %}" class="jarallax-img" alt="">
+                                <div class="row g-4 align-items-center justify-content-between">
+                                    <div class="col-md-6 col-sm-6 relative">
+                                        <div class="relative z-index-1000">
+                                            <h2 class="wow fadeInUp" data-wow-delay=".3s">Get in touch to experience the BioBinConnect smart bio-waste management system</h2>
+                                        </div>
+                                    </div>
+
+                                    <div class="col-md-3 col-sm-6">
+                                        <div class="bg-color px-4 py-5 d-block text-center wow zoomIn" data-wow-delay=".6s">
+                                            <img src="{% static 'frontend/images/icons/call.webp' %}" class="w-40 mb-3" alt="">
+                                            <p class="lead mb-0">24 Hours</p>
+                                            <h4 class="mb-0">+91 9685634275</h4>
+                                        </div>
+                                    </div>
+
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section>
+                <!-- <div class="container">
+                    <div class="row g-4">
+                        <div class="col-lg-6 offset-lg-3 text-center">
+                            <div class="subtitle mb-3">Testimonials</div>
+                            <h2 class="mb-4">Our Happy Customers</h2>
+                        </div>
+                    </div>
+                </div> -->
+                 <div class="container">
+                    <div class="row g-4">
+                        <div class="col-lg-6 offset-lg-3 text-center">
+                            <div class="subtitle mb-3">BioBinConnect shows how digital tools can improve local biodegradable waste management and support a circular economy.</div>
+                            <!-- <h2 class="mb-4">Our Happy Customers</h2> -->
+                        </div>
+                    </div>
+                </div>
+                <!-- <div class="container-fluid">
+                    <div class="row">
+                        <div class="owl-carousel owl-theme wow fadeInUp" id="testimonial-carousel">
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/1.webp"> <div>Michael S.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/2.webp"> <div>Robert L.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/3.webp"> <div>Jake M.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/4.webp"> <div>Alex P.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/5.webp"> <div>Carlos R.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/6.webp"> <div>Edward B.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/7.webp"> <div>Daniel H.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                            <div class="item">
+                                <div class="de_testi bg-white py-2 px-4">
+                                    <blockquote>
+                                        <div class="de_testi_by">
+                                            <img class="circle" alt="" src="images/testimonial/8.webp"> <div>Bryan G.<span>Customer</span></div>
+                                        </div>
+
+                                        <div class="abs top-0 end-0 p-4">
+                                            <i class="fa fa-quote-right id-color fs-28"></i>
+                                        </div>
+
+                                        <p>"Working with this company has been a game changer for our business. Their waste collection is always reliable, and they took the time to understand our unique needs."
+                                        </p>
+                                    </blockquote>
+                                </div>
+                            </div>
+                        </div>
+                    </div> -->
+                <!-- </div> -->
+            </section>
+
+            <section id="section-contact" class="relative overflow-hidden z-1000 jarallax" data-video-src="{% static 'frontend/video/1.mp4' %}">
+                <div class="sw-overlay op-4"></div>
+                <div class="h-30 de-gradient-edge-top op-5 dark z-2"></div>
+                <div class="container relative z-2">
+                    <div class="row g-4 justify-content-between">
+
+                        <div class="col-lg-5 text-light ">
+                            <div class="relative h-100">
+                                <div class="subtitle">Turning Waste Into New Possibilities</div>
+                                <h2>Efficient Waste Disposal Starts With Your Call</h2>
+                                
+                                <div class="abs p-sm-relative bottom-0">
+                                    <p class="col-lg-10 mb-4">Delivering smart waste solutions for homes, businesses & industries to keeping communities clean and protecting the environment every day.</p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="col-lg-5">
+                            <div class="bg-white">
+                                <div id="success_message_col" class='success p-40 h-100'>
+                                    <h3>Thank You For Your Order</h3>
+                                    <p>We have received your request and will be processing it shortly. Click button below if you want to make another order.</p>
+                                    <a class="btn-main" href="booking.html">Re-order</a>
+                                </div>
+
+                                <form name="bookingForm" id="booking_form" class="form-underline position-relative z1000 bg-white p-40" method="post" action="booking.php">
+
+                                    <div class="row g-3">
+                                        <div class="col-lg-12">
+                                            <h4 class="mb-3"><i class="fa fa-envelope-o id-color me-2"></i> Get An Appointment</h4>
+                                            <div class="relative">
+                                                <select name="service" id="service" class="form-control">
+                                                    <option disabled selected value>Select Service</option>
+                                                    <option value="Residential Cleaning">Residential Cleaning</option>
+                                                    <option value="Commercial Cleaning">Commercial Cleaning</option>
+                                                    <option value="Deep Cleaning">Deep Cleaning</option>
+                                                    <option value="Move-In/Move-Out Cleaning">Move-In/Move-Out Cleaning</option>
+                                                    <option value="Post-Construction Cleaning">Post-Construction Cleaning</option>
+                                                    <option value="Carpet and Upholstery Cleaning">Carpet and Upholstery Cleaning</option>
+                                                </select>
+                                                <i class="absolute top-0 end-0 id-color pt-3 pe-3 icofont-simple-down"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div id="date" class="relative input-group date" data-date-format="mm-dd-yyyy">
+                                                <i class="absolute top-0 end-0 id-color pt-3 pe-3 icofont-calendar"></i>
+                                                <input class="form-control" value="Select Date" name="date" type="text" >
+                                                <span class="input-group-addon"><i class="glyphicon glyphicon-calendar"></i></span>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-6">
+                                            <div class="relative">
+                                                <select name="time" id="time" class="form-control">
+                                                    <option disabled selected value>Select Time</option>
+                                                    <option value="10:00">10:00</option>
+                                                    <option value="11:00">11:00</option>
+                                                    <option value="12:00">12:00</option>
+                                                    <option value="13:00">13:00</option>
+                                                    <option value="14:00">14:00</option>
+                                                    <option value="15:00">15:00</option>
+                                                    <option value="16:00">16:00</option>
+                                                    <option value="17:00">17:00</option>
+                                                    <option value="18:00">18:00</option>
+                                                    <option value="19:00">19:00</option>
+                                                    <option value="20:00">20:00</option>
+                                                </select>
+                                                <i class="absolute top-0 end-0 id-color pt-3 pe-3 icofont-simple-down"></i>
+                                            </div>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <input type="text" name="name" id="name" placeholder="Name" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <input type="text" name="email" id="email" placeholder="Email" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-lg-4">
+                                            <input type="text" name="phone" id="phone" placeholder="Phone" class="form-control" required>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <textarea name="message" id="message" class="form-control" placeholder="Message"></textarea>
+                                        </div>
+
+                                        <div class="col-lg-12">
+                                            <div id='submit'>
+                                                <input type='submit' id='send_message' value='Send Appointment' class="btn-main">
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div id="error_message" class='error'>
+                                        Sorry there was an error sending your form.
+                                    </div>
+
+                                </form>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+
+            <section class="relative overflow-hidden">
+                <img src="images/misc/recycle-crop.webp" class="w-20 abs end-0 bottom-0 z-3" alt="">
+                <div class="container relative z-2">
+                    <div class="row g-4 align-items-end">
+                        <div class="col-lg-4">
+                            <div class="subtitle">Our Mission</div>
+                            <h2>Enabling a smart, zero‑waste ecosystem by digitally connecting every stage of biodegradable waste management.</h2>
+                        </div>
+                        <div class="col-lg-8">
+                            <ul class="ul-check">
+                                <li>Replace manual, unorganized biodegradable waste collection with a unified digital platform for households, collectors, compost managers, farmers, and administrators.</li>
+                                <li>Ensure every kilogram of organic waste is tracked from pickup to its final use as animal feed or compost, minimizing landfill disposal</li>
+                                <li>Support farmers with reliable access to fresh feed waste and high-quality organic compost through transparent online transactions</li>
+                                <li>Enable real-time communication, role-based access, and accurate data recording to reduce manual errors and improve operational efficiency.</li>
+                                <li>Provide analytical reports that help authorities and organizations plan better, data-driven waste management policies.</li>
+                                <li>Promote active community participation in sustainable waste practices and contribute to a zero-waste, circular economy model.</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <section aria-label="section" class="pt-4 pb-4 bg-color">
+                <div class="wow fadeInRight d-flex">
+                  <div class="de-marquee-list relative wow">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Waste Collection</span>
+                    <img src="images/logo-icon-line.webp" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Commercial Recycling</span>
+                    <img src="images/logo-icon-line.webp" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Dumpster Rental</span>
+                    <img src="images/logo-icon-line.webp" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Waste Management</span>
+                    <img src="images/logo-icon-line.webp" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Organic Waste</span>
+                    <img src="images/logo-icon-line.webp" class="abs abs-middle w-40px" alt="">
+                    <span class="fs-36 lh-1 ms-5 me-2 p-4 text-white heading-font">Waste Consulting</span>
+                    <img src="images/logo-icon-line.webp" class="abs abs-middle w-40px" alt="">
+                  </div>
+                </div>
+            </section>
+
+        </div>
+        <!-- content end -->
+
+       {% endblock %}

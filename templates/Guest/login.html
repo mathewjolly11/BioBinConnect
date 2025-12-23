@@ -1,0 +1,262 @@
+{% extends 'Guest/base.html' %}
+{% load static %}
+{% block content %}
+    <!-- credits to the writter @leonam-silva-de-souza -->
+     <br><br><br><br>
+    <div class="login-register-page">
+      <div class="container">
+          <div class="form-box login">
+              <form action="" method="post">
+                {% csrf_token %}
+                  <h1>Login</h1><br>
+                 
+                  <div class="input-box">
+                      {{ login_form.username }}
+                      <i class='bx bxs-user'></i>
+                  </div>
+                  <div class="input-box">
+                      {{ login_form.password }}
+                      <i class='bx bxs-lock-alt' ></i>
+                  </div>
+                  <div class="forgot-link">
+                      <a href="#">Forgot Password?</a>
+                  </div>
+                  <button type="submit" class="btn" name="form_type" value="login">Login</button>
+                  <!-- <p>or login with social platforms</p>
+                  <div class="social-icons">
+                      <a href="#"><i class='bx bxl-google' ></i></a>
+                      <a href="#"><i class='bx bxl-facebook' ></i></a>
+                      <a href="#"><i class='bx bxl-github' ></i></a>
+                      <a href="#"><i class='bx bxl-linkedin' ></i></a>
+                  </div> -->
+              </form>
+          </div>
+
+          <div class="form-box register">
+              <form id="register-form" action="" method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                                  <div class="role-select-box" style="margin-bottom: 20px;">
+                                      <!-- <label for="role-select" style="font-weight:600;">Register as:</label> -->
+                                           <h1>Registration</h1><br>
+                                           {{ user_form.role }}
+                                  </div>
+             
+                  <div class="register-step step-1 active">
+                      <!-- Role-specific name fields -->
+                      <div class="role-fields role-farmer">
+                          <div class="input-box">
+                              {{ farmer_form.farmer_name }}
+                              <i class='bx bxs-user'></i>
+                          </div>
+                      </div>
+                      <div class="role-fields role-collector" style="display:none;">
+                          <div class="input-box">
+                              {{ collector_form.collector_name }}
+                              <i class='bx bxs-user'></i>
+                          </div>
+                      </div>
+                      <div class="role-fields role-compost" style="display:none;">
+                          <div class="input-box">
+                              {{ compost_form.compostmanager_name }}
+                              <i class='bx bxs-user'></i>
+                          </div>
+                      </div>
+                      <div class="role-fields role-household" style="display:none;">
+                          <div class="input-box">
+                              {{ household_form.household_name }}
+                              <i class='bx bxs-user'></i>
+                          </div>
+                      </div>
+
+                      <!-- Email -->
+                      <div class="input-box">
+                          {{ user_form.email }}
+                          <i class='bx bxs-envelope'></i>
+                      </div>
+
+                      <button type="button" class="btn next-step">Next</button>
+                  </div>
+                  <div class="register-step step-2">
+                      <!-- Password fields -->
+                      <div class="input-box">
+                          {{ user_form.password1 }}
+                          <i class='bx bxs-lock-alt'></i>
+                      </div>
+                      <div class="input-box">
+                          {{ user_form.password2 }}
+                          <i class='bx bxs-lock-alt'></i>
+                      </div>
+                      
+                      <!-- Phone field -->
+                      <div class="input-box">
+                          {{ user_form.phone }}
+                          <i class='bx bxs-phone'></i>
+                      </div>
+                      
+                      <button type="button" class="btn prev-step" style="margin-right:10px;">Previous</button>
+                      <button type="button" class="btn next-step">Next</button>
+                  </div>
+                  <div class="register-step step-3">
+                      <!-- Role-specific address fields -->
+                      <div class="role-fields role-farmer">
+                          <div class="input-box">
+                              {{ farmer_form.address }}
+                              <i class='bx bxs-home'></i>
+                          </div>
+                      </div>
+                      <div class="role-fields role-collector" style="display:none;">
+                        <div class="input-box">
+                            {{ collector_form.address }}
+                            <i class='bx bxs-home'></i>
+                        </div>
+                      </div>
+                      <div class="role-fields role-compost" style="display:none;">
+                        <div class="input-box">
+                           {{ compost_form.address }}
+                           <i class='bx bxs-home'></i>
+                        </div>
+                      </div>
+                      <div class="role-fields role-household" style="display:none;">
+                        <div class="input-box">
+                            {{ household_form.address }}
+                            <i class='bx bxs-home'></i>
+                        </div>
+                      </div>
+                      
+                      <button type="button" class="btn prev-step" style="margin-right:10px;">Previous</button>
+                      <button type="button" class="btn next-step">Next</button>
+                  </div>
+                  <div class="register-step step-4">
+                      <!-- Farmer Additional Fields -->
+                      <div class="role-fields role-farmer">
+                          <div class="input-box">
+                              {{ farmer_form.aadhaar_image.label_tag }}
+                              {{ farmer_form.aadhaar_image }}
+                          </div>
+                      </div>
+                      <!-- Collector Additional Fields -->
+                      <div class="role-fields role-collector" style="display:none;">
+                        <div class="input-box">
+                            {{ collector_form.license_image.label_tag }}
+                            {{ collector_form.license_image }}
+                        </div>
+                      </div>
+                      <!-- Compost Manager Additional Fields -->
+                      <div class="role-fields role-compost" style="display:none;">
+                        <div class="input-box">
+                            {{ compost_form.license_number }}
+                        </div>
+                      </div>
+                      <!-- Household Additional Fields -->
+                      <div class="role-fields role-household" style="display:none;">
+                        <div class="input-box">
+                            {{ household_form.district.label_tag }}
+                            {{ household_form.district }}
+                        </div>
+                        <div class="input-box">
+                            {{ household_form.location.label_tag }}
+                            {{ household_form.location }}
+                        </div>
+                        <div class="input-box">
+                            {{ household_form.residents_association.label_tag }}
+                            {{ household_form.residents_association }}
+                        </div>
+                        <div class="input-box">
+                            {{ household_form.aadhaar_image.label_tag }}
+                            {{ household_form.aadhaar_image }}
+                        </div>
+                      </div>
+                      <button type="button" class="btn prev-step" style="margin-right:10px;">Previous</button>
+                      <button type="submit" class="btn" name="form_type" value="register">Register</button>
+                  </div>
+                  <!-- <p>or register with social platforms</p>
+                  <div class="social-icons">
+                      <a href="#"><i class='bx bxl-google' ></i></a>
+                      <a href="#"><i class='bx bxl-facebook' ></i></a>
+                      <a href="#"><i class='bx bxl-github' ></i></a>
+                      <a href="#"><i class='bx bxl-linkedin' ></i></a>
+                  </div> -->
+              </form>
+                <script>
+                // Multi-step registration form logic with role selection
+                (function() {
+                    const regForm = document.getElementById('register-form');
+                    if (!regForm) return;
+                    const steps = regForm.querySelectorAll('.register-step');
+                    const nextBtn = regForm.querySelector('.next-step');
+                    const prevBtn = regForm.querySelector('.prev-step');
+                    const roleSelect = regForm.querySelector('#id_role'); // Django form field ID
+                    const roleFields = regForm.querySelectorAll('.role-fields');
+                    
+                    function showStep(idx) {
+                        steps.forEach((step, i) => {
+                            if (i === idx) step.classList.add('active');
+                            else step.classList.remove('active');
+                        });
+                    }
+                    function showRoleFields(role) {
+                        roleFields.forEach(fields => {
+                            if (fields.classList.contains('role-' + role)) {
+                                fields.style.display = '';
+                            } else {
+                                fields.style.display = 'none';
+                            }
+                        });
+                    }
+                    if (roleSelect) {
+                        roleSelect.addEventListener('change', function() {
+                            showRoleFields(this.value);
+                        });
+                        // Show default role fields on load
+                        showRoleFields(roleSelect.value);
+                    }
+                    if (nextBtn) {
+                        document.querySelectorAll('.next-step').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const currentStep = regForm.querySelector('.register-step.active');
+                                const currentIndex = Array.from(steps).indexOf(currentStep);
+                                if (currentIndex < steps.length - 1) {
+                                    showStep(currentIndex + 1);
+                                }
+                            });
+                        });
+                    }
+                    if (prevBtn) {
+                        document.querySelectorAll('.prev-step').forEach(btn => {
+                            btn.addEventListener('click', function() {
+                                const currentStep = regForm.querySelector('.register-step.active');
+                                const currentIndex = Array.from(steps).indexOf(currentStep);
+                                if (currentIndex > 0) {
+                                    showStep(currentIndex - 1);
+                                }
+                            });
+                        });
+                    }
+                    // Ensure first step is visible on load
+                    showStep(0);
+                    
+                    // Initialize role fields on page load
+                    if (roleSelect && roleSelect.value) {
+                        showRoleFields(roleSelect.value);
+                    }
+                })();
+                </script>
+          </div>
+
+          <div class="toggle-box">
+              <div class="toggle-panel toggle-left">
+                  <h1>Hello, Welcome!</h1>
+                  <p>Don't have an account?</p>
+                  <button class="btn register-btn">Register</button>
+              </div>
+
+              <div class="toggle-panel toggle-right">
+                  <h1>Welcome Back!</h1>
+                  <p>Already have an account?</p>
+                  <button class="btn login-btn">Login</button>
+              </div>
+          </div>
+      </div>
+    </div>
+
+ {% endblock %} 

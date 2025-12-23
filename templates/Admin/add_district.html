@@ -1,0 +1,35 @@
+{% extends "Admin/base.html" %}
+{% load static %}
+{% block content %}
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+            <!-- START CONTENT -->
+            <section id="main-content" class=" ">
+                <section class="wrapper main-wrapper">
+                    <div class="col-lg-8 offset-lg-2">
+                        <section class="box ">
+                            <header class="panel_header">
+                                <h2 class="title text-center">Add District</h2>
+                            </header>
+                            <div class="content-body">
+                                <div class="row justify-content-center">
+                                    <div class="col-md-8">
+                                        <form action="" method="post">
+                                            {% csrf_token %}
+                                            {{ form.as_p }}
+                                            <div class="text-center">
+                                                <button type="submit" class="btn btn-primary">{% if form.instance.pk %}Update{% else %}Add District{% endif %}</button>
+                                            </div>
+                                        </form>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </section>
+            </section>
+
+            
+            <!-- END CONTENT -->
+<!-- SweetAlert for Django messages removed: success will show only on districts list page -->
+{% endblock %}
