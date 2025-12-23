@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
+from django.contrib.auth import logout
 from GuestApp.models import Farmer
 from GuestApp.forms import FarmerEditForm, ProfileEditForm
 
@@ -48,3 +49,16 @@ def edit_profile(request):
         'user': request.user
     }
     return render(request, 'Farmer/edit_profile.html', context)
+
+@login_required(login_url='login')
+@never_cache
+def delete_account(request):
+    """Delete farmer account permanently"""
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()  # This will cascade delete the farmer profile
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('login')
+    
+    return render(request, 'Farmer/delete_account_confirm.html')

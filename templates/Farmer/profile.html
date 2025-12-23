@@ -175,6 +175,47 @@
         margin-right: 10px;
         font-size: 20px;
     }
+
+    .btn-delete {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(45deg, #dc3545, #c82333);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 4px 15px rgba(220, 53, 69, 0.3);
+        transition: all 0.3s ease;
+        margin-left: 15px;
+    }
+
+    .btn-delete:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(220, 53, 69, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-delete i {
+        margin-right: 10px;
+        font-size: 20px;
+    }
+
+    @media (max-width: 768px) {
+        .action-buttons {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .btn-delete {
+            margin-left: 0;
+            width: 100%;
+            justify-content: center;
+        }
+    }
 </style>
 <br><br><br><br><br>
 <div class="profile-container">
@@ -253,6 +294,10 @@
                     <a href="{% url 'farmer_edit_profile' %}" class="btn-edit">
                         <i class='bx bxs-edit'></i>
                         Edit Profile
+                    </a>
+                    <a href="{% url 'farmer_delete_account' %}" class="btn-delete">
+                        <i class='bx bxs-trash'></i>
+                        Delete Account
                     </a>
                 </div>
             </div>

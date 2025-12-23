@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
+from django.contrib.auth import logout
 from GuestApp.models import Household
 from GuestApp.forms import HouseholdEditForm, ProfileEditForm
 
@@ -48,3 +49,17 @@ def edit_profile(request):
         'user': request.user
     }
     return render(request, 'HouseHold/edit_profile.html', context)
+
+@login_required(login_url='login')
+@never_cache
+def delete_account(request):
+    """Delete household account permanently"""
+    if request.method == 'POST':
+        user = request.user
+        logout(request)
+        user.delete()  # This will cascade delete the household profile
+        messages.success(request, 'Your account has been deleted successfully.')
+        return redirect('login')
+    
+    return render(request, 'HouseHold/delete_account_confirm.html')
+

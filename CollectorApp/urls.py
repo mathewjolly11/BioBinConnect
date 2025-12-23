@@ -5,4 +5,5 @@ urlpatterns = [
     path('dashboard/', views.collector_dashboard, name='collector_dashboard'),
     path('profile/', views.collector_profile, name='collector_profile'),
     path('profile/edit/', views.edit_profile, name='collector_edit_profile'),
+    path('profile/delete/', views.delete_account, name='collector_delete_account'),
 ]
