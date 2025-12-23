@@ -235,7 +235,10 @@ def signup(request):
                 profile.address = address
                 profile.district = district
                 profile.location = location
+                profile.district = district
+                profile.location = location
                 profile.residents_association = residents_association
+                profile.house_no = role_form.cleaned_data.get('house_no')
             
             profile.save()
             

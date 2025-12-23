@@ -1,0 +1,50 @@
+{% extends 'Collector/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">Log Collection</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Enter details for Pickup #{{ pickup.Pickup_id }}</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-6 offset-md-3">
+                <div class="de_testi bg-white p-5 wow fadeInUp rounded shadow-sm">
+                    <div class="mb-4">
+                        <h5>Household Details</h5>
+                        <p>
+                            <strong>Name:</strong> {{ pickup.household.household_name }}<br>
+                            <strong>Address:</strong> {{ pickup.household.address }}<br>
+                            <strong>House No:</strong> {{ pickup.household.house_no }}
+                        </p>
+                    </div>
+
+                    <form method="post" class="form-border">
+                        {% csrf_token %}
+                        <div class="col-md-12">
+                            <label for="{{ form.total_quantity_kg.id_for_label }}" class="form-label">Total Waste
+                                Collected (Kg):</label>
+                            {{ form.total_quantity_kg }}
+                            {% if form.total_quantity_kg.errors %}
+                            <div class="text-danger small">{{ form.total_quantity_kg.errors.0 }}</div>
+                            {% endif %}
+                            <div class="form-text">Please verify the weight before submitting.</div>
+                        </div>
+
+                        <div class="col-md-12 text-center mt-4">
+                            <button type="submit" class="btn-main">Submit Collection Log</button>
+                            <a href="{% url 'view_assigned_pickups' %}" class="btn-line ms-2">Cancel</a>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

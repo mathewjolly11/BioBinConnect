@@ -104,7 +104,7 @@ class HouseholdRegistrationForm(forms.ModelForm):
     class Meta:
         model = Household
         fields = ['household_name', 'phone', 'address', 'district', 'location', 
-                 'residents_association', 'aadhaar_image']
+                 'residents_association', 'house_no', 'aadhaar_image']
         widgets = {
             'household_name': forms.TextInput(attrs={
                 'placeholder': 'Household Name',
@@ -126,6 +126,10 @@ class HouseholdRegistrationForm(forms.ModelForm):
                 'required': True
             }),
             'residents_association': forms.Select(attrs={
+                'required': True
+            }),
+            'house_no': forms.NumberInput(attrs={
+                'placeholder': 'House Number',
                 'required': True
             })
         }
@@ -337,7 +341,7 @@ class HouseholdEditForm(forms.ModelForm):
     class Meta:
         model = Household
         fields = ['household_name', 'phone', 'address', 'district', 'location', 
-                 'residents_association', 'aadhaar_image']
+                 'residents_association', 'house_no', 'aadhaar_image']
         widgets = {
             'household_name': forms.TextInput(attrs={
                 'class': 'form-control',
@@ -365,6 +369,11 @@ class HouseholdEditForm(forms.ModelForm):
             }),
             'residents_association': forms.Select(attrs={
                 'class': 'form-control',
+                'required': True
+            }),
+            'house_no': forms.NumberInput(attrs={
+                'class': 'form-control',
+                'placeholder': 'House Number',
                 'required': True
             })
         }

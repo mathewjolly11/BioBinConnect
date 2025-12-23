@@ -377,6 +377,13 @@
                         </div>
 
                         <div class="form-group">
+                            <label class="form-label" for="{{ household_form.house_no.id_for_label }}">House
+                                Number</label>
+                            {{ household_form.house_no }}
+                            {{ household_form.house_no.errors }}
+                        </div>
+
+                        <div class="form-group">
                             <label class="form-label">Aadhaar Document</label>
                             <div class="file-input-wrapper">
                                 {{ household_form.aadhaar_image }}

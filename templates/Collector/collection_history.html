@@ -1,0 +1,61 @@
+{% extends 'Collector/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">Collection History</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Your record of completed collections.</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="p-4 bg-white wow fadeInUp rounded shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date Collected</th>
+                                    <th>Household</th>
+                                    <th>Weight (Kg)</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for item in history %}
+                                <tr>
+                                    <td>#{{ item.collection_request_id }}</td> {# Tip: Check model field name, might be
+                                    Request_id #}
+                                    <td>{{ item.collection_date }}</td>
+                                    <td>
+                                        <strong>{{ item.household.household_name }}</strong><br>
+                                        <small>House #{{ item.household.house_no }}</small>
+                                    </td>
+                                    <td>{{ item.total_quantity_kg }}</td>
+                                    <td>
+                                        <span class="badge bg-success">Completed</span>
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">No collection history found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'view_assigned_pickups' %}" class="btn-main">Back to Assignments</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

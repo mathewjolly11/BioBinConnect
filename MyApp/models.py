@@ -52,3 +52,34 @@ class tbl_CollectorAssignment(models.Model):
     def __str__(self):
         return f"{self.collector} - {self.Route_id} ({self.day_of_week})"
 
+class tbl_PickupRequest(models.Model):
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+        ('Completed', 'Completed'),
+    ]
+
+    Pickup_id = models.AutoField(primary_key=True)
+    household = models.ForeignKey('GuestApp.Household', on_delete=models.CASCADE)
+    scheduled_date = models.DateField()
+    request_time = models.TimeField()
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
+    assigned_collector = models.ForeignKey('GuestApp.Collector', on_delete=models.CASCADE, null=True, blank=True)
+
+    def __str__(self):
+        return f"Request {self.Pickup_id} - {self.household}"
+
+class tbl_CollectionRequest(models.Model):
+    Request_id = models.AutoField(primary_key=True)
+    household = models.ForeignKey('GuestApp.Household', on_delete=models.CASCADE)
+    collector = models.ForeignKey('GuestApp.Collector', on_delete=models.CASCADE)
+    total_quantity_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    farmer_supply_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    leftover_compost_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    collection_date = models.DateTimeField()
+    status = models.CharField(max_length=50)
+
+    def __str__(self):
+        return f"Collection {self.Request_id} - {self.household}"
+

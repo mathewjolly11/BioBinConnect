@@ -1,0 +1,62 @@
+{% extends 'HouseHold/base.html' %}
+{% load static %}
+
+{% block title %}Request Pickup - BioBinConnect{% endblock %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">Request Waste Pickup</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Schedule a convenient time for your biodegradable waste
+                collection.</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="de_testi bg-white p-5 wow fadeInUp">
+                    {% if messages %}
+                    {% for message in messages %}
+                    <div
+                        class="alert alert-{% if message.tags == 'error' %}danger{% else %}{{ message.tags }}{% endif %}">
+                        {{ message }}
+                    </div>
+                    {% endfor %}
+                    {% endif %}
+
+                    <form method="post" class="form-border">
+                        {% csrf_token %}
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <label for="id_scheduled_date" class="form-label">Date:</label>
+                                {{ form.scheduled_date }}
+                                {% if form.scheduled_date.errors %}
+                                <div class="text-danger small">{{ form.scheduled_date.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+                            <div class="col-md-6">
+                                <label for="id_request_time" class="form-label">Time:</label>
+                                {{ form.request_time }}
+                                {% if form.request_time.errors %}
+                                <div class="text-danger small">{{ form.request_time.errors.0 }}</div>
+                                {% endif %}
+                            </div>
+
+                            <div class="col-md-12 text-center mt-4">
+                                <button type="submit" class="btn-main">Request Pickup</button>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+                <div class="text-center mt-4">
+                    <a href="{% url 'view_requests' %}" class="btn-line">View My Past Requests</a>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

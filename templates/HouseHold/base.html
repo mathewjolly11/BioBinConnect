@@ -84,6 +84,9 @@
                             <div class="de-flex-col header-col-mid">
                                 <!-- mainemenu begin -->
                                 <ul id="mainmenu">
+                                    <li><a class="menu-item" href="{% url 'household_dashboard' %}">Dashboard</a></li>
+                                    <li><a class="menu-item" href="{% url 'view_requests' %}">My Requests</a></li>
+                                    <li><a class="menu-item" href="{% url 'request_pickup' %}">New Request</a></li>
                                     <li><a class="menu-item" href="{% url 'guest_index' %}">Home</a>
                                         <!-- <ul>
                                             <li><a href="index.html">Homepage 1</a></li>
@@ -94,14 +97,14 @@
                                     </li>
                                     <li><a class="menu-item" href="services.html">Services</a>
                                         <ul>
-                                            <li><a href="services.html">All Services Style 1</a></li>
+                                            <!-- <li><a href="services.html">All Services Style 1</a></li>
                                             <li><a href="services-2.html">All Services Style 2</a></li>
                                             <li><a href="service-single.html">Service Single</a></li>
                                             <li><a href="pricing-table.html">Pricing Table</a></li>
-                                            <li><a href="faq.html">FAQ</a></li>
+                                            <li><a href="faq.html">FAQ</a></li> -->
                                         </ul>
                                     </li>
-                                    <li><a class="menu-item" href="projects.html">Projects</a></li>
+                                    <!-- <li><a class="menu-item" href="projects.html">Projects</a></li>
                                     <li><a class="menu-item" href="#">Company</a>
                                         <ul>
                                             <li><a href="about.html">About Us</a></li>
@@ -109,14 +112,14 @@
                                             <li><a href="gallery.html">Gallery</a></li>
                                         </ul>
                                     </li>
-                                    <li><a class="menu-item" href="blog.html">Blog</a></li>
+                                    <li><a class="menu-item" href="blog.html">Blog</a></li> -->
                                     <li><a class="menu-item" href="contact.html">Contact</a></li>
                                 </ul>
                                 <!-- mainmenu end -->
                             </div>
                             <div class="de-flex-col">
                                 <div class="menu_side_area">
-                                    <a href="{% url 'booking' %}" class="btn-main">Schedule Pickup</a>
+                                    <a href="{% url 'request_pickup' %}" class="btn-main">Schedule Pickup</a>
                                     <a href="{% url 'household_profile' %}" class="btn-main"
                                         style="margin-left: 10px;"><i class='bx bxs-user-circle'></i> Profile</a>
                                     <a href="#" id="logout-btn" class="btn-main" style="margin-left: 10px;">Logout</a>

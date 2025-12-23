@@ -62,3 +62,70 @@ def delete_account(request):
         return redirect('login')
     
     return render(request, 'Collector/delete_account_confirm.html')
+
+@login_required(login_url='login')
+@never_cache
+def view_assigned_pickups(request):
+    from MyApp.models import tbl_PickupRequest
+    collector = Collector.objects.get(user=request.user)
+    
+    # Filter for requests assigned to this collector that are NOT completed
+    # Showing Approved (Upcoming) and Pending (if manually assigned)
+    assignments = tbl_PickupRequest.objects.filter(
+        assigned_collector=collector
+    ).exclude(status='Completed').order_by('scheduled_date')
+    
+    return render(request, 'Collector/assigned_pickups.html', {'assignments': assignments})
+
+@login_required(login_url='login')
+@never_cache
+def log_collection(request, pickup_id):
+    from MyApp.models import tbl_PickupRequest, tbl_CollectionRequest
+    from CollectorApp.forms import CollectionLogForm
+    from django.utils import timezone
+    
+    pickup_request = tbl_PickupRequest.objects.get(Pickup_id=pickup_id)
+    collector = Collector.objects.get(user=request.user)
+    
+    # Security check: Ensure this pickup is assigned to the current collector
+    if pickup_request.assigned_collector != collector:
+        messages.error(request, "You are not authorized to log this collection.")
+        return redirect('collector_dashboard')
+
+    if request.method == 'POST':
+        form = CollectionLogForm(request.POST)
+        if form.is_valid():
+            collection = form.save(commit=False)
+            collection.household = pickup_request.household
+            collection.collector = collector
+            collection.collection_date = timezone.now()
+            collection.status = 'Completed'
+            
+            # Initialize other fields to 0 as per plan
+            collection.farmer_supply_kg = 0
+            collection.leftover_compost_kg = 0
+            
+            collection.save()
+            
+            # Update Pickup Request status
+            pickup_request.status = 'Completed'
+            pickup_request.save()
+            
+            messages.success(request, "Collection logged successfully!")
+            return redirect('view_assigned_pickups')
+    else:
+        form = CollectionLogForm()
+    
+    return render(request, 'Collector/log_collection.html', {
+        'form': form, 
+        'pickup': pickup_request
+    })
+
+@login_required(login_url='login')
+@never_cache
+def collection_history(request):
+    from MyApp.models import tbl_CollectionRequest
+    collector = Collector.objects.get(user=request.user)
+    
+    history = tbl_CollectionRequest.objects.filter(collector=collector).order_by('-collection_date')
+    return render(request, 'Collector/collection_history.html', {'history': history})

@@ -1,0 +1,73 @@
+{% extends 'HouseHold/base.html' %}
+{% load static %}
+
+{% block title %}My Requests - BioBinConnect{% endblock %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">My Pickup Requests</h1>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-10 offset-md-1">
+                <div class="p-4 bg-white wow fadeInUp rounded shadow-sm">
+                    <div class="table-responsive">
+                        <table class="table table-striped table-hover">
+                            <thead class="bg-light">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Date</th>
+                                    <th>Time</th>
+                                    <th>Assigned Collector</th>
+                                    <th>Status</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for req in requests %}
+                                <tr>
+                                    <td>#{{ req.Pickup_id }}</td>
+                                    <td>{{ req.scheduled_date }}</td>
+                                    <td>{{ req.request_time }}</td>
+                                    <td>
+                                        {% if req.assigned_collector %}
+                                        {{ req.assigned_collector.collector_name }}
+                                        {% else %}
+                                        <span class="text-muted">Unassigned</span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% if req.status == 'Pending' %}
+                                        <span class="badge bg-warning text-dark">Pending</span>
+                                        {% elif req.status == 'Approved' %}
+                                        <span class="badge bg-success">Approved</span>
+                                        {% elif req.status == 'Rejected' %}
+                                        <span class="badge bg-danger">Rejected</span>
+                                        {% elif req.status == 'Completed' %}
+                                        <span class="badge bg-primary">Completed</span>
+                                        {% endif %}
+                                    </td>
+                                </tr>
+                                {% empty %}
+                                <tr>
+                                    <td colspan="5" class="text-center py-4">No pickup requests found.</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="text-center mt-4">
+                        <a href="{% url 'request_pickup' %}" class="btn-main">Make New Request</a>
+                        <a href="{% url 'household_dashboard' %}" class="btn-line ms-3">Back to Dashboard</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}
