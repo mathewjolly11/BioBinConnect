@@ -1,0 +1,289 @@
+{% extends 'HouseHold/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .profile-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 60px 0;
+    }
+
+    .profile-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .profile-header {
+        background: linear-gradient(135deg, #6c9a2e 0%, #5a8025 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+        position: relative;
+    }
+
+    .profile-avatar {
+        width: 120px;
+        height: 120px;
+        border-radius: 50%;
+        background: white;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin: 0 auto 20px;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.2);
+    }
+
+    .profile-avatar i {
+        font-size: 60px;
+        color: #6c9a2e;
+    }
+
+    .profile-name {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0 0 10px 0;
+    }
+
+    .profile-role {
+        font-size: 18px;
+        opacity: 0.9;
+        font-weight: 500;
+    }
+
+    .profile-body {
+        padding: 40px;
+    }
+
+    .info-grid {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+        gap: 25px;
+        margin-bottom: 30px;
+    }
+
+    .info-item {
+        background: #f8f9fa;
+        padding: 25px;
+        border-radius: 12px;
+        border-left: 4px solid #6c9a2e;
+        transition: all 0.3s ease;
+    }
+
+    .info-item:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(108, 154, 46, 0.2);
+    }
+
+    .info-label {
+        display: flex;
+        align-items: center;
+        color: #666;
+        font-size: 14px;
+        font-weight: 600;
+        margin-bottom: 10px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .info-label i {
+        margin-right: 8px;
+        color: #6c9a2e;
+        font-size: 18px;
+    }
+
+    .info-value {
+        font-size: 18px;
+        color: #2d5016;
+        font-weight: 600;
+        word-break: break-word;
+    }
+
+    .full-width {
+        grid-column: 1 / -1;
+    }
+
+    .status-badge {
+        display: inline-flex;
+        align-items: center;
+        padding: 12px 24px;
+        border-radius: 25px;
+        font-weight: 600;
+        font-size: 16px;
+        margin-top: 20px;
+    }
+
+    .status-verified {
+        background: #d4edda;
+        color: #155724;
+    }
+
+    .status-pending {
+        background: #fff3cd;
+        color: #856404;
+    }
+
+    .status-badge i {
+        margin-right: 8px;
+        font-size: 20px;
+    }
+
+    .document-preview {
+        margin-top: 15px;
+        text-align: center;
+    }
+
+    .document-preview img {
+        max-width: 100%;
+        max-height: 300px;
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+    }
+
+    .action-buttons {
+        text-align: center;
+        padding-top: 20px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn-edit {
+        display: inline-flex;
+        align-items: center;
+        background: linear-gradient(45deg, #6c9a2e, #5a8025);
+        color: white;
+        padding: 15px 40px;
+        border-radius: 30px;
+        text-decoration: none;
+        font-weight: 600;
+        font-size: 16px;
+        box-shadow: 0 4px 15px rgba(108, 154, 46, 0.3);
+        transition: all 0.3s ease;
+    }
+
+    .btn-edit:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 154, 46, 0.4);
+        color: white;
+        text-decoration: none;
+    }
+
+    .btn-edit i {
+        margin-right: 10px;
+        font-size: 20px;
+    }
+</style>
+<br><br><br><br><br>
+<div class="profile-container">
+    <div class="container">
+        <div class="profile-card">
+            <!-- Profile Header -->
+            <div class="profile-header">
+                <div class="profile-avatar">
+                    <i class='bx bxs-user-circle'></i>
+                </div>
+                <h1 class="profile-name">{{ household.household_name }}</h1>
+                <p class="profile-role">Household Member</p>
+            </div>
+
+            <!-- Profile Body -->
+            <div class="profile-body">
+                <div class="info-grid">
+                    <!-- Email -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class='bx bxs-envelope'></i>
+                            Email Address
+                        </div>
+                        <div class="info-value">{{ user.email }}</div>
+                    </div>
+
+                    <!-- Phone -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class='bx bxs-phone'></i>
+                            Phone Number
+                        </div>
+                        <div class="info-value">{{ household.phone }}</div>
+                    </div>
+
+                    <!-- District -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class='bx bxs-map'></i>
+                            District
+                        </div>
+                        <div class="info-value">{{ household.district.district_name }}</div>
+                    </div>
+
+                    <!-- Location -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class='bx bxs-location-plus'></i>
+                            Location
+                        </div>
+                        <div class="info-value">{{ household.location.location_name }}</div>
+                    </div>
+
+                    <!-- Residents Association -->
+                    <div class="info-item">
+                        <div class="info-label">
+                            <i class='bx bxs-group'></i>
+                            Residents Association
+                        </div>
+                        <div class="info-value">{{ household.residents_association.association_name }}</div>
+                    </div>
+
+                    <!-- Address -->
+                    <div class="info-item full-width">
+                        <div class="info-label">
+                            <i class='bx bxs-home'></i>
+                            Full Address
+                        </div>
+                        <div class="info-value">{{ household.address }}</div>
+                    </div>
+
+                    <!-- Aadhaar Document -->
+                    {% if household.aadhaar_image %}
+                    <div class="info-item full-width">
+                        <div class="info-label">
+                            <i class='bx bxs-id-card'></i>
+                            Aadhaar Document
+                        </div>
+                        <div class="document-preview">
+                            <img src="{{ household.aadhaar_image.url }}" alt="Aadhaar Document">
+                        </div>
+                    </div>
+                    {% endif %}
+
+                    <!-- Account Status -->
+                    <div class="info-item full-width"
+                        style="text-align: center; background: transparent; border: none;">
+                        <div
+                            class="status-badge {% if user.is_verified %}status-verified{% else %}status-pending{% endif %}">
+                            {% if user.is_verified %}
+                            <i class='bx bxs-check-circle'></i>
+                            Account Verified
+                            {% else %}
+                            <i class='bx bxs-time'></i>
+                            Pending Verification
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="action-buttons">
+                    <a href="{% url 'household_edit_profile' %}" class="btn-edit">
+                        <i class='bx bxs-edit'></i>
+                        Edit Profile
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -23,8 +23,12 @@ from django.conf import settings
 
 urlpatterns = [
     path('admin/', admin.site.urls),
-    path('', include('MyApp.urls')),
     path('', include('GuestApp.urls')),
+    path('', include('MyApp.urls')),
+    path('farmer/', include('FarmerApp.urls')),
+    path('household/', include('HouseholdApp.urls')),
+    path('collector/', include('CollectorApp.urls')),
+    path('compost-manager/', include('CompostManagerApp.urls')),
 ]
 
 if settings.DEBUG:

@@ -1,0 +1,341 @@
+{% extends 'CompostManager/base.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    .edit-profile-container {
+        min-height: 100vh;
+        background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
+        padding: 60px 0;
+    }
+
+    .edit-card {
+        background: white;
+        border-radius: 20px;
+        box-shadow: 0 10px 40px rgba(0, 0, 0, 0.1);
+        overflow: hidden;
+        max-width: 900px;
+        margin: 0 auto;
+    }
+
+    .edit-header {
+        background: linear-gradient(135deg, #6c9a2e 0%, #5a8025 100%);
+        color: white;
+        padding: 40px;
+        text-align: center;
+    }
+
+    .edit-header h1 {
+        font-size: 32px;
+        font-weight: 700;
+        margin: 0;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        gap: 15px;
+    }
+
+    .edit-header i {
+        font-size: 36px;
+    }
+
+    .edit-body {
+        padding: 40px;
+    }
+
+    .form-section {
+        margin-bottom: 35px;
+    }
+
+    .section-title {
+        font-size: 20px;
+        font-weight: 700;
+        color: #2d5016;
+        margin-bottom: 20px;
+        padding-bottom: 10px;
+        border-bottom: 3px solid #6c9a2e;
+        display: flex;
+        align-items: center;
+        gap: 10px;
+    }
+
+    .section-title i {
+        font-size: 24px;
+        color: #6c9a2e;
+    }
+
+    .form-group {
+        margin-bottom: 25px;
+    }
+
+    .form-label {
+        display: block;
+        font-weight: 600;
+        color: #333;
+        margin-bottom: 8px;
+        font-size: 14px;
+        text-transform: uppercase;
+        letter-spacing: 0.5px;
+    }
+
+    .form-control {
+        width: 100%;
+        padding: 14px 18px;
+        border: 2px solid #e0e0e0;
+        border-radius: 10px;
+        font-size: 16px;
+        transition: all 0.3s ease;
+        font-family: inherit;
+    }
+
+    .form-control:focus {
+        outline: none;
+        border-color: #6c9a2e;
+        box-shadow: 0 0 0 3px rgba(108, 154, 46, 0.1);
+    }
+
+    .form-control:disabled {
+        background-color: #f5f5f5;
+        cursor: not-allowed;
+    }
+
+    textarea.form-control {
+        resize: vertical;
+        min-height: 100px;
+    }
+
+    .alert {
+        padding: 15px 20px;
+        border-radius: 10px;
+        margin-bottom: 25px;
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        font-weight: 500;
+    }
+
+    .alert i {
+        font-size: 24px;
+    }
+
+    .alert-success {
+        background: #d4edda;
+        color: #155724;
+        border-left: 4px solid #28a745;
+    }
+
+    .alert-error {
+        background: #f8d7da;
+        color: #721c24;
+        border-left: 4px solid #dc3545;
+    }
+
+    .form-actions {
+        display: flex;
+        gap: 15px;
+        justify-content: center;
+        margin-top: 40px;
+        padding-top: 30px;
+        border-top: 2px solid #f0f0f0;
+    }
+
+    .btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 10px;
+        padding: 15px 40px;
+        border-radius: 30px;
+        font-weight: 600;
+        font-size: 16px;
+        text-decoration: none;
+        border: none;
+        cursor: pointer;
+        transition: all 0.3s ease;
+        box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .btn i {
+        font-size: 20px;
+    }
+
+    .btn-primary {
+        background: linear-gradient(45deg, #6c9a2e, #5a8025);
+        color: white;
+    }
+
+    .btn-primary:hover {
+        transform: translateY(-2px);
+        box-shadow: 0 6px 20px rgba(108, 154, 46, 0.4);
+    }
+
+    .btn-secondary {
+        background: #6c757d;
+        color: white;
+        text-decoration: none;
+        cursor: pointer;
+        pointer-events: auto;
+    }
+
+    .btn-secondary:hover {
+        background: #5a6268;
+        transform: translateY(-2px);
+        text-decoration: none;
+        color: white;
+    }
+
+    .errorlist {
+        list-style: none;
+        padding: 0;
+        margin: 8px 0 0 0;
+    }
+
+    .errorlist li {
+        color: #dc3545;
+        font-size: 14px;
+        padding: 5px 0;
+        display: flex;
+        align-items: center;
+        gap: 5px;
+    }
+
+    .errorlist li:before {
+        content: "⚠";
+        font-size: 16px;
+    }
+
+    @media (max-width: 768px) {
+        .edit-profile-container {
+            padding: 30px 15px;
+        }
+
+        .edit-body {
+            padding: 25px;
+        }
+
+        .form-actions {
+            flex-direction: column;
+        }
+
+        .btn {
+            width: 100%;
+            justify-content: center;
+        }
+    }
+</style>
+<br><br><br><br><br>
+<div class="edit-profile-container">
+    <div class="container">
+        <div class="edit-card">
+            <!-- Header -->
+            <div class="edit-header">
+                <h1>
+                    <i class='bx bxs-edit-alt'></i>
+                    Edit Profile
+                </h1>
+            </div>
+
+            <!-- Body -->
+            <div class="edit-body">
+                {% if messages %}
+                {% for message in messages %}
+                <div class="alert alert-{{ message.tags }}">
+                    <i
+                        class='bx {% if message.tags == "success" %}bxs-check-circle{% else %}bxs-error-circle{% endif %}'></i>
+                    {{ message }}
+                </div>
+                {% endfor %}
+                {% endif %}
+
+                <form method="POST" enctype="multipart/form-data">
+                    {% csrf_token %}
+
+                    <!-- Basic Information Section -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class='bx bxs-user'></i>
+                            Basic Information
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ user_form.name.id_for_label }}">Full Name</label>
+                            {{ user_form.name }}
+                            {{ user_form.name.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ user_form.email.id_for_label }}">Email Address</label>
+                            {{ user_form.email }}
+                            {{ user_form.email.errors }}
+                            <small style="color: #666; display: block; margin-top: 5px;">Email cannot be changed</small>
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ user_form.phone.id_for_label }}">Phone Number</label>
+                            {{ user_form.phone }}
+                            {{ user_form.phone.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Compost Manager Details Section -->
+                    <div class="form-section">
+                        <div class="section-title">
+                            <i class='bx bxs-leaf'></i>
+                            Compost Manager Details
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ compost_form.compostmanager_name.id_for_label }}">Compost
+                                Manager Name</label>
+                            {{ compost_form.compostmanager_name }}
+                            {{ compost_form.compostmanager_name.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ compost_form.phone.id_for_label }}">Contact Phone</label>
+                            {{ compost_form.phone }}
+                            {{ compost_form.phone.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ compost_form.address.id_for_label }}">Full Address</label>
+                            {{ compost_form.address }}
+                            {{ compost_form.address.errors }}
+                        </div>
+
+                        <div class="form-group">
+                            <label class="form-label" for="{{ compost_form.license_number.id_for_label }}">License
+                                Number</label>
+                            {{ compost_form.license_number }}
+                            {{ compost_form.license_number.errors }}
+                        </div>
+                    </div>
+
+                    <!-- Form Actions -->
+                    <div class="form-actions">
+                        <button type="submit" class="btn btn-primary">
+                            <i class='bx bxs-save'></i>
+                            Save Changes
+                        </button>
+                    </div>
+                </form>
+
+                <!-- Cancel Button (outside form) -->
+                <div style="text-align: center; margin-top: 20px;">
+                    <a href="{% url 'compost_manager_profile' %}" class="btn btn-secondary" id="cancelBtn">
+                        <i class='bx bx-x'></i>
+                        Cancel
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    // Cancel button navigation
+    document.getElementById('cancelBtn').addEventListener('click', function (e) {
+        e.preventDefault();
+        window.location.href = '{% url "compost_manager_profile" %}';
+    });
+</script>
+{% endblock %}

@@ -16,23 +16,29 @@
     <meta content="" name="description" />
     <meta content="" name="author" />
 
-    <link rel="shortcut icon" href="{% static 'backend/assets/images/favicon.png' %}" type="image/x-icon" /> <!-- Favicon -->
-    <link rel="apple-touch-icon-precomposed" href="{% static 'backend/assets/images/apple-touch-icon-57-precomposed.png' %}">
+    <link rel="shortcut icon" href="{% static 'backend/assets/images/favicon.png' %}" type="image/x-icon" />
+    <!-- Favicon -->
+    <link rel="apple-touch-icon-precomposed"
+        href="{% static 'backend/assets/images/apple-touch-icon-57-precomposed.png' %}">
     <!-- For iPhone -->
     <link rel="apple-touch-icon-precomposed" sizes="114x114"
-        href="{% static 'backend/assets/images/apple-touch-icon-114-precomposed.png' %}"> <!-- For iPhone 4 Retina display -->
+        href="{% static 'backend/assets/images/apple-touch-icon-114-precomposed.png' %}">
+    <!-- For iPhone 4 Retina display -->
     <link rel="apple-touch-icon-precomposed" sizes="72x72"
         href="{% static 'backend/assets/images/apple-touch-icon-72-precomposed.png' %}"> <!-- For iPad -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144"
-        href="{% static 'backend/assets/images/apple-touch-icon-144-precomposed.png' %}"> <!-- For iPad Retina display -->
+        href="{% static 'backend/assets/images/apple-touch-icon-144-precomposed.png' %}">
+    <!-- For iPad Retina display -->
 
 
 
     <!-- CORE CSS FRAMEWORK - START -->
     <link href="{% static 'backend/assets/plugins/pace/pace-theme-flash.css' %}" rel="stylesheet" type="text/css"
         media="screen" />
-    <link href="{% static 'backend/assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet" type="text/css" />
-    <link href="{% static 'backend/assets/fonts/font-awesome/css/font-awesome.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'backend/assets/plugins/bootstrap/css/bootstrap.min.css' %}" rel="stylesheet"
+        type="text/css" />
+    <link href="{% static 'backend/assets/fonts/font-awesome/css/font-awesome.css' %}" rel="stylesheet"
+        type="text/css" />
     <link href="{% static 'backend/assets/css/animate.min.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'backend/assets/plugins/perfect-scrollbar/perfect-scrollbar.css' %}" rel="stylesheet"
         type="text/css" />
@@ -41,10 +47,10 @@
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
     <link href="{% static 'backend/assets/plugins/morris-chart/css/morris.css' %}" rel="stylesheet" type="text/css"
         media="screen" />
-    <link href="{% static 'backend/assets/plugins/jquery-ui/smoothness/jquery-ui.min.css' %}" rel="stylesheet" type="text/css"
-        media="screen" />
-    <link href="{% static 'backend/assets/plugins/jvectormap/jquery-jvectormap-2.0.1.css' %}" rel="stylesheet" type="text/css"
-        media="screen" />
+    <link href="{% static 'backend/assets/plugins/jquery-ui/smoothness/jquery-ui.min.css' %}" rel="stylesheet"
+        type="text/css" media="screen" />
+    <link href="{% static 'backend/assets/plugins/jvectormap/jquery-jvectormap-2.0.1.css' %}" rel="stylesheet"
+        type="text/css" media="screen" />
     <link href="{% static 'backend/assets/plugins/icheck/skins/minimal/white.css' %}" rel="stylesheet" type="text/css"
         media="screen" /> <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
 
@@ -60,19 +66,21 @@
 <!-- BEGIN BODY -->
 
 <body class="d-flex flex-column min-vh-100"><!-- START TOPBAR -->
-    <div class='page-topbar ' >
-      <div class='logo-area' style="position:relative; z-index:10; background: transparent;">
-<a href="{% url 'admin_index' %}">
-    <div class="d-none d-md-block">
-        <img src="{% static 'backend/assets/images/logo.png' %}" alt="Logo" style="max-height:80px; width:120px;" class="mx-auto d-block">
-    </div>
-    <div class="d-block d-md-none">
-        <img src="{% static 'backend/assets/images/logo-folded.png' %}" alt="Logo Folded" style="max-height:50px; width:50px;" class="mx-auto d-block">
-    </div>
-</a>
+    <div class='page-topbar '>
+        <div class='logo-area' style="position:relative; z-index:10; background: transparent;">
+            <a href="{% url 'admin_index' %}">
+                <div class="d-none d-md-block">
+                    <img src="{% static 'backend/assets/images/logo.png' %}" alt="Logo"
+                        style="max-height:80px; width:120px;" class="mx-auto d-block">
+                </div>
+                <div class="d-block d-md-none">
+                    <img src="{% static 'backend/assets/images/logo-folded.png' %}" alt="Logo Folded"
+                        style="max-height:50px; width:50px;" class="mx-auto d-block">
+                </div>
+            </a>
 
         </div>
-        <div class='quick-area' >
+        <div class='quick-area'>
             <div class='float-left'>
                 <ul class="info-menu left-links list-inline list-unstyled">
                     <li class="sidebar-toggle-wrap list-inline-item">
@@ -93,8 +101,8 @@
                                     <li class="unread status-available">
                                         <a href="javascript:;">
                                             <div class="user-img">
-                                                <img src="{% static 'backend/assets/data/profile/avatar-1.png' %}" alt="user-image"
-                                                    class="rounded-circle img-inline">
+                                                <img src="{% static 'backend/assets/data/profile/avatar-1.png' %}"
+                                                    alt="user-image" class="rounded-circle img-inline">
                                             </div>
                                             <div>
                                                 <span class="name">
@@ -111,8 +119,8 @@
                                     <li class=" status-away">
                                         <a href="javascript:;">
                                             <div class="user-img">
-                                                <img src="{% static 'backend/assets/data/profile/avatar-2.png' %}" alt="user-image"
-                                                    class="rounded-circle img-inline">
+                                                <img src="{% static 'backend/assets/data/profile/avatar-2.png' %}"
+                                                    alt="user-image" class="rounded-circle img-inline">
                                             </div>
                                             <div>
                                                 <span class="name">
@@ -406,7 +414,7 @@
                                 </a>
                             </li>
                             <li class="last dropdown-item">
-                                <a href="ui-login.html">
+                                <a href="#" id="logout-btn">
                                     <i class="fa fa-lock"></i>
                                     Logout
                                 </a>
@@ -481,41 +489,57 @@
                             <li>
                                 <a class="" href="{% url 'add_district' %}">Add District</a>
                             </li>
-                           
+
 
                             <li>
                                 <a class="" href="{% url 'add_location' %}">Add Location</a>
                             </li>
 
-                           
+
                             <li>
                                 <a class="" href="{% url 'add_ra' %}">Add Residents Association</a>
                             </li>
-                           
+
                         </ul>
                     </li>
-                      <li class="">
+                    <li class="">
                         <a href="javascript:;">
                             <i class="fa fa-eye"></i>
                             <span class="title">View Details</span>
                             <span class="arrow "></span>
                         </a>
                         <ul class="sub-menu">
-                            
+
                             <li>
                                 <a class="" href="{% url 'view_districts' %}">View Districts</a>
                             </li>
 
-                          
+
 
                             <li>
                                 <a class="" href="{% url 'view_locations' %}">View Locations</a>
                             </li>
-                           
+
                             <li>
                                 <a class="" href="{% url 'view_ra' %}">View Residents Associations</a>
-                                </li>
-                                
+                            </li>
+
+                        </ul>
+                    </li>
+                    <li class="">
+                        <a href="javascript:;">
+                            <i class="fa fa-eye"></i>
+                            <span class="title">Verification</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+
+                            <li>
+                                <a class="" href="{% url 'view_users' %}">View Users</a>
+                            </li>
+
+
+
                         </ul>
                     </li>
                     <!-- <li class="">
@@ -1066,9 +1090,12 @@
 
 
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - START -->
-    <script src="{% static 'backend/assets/plugins/jquery-ui/smoothness/jquery-ui.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'backend/assets/plugins/sparkline-chart/jquery.sparkline.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'backend/assets/plugins/easypiechart/jquery.easypiechart.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'backend/assets/plugins/jquery-ui/smoothness/jquery-ui.min.js' %}"
+        type="text/javascript"></script>
+    <script src="{% static 'backend/assets/plugins/sparkline-chart/jquery.sparkline.min.js' %}"
+        type="text/javascript"></script>
+    <script src="{% static 'backend/assets/plugins/easypiechart/jquery.easypiechart.min.js' %}"
+        type="text/javascript"></script>
     <script src="{% static 'backend/assets/plugins/morris-chart/js/raphael-min.js' %}" type="text/javascript"></script>
     <script src="{% static 'backend/assets/plugins/morris-chart/js/morris.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'backend/assets/plugins/jvectormap/jquery-jvectormap-2.0.1.min.js' %}"
@@ -1088,7 +1115,8 @@
     <!-- END CORE TEMPLATE JS - END -->
 
     <!-- Sidebar Graph - START -->
-    <script src="{% static 'backend/assets/plugins/sparkline-chart/jquery.sparkline.min.js' %}" type="text/javascript"></script>
+    <script src="{% static 'backend/assets/plugins/sparkline-chart/jquery.sparkline.min.js' %}"
+        type="text/javascript"></script>
     <script src="{% static 'backend/assets/js/chart-sparkline.js' %}" type="text/javascript"></script>
     <!-- Sidebar Graph - END -->
 
@@ -1134,6 +1162,31 @@
         </div>
     </footer>
     <!-- FOOTER END -->
+    <script>
+        // Logout with SweetAlert confirmation
+        document.addEventListener('DOMContentLoaded', function () {
+            const logoutBtn = document.getElementById('logout-btn');
+            if (logoutBtn) {
+                logoutBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout Confirmation',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, logout!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '{% url "logout" %}';
+                        }
+                    });
+                });
+            }
+        });
+    </script>
 </body>
 
 </html>

@@ -17,7 +17,9 @@ urlpatterns = [
     path('view_ra/', views.view_ra, name='view_ra'),
     path('edit_ra/<int:ra_id>/', views.edit_ra, name='edit_ra'),
     path('delete_ra/<int:ra_id>/', views.delete_ra, name='delete_ra'),
-
+    path('view_users/', views.view_users, name='view_users'),
+    path('approve_user/<int:user_id>/', views.approve_user, name='approve_user'),
+    path('reject_user/<int:user_id>/', views.reject_user, name='reject_user'),
 
 ]
 

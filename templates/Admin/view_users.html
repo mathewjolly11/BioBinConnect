@@ -1,0 +1,178 @@
+{% extends "Admin/base.html" %}
+{% load static %}
+{% block content %}
+{% if messages %}
+<script>
+    document.addEventListener('DOMContentLoaded', function () {
+        {% for message in messages %}
+        Swal.fire({
+            icon: '{{ message.tags|default:'info' }}',
+            title: '{{ message.tags|capfirst }}',
+            text: '{{ message }}',
+            timer: 2000,
+            showConfirmButton: false,
+            customClass: {
+                popup: 'swal2-bootstrap4 swal2-rounded',
+                title: 'swal2-title-custom',
+                confirmButton: 'btn btn-primary',
+                cancelButton: 'btn btn-danger'
+            },
+            buttonsStyling: false
+        });
+        {% endfor %}
+    });
+</script>
+<style>
+    .swal2-popup.swal2-bootstrap4 {
+        font-family: 'Roboto', 'Arial', sans-serif;
+        border-radius: 0.75rem;
+    }
+
+    .swal2-title-custom {
+        color: #3085d6;
+        font-weight: 600;
+    }
+</style>
+{% endif %}
+<section id="main-content">
+    <section class="wrapper main-wrapper">
+        <div class="col-lg-12">
+            <section class="box">
+                <header class="panel_header">
+                    <h2 class="title text-center">User Verification</h2>
+                </header>
+                <div class="content-body">
+                    <div class="row justify-content-center">
+                        <div class="col-md-12">
+                            <table class="table table-bordered table-hover">
+                                <thead class="thead-light">
+                                    <tr>
+                                        <th>S.No</th>
+                                        <th>Name</th>
+                                        <th>Email</th>
+                                        <th>Phone</th>
+                                        <th>Role</th>
+                                        <th>Address</th>
+                                        <th>Joined Date</th>
+                                        <th>Status</th>
+                                        <th class="text-center">Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for data in user_data %}
+                                    <tr>
+                                        <td>{{ forloop.counter }}</td>
+                                        <td>{{ data.user.name }}</td>
+                                        <td>{{ data.user.email }}</td>
+                                        <td>
+                                            {% if data.role_details %}
+                                            {{ data.role_details.phone }}
+                                            {% else %}
+                                            {{ data.user.phone|default:"N/A" }}
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            <span class="badge 
+                                                {% if data.user.role == 'household' %}badge-primary
+                                                {% elif data.user.role == 'collector' %}badge-info
+                                                {% elif data.user.role == 'compost_manager' %}badge-success
+                                                {% elif data.user.role == 'farmer' %}badge-warning
+                                                {% endif %}">
+                                                {{ data.user.get_role_display }}
+                                            </span>
+                                        </td>
+                                        <td>
+                                            {% if data.role_details %}
+                                            {{ data.role_details.address|truncatewords:5 }}
+                                            {% else %}
+                                            N/A
+                                            {% endif %}
+                                        </td>
+                                        <td>{{ data.user.date_joined|date:"M d, Y" }}</td>
+                                        <td>
+                                            {% if data.user.is_verified %}
+                                            <span class="badge badge-success">Verified</span>
+                                            {% else %}
+                                            <span class="badge badge-danger">Pending</span>
+                                            {% endif %}
+                                        </td>
+                                        <td class="text-center">
+                                            {% if data.user.is_verified %}
+                                            <a href="#" data-href="{% url 'reject_user' data.user.id %}"
+                                                class="btn btn-sm btn-warning swal-reject">Revoke</a>
+                                            {% else %}
+                                            <a href="#" data-href="{% url 'approve_user' data.user.id %}"
+                                                class="btn btn-sm btn-success swal-approve">Approve</a>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% empty %}
+                                    <tr>
+                                        <td colspan="9" class="text-center">No users found.</td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+<script>
+    // SweetAlert2 for Approve
+    document.addEventListener('DOMContentLoaded', function () {
+        document.querySelectorAll('.swal-approve').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = btn.getAttribute('data-href');
+                Swal.fire({
+                    title: 'Approve User?',
+                    text: "This user will be able to login after approval.",
+                    icon: 'question',
+                    showCancelButton: true,
+                    confirmButtonColor: '#28a745',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, approve!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+
+        // SweetAlert2 for Reject/Revoke
+        document.querySelectorAll('.swal-reject').forEach(function (btn) {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                const url = btn.getAttribute('data-href');
+                Swal.fire({
+                    title: 'Revoke Verification?',
+                    text: "This user will not be able to login until re-approved.",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonColor: '#ffc107',
+                    cancelButtonColor: '#6c757d',
+                    confirmButtonText: 'Yes, revoke!'
+                }).then((result) => {
+                    if (result.isConfirmed) {
+                        window.location.href = url;
+                    }
+                });
+            });
+        });
+    });
+</script>
+<style>
+    .badge {
+        padding: 0.5em 0.75em;
+        font-size: 0.875rem;
+    }
+
+    .table td {
+        vertical-align: middle;
+    }
+</style>
+{% endblock %}

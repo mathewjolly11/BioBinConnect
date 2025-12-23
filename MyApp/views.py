@@ -113,3 +113,62 @@ def delete_ra(request, ra_id):
     ra.delete()
     messages.success(request, 'Residents Association deleted successfully!')
     return redirect('view_ra')
+
+def view_users(request):
+    """View all users for admin verification"""
+    from GuestApp.models import CustomUser, Household, Collector, CompostManager, Farmer
+    
+    users = CustomUser.objects.exclude(is_superuser=True).select_related().order_by('-date_joined')
+    
+    # Get role-specific details for each user
+    user_data = []
+    for user in users:
+        data = {
+            'user': user,
+            'role_details': None
+        }
+        
+        if user.role == 'household':
+            try:
+                data['role_details'] = Household.objects.get(user=user)
+            except Household.DoesNotExist:
+                pass
+        elif user.role == 'collector':
+            try:
+                data['role_details'] = Collector.objects.get(user=user)
+            except Collector.DoesNotExist:
+                pass
+        elif user.role == 'compost_manager':
+            try:
+                data['role_details'] = CompostManager.objects.get(user=user)
+            except CompostManager.DoesNotExist:
+                pass
+        elif user.role == 'farmer':
+            try:
+                data['role_details'] = Farmer.objects.get(user=user)
+            except Farmer.DoesNotExist:
+                pass
+        
+        user_data.append(data)
+    
+    return render(request, 'Admin/view_users.html', {'user_data': user_data})
+
+def approve_user(request, user_id):
+    """Approve/verify a user"""
+    from GuestApp.models import CustomUser
+    
+    user = CustomUser.objects.get(id=user_id)
+    user.is_verified = True
+    user.save()
+    messages.success(request, f'User {user.name} has been approved successfully!')
+    return redirect('view_users')
+
+def reject_user(request, user_id):
+    """Reject/unverify a user"""
+    from GuestApp.models import CustomUser
+    
+    user = CustomUser.objects.get(id=user_id)
+    user.is_verified = False
+    user.save()
+    messages.warning(request, f'User {user.name} has been rejected!')
+    return redirect('view_users')
