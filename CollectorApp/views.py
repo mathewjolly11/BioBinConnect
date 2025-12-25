@@ -80,7 +80,7 @@ def view_assigned_pickups(request):
 @login_required(login_url='login')
 @never_cache
 def log_collection(request, pickup_id):
-    from MyApp.models import tbl_PickupRequest, tbl_CollectionRequest
+    from MyApp.models import tbl_PickupRequest, tbl_CollectionRequest, tbl_WasteInventory
     from CollectorApp.forms import CollectionLogForm
     from django.utils import timezone
     
@@ -99,20 +99,31 @@ def log_collection(request, pickup_id):
             collection.household = pickup_request.household
             collection.collector = collector
             collection.collection_date = timezone.now()
-            collection.status = 'Completed'
+            collection.status = 'Collected'
             
-            # Initialize other fields to 0 as per plan
+            # Keep as 0 initially - will be updated when farmers purchase or compost manager collects
             collection.farmer_supply_kg = 0
             collection.leftover_compost_kg = 0
             
             collection.save()
+            
+            # Create waste inventory for farmer purchasing
+            waste_inventory = tbl_WasteInventory.objects.create(
+                collection_request=collection,
+                collector=collector,
+                available_quantity_kg=collection.total_quantity_kg,
+                price_per_kg=10.00,  # Default price ₹10/kg
+                collection_date=timezone.now(),
+                is_available=True,
+                status='Available'
+            )
             
             # Update Pickup Request status AND actual weight
             pickup_request.status = 'Completed'
             pickup_request.actual_weight_kg = collection.total_quantity_kg  # Save actual weight
             pickup_request.save()
             
-            messages.success(request, f"Collection logged successfully! Collected {collection.total_quantity_kg} kg.")
+            messages.success(request, f"Collection logged successfully! {collection.total_quantity_kg} kg now available for farmer purchase.")
             return redirect('view_assigned_pickups')
     else:
         form = CollectionLogForm()
@@ -131,3 +142,117 @@ def collection_history(request):
     
     history = tbl_CollectionRequest.objects.filter(collector=collector).order_by('-collection_date')
     return render(request, 'Collector/collection_history.html', {'history': history})
+
+
+@login_required(login_url='login')
+@never_cache
+def collector_waste_inventory(request):
+    """View waste inventory with farmer purchase tracking"""
+    from MyApp.models import tbl_WasteInventory
+    collector = Collector.objects.get(user=request.user)
+    
+    # Get all waste inventory entries for this collector
+    inventory_list = tbl_WasteInventory.objects.filter(
+        collector=collector
+    ).select_related('collection_request').order_by('-collection_date')
+    
+    # Calculate sold amounts for each inventory
+    for inventory in inventory_list:
+        total_collected = inventory.collection_request.total_quantity_kg
+        remaining = inventory.available_quantity_kg
+        sold_to_farmers = total_collected - remaining
+        
+        inventory.sold_amount = sold_to_farmers
+        inventory.percentage_sold = (sold_to_farmers / total_collected * 100) if total_collected > 0 else 0
+        inventory.percentage_remaining = (remaining / total_collected * 100) if total_collected > 0 else 0
+    
+    context = {
+        'inventory_list': inventory_list,
+        'collector': collector
+    }
+    return render(request, 'Collector/waste_inventory.html', context)
+
+
+@login_required(login_url='login')
+@never_cache
+def collector_sales_orders(request):
+    """View farmer orders for collector's waste"""
+    from MyApp.models import tbl_FarmerSupply, tbl_PaymentTransaction
+    collector = Collector.objects.get(user=request.user)
+    
+    # Get all farmer supplies from this collector's waste
+    sales = tbl_FarmerSupply.objects.filter(
+        Collection_id__collector=collector
+    ).select_related('Farmer_id', 'Collection_id').order_by('-Supply_Date')
+    
+    context = {
+        'sales': sales,
+        'collector': collector
+    }
+    return render(request, 'Collector/sales_orders.html', context)
+
+
+@login_required(login_url='login')
+@never_cache
+def update_delivery_status(request, supply_id):
+    """Update delivery status for a farmer supply order"""
+    from MyApp.models import tbl_FarmerSupply, tbl_OrderItem
+    
+    collector = Collector.objects.get(user=request.user)
+    
+    try:
+        supply = tbl_FarmerSupply.objects.get(
+            Supply_id=supply_id,
+            Collection_id__collector=collector
+        )
+        
+        # Update delivery status based on current status
+        if supply.delivery_status == 'Pending':
+            supply.delivery_status = 'Dispatched'
+            
+            # Also update OrderItem delivery status
+            order_item = tbl_OrderItem.objects.filter(FarmerSupply_id=supply).first()
+            if order_item:
+                order_item.Delivery_Status = 'Dispatched'
+                order_item.save()
+            
+            messages.success(request, f'Order #{supply_id} marked as Dispatched!')
+            
+        elif supply.delivery_status == 'Dispatched':
+            supply.delivery_status = 'Delivered'
+            
+            # For COD, mark payment as Paid when delivered (farmer paid cash)
+            if supply.payment_status == 'Processing':
+                supply.payment_status = 'Paid'
+                
+                # Also update Order payment status
+                order_item = tbl_OrderItem.objects.filter(FarmerSupply_id=supply).first()
+                if order_item:
+                    order = order_item.Order_id
+                    order.Payment_Status = 'Paid'
+                    order.save()
+                    
+                    # Update PaymentTransaction status
+                    from MyApp.models import tbl_PaymentTransaction
+                    payment_transaction = tbl_PaymentTransaction.objects.filter(
+                        Reference_id=order.Order_id,
+                        transaction_type='WasteSale'
+                    ).first()
+                    if payment_transaction:
+                        payment_transaction.status = 'Success'
+                        payment_transaction.save()
+            
+            # Also update OrderItem delivery status
+            order_item = tbl_OrderItem.objects.filter(FarmerSupply_id=supply).first()
+            if order_item:
+                order_item.Delivery_Status = 'Delivered'
+                order_item.save()
+            
+            messages.success(request, f'Order #{supply_id} marked as Delivered!')
+        
+        supply.save()
+        
+    except tbl_FarmerSupply.DoesNotExist:
+        messages.error(request, 'Order not found or unauthorized access.')
+    
+    return redirect('collector_sales_orders')

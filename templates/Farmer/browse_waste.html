@@ -1,0 +1,90 @@
+{% extends 'Farmer/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-10 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">🌾 Browse Direct Waste</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Fresh organic waste for animal feeding</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            {% if waste_list %}
+            {% for waste in waste_list %}
+            <div class="col-md-4 mb-4">
+                <div class="de_testi bg-white p-4 rounded shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">Collector: {{ waste.collector.collector_name }}</h5>
+                        <span class="badge bg-success">Available</span>
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="mb-2">
+                            <strong>📦 Quantity:</strong>
+                            <span class="text-primary fs-4">{{ waste.available_quantity_kg }} kg</span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>💰 Price:</strong>
+                            <span class="text-success">₹{{ waste.price_per_kg }}/kg</span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>📅 Collected:</strong>
+                            {{ waste.collection_date|date:"M d, Y H:i" }}
+                        </p>
+                        <p class="mb-0">
+                            <strong>🏠 From:</strong>
+                            {{ waste.collection_request.household.household_name }}
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <h5 class="mb-0 text-primary">
+                            Total: ₹{{ waste.available_quantity_kg|floatformat:2 }}
+                        </h5>
+                        <a href="{% url 'farmer_place_order' %}?type=waste&id={{ waste.Inventory_id }}"
+                            class="btn-main btn-sm">
+                            Order Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-md-12">
+                <div class="alert alert-info text-center p-5">
+                    <h3>😔 No Waste Available</h3>
+                    <p class="lead">There's no direct waste available for purchase at the moment.</p>
+                    <p>Check back later or browse compost instead!</p>
+                    <a href="{% url 'farmer_browse_compost' %}" class="btn-main mt-3">Browse Compost</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Info Section -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="de_testi bg-light p-4 rounded">
+                    <h4>ℹ️ About Direct Waste Purchase</h4>
+                    <p>Direct waste is fresh organic waste collected from households, perfect for:</p>
+                    <ul>
+                        <li>🐄 Cattle and livestock feeding</li>
+                        <li>🐖 Pig farming</li>
+                        <li>🐓 Poultry feed supplement</li>
+                        <li>🌱 Quick composting on your farm</li>
+                    </ul>
+                    <p class="mb-0"><strong>Note:</strong> Waste is sold on a first-come, first-served basis. Order
+                        quickly to secure your supply!</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

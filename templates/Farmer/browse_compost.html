@@ -1,0 +1,108 @@
+{% extends 'Farmer/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-10 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">🍂 Browse Compost</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Premium processed compost for your farm</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            {% if compost_list %}
+            {% for compost in compost_list %}
+            <div class="col-md-4 mb-4">
+                <div class="de_testi bg-white p-4 rounded shadow-sm h-100">
+                    <div class="d-flex justify-content-between align-items-center mb-3">
+                        <h5 class="mb-0">{{ compost.Batch_name }}</h5>
+                        {% if compost.Grade == 'Premium' %}
+                        <span class="badge bg-warning text-dark">⭐ Premium</span>
+                        {% elif compost.Grade == 'Standard' %}
+                        <span class="badge bg-info">Standard</span>
+                        {% else %}
+                        <span class="badge bg-secondary">Basic</span>
+                        {% endif %}
+                    </div>
+
+                    <div class="mb-3">
+                        <p class="mb-2">
+                            <strong>📦 Stock:</strong>
+                            <span class="text-primary fs-4">{{ compost.Stock_kg }} kg</span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>💰 Price:</strong>
+                            <span class="text-success">₹{{ compost.price_per_kg }}/kg</span>
+                        </p>
+                        <p class="mb-2">
+                            <strong>📅 Produced:</strong>
+                            {{ compost.Date_Created|date:"M d, Y" }}
+                        </p>
+                        <p class="mb-2">
+                            <strong>🏭 Manager:</strong>
+                            {{ compost.CompostManager_id.compostmanager_name }}
+                        </p>
+                        <p class="mb-0">
+                            <strong>🌱 Source:</strong>
+                            {{ compost.Source_Waste_kg }} kg organic waste
+                        </p>
+                    </div>
+
+                    <hr>
+
+                    <div class="d-flex justify-content-between align-items-center">
+                        <div>
+                            <small class="text-muted">Total for all stock:</small>
+                            <h5 class="mb-0 text-primary">
+                                ₹{{ compost.Stock_kg|floatformat:2 }}
+                            </h5>
+                        </div>
+                        <a href="{% url 'farmer_place_order' %}?type=compost&id={{ compost.Batch_id }}"
+                            class="btn-main btn-sm">
+                            Order Now
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+            {% else %}
+            <div class="col-md-12">
+                <div class="alert alert-info text-center p-5">
+                    <h3>😔 No Compost Available</h3>
+                    <p class="lead">There's no processed compost available for purchase at the moment.</p>
+                    <p>Check back later or browse direct waste instead!</p>
+                    <a href="{% url 'farmer_browse_waste' %}" class="btn-main mt-3">Browse Direct Waste</a>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Grade Information -->
+        <div class="row mt-5">
+            <div class="col-md-12">
+                <div class="de_testi bg-light p-4 rounded">
+                    <h4>ℹ️ Compost Quality Grades</h4>
+                    <div class="row">
+                        <div class="col-md-4">
+                            <h5>⭐ Premium</h5>
+                            <p>Highest quality, fully decomposed, nutrient-rich. Best for vegetables and fruits.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>📘 Standard</h5>
+                            <p>Good quality, well-processed. Suitable for general farming and crops.</p>
+                        </div>
+                        <div class="col-md-4">
+                            <h5>📗 Basic</h5>
+                            <p>Entry-level compost. Good for soil conditioning and large-scale applications.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

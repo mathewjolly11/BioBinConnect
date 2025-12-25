@@ -1,0 +1,233 @@
+{% extends 'Farmer/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">💳 Complete Payment</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Choose your payment method</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <!-- Payment Method Selection -->
+                <div class="de_testi bg-white p-5 rounded shadow-sm">
+                    <div class="alert alert-success mb-4">
+                        <strong>Amount to Pay:</strong> <span class="fs-4">₹{{ order_details.total_amount }}</span>
+                    </div>
+
+                    <h5 class="mb-4">Select Payment Method</h5>
+
+                    <!-- Payment Method Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card payment-method-card" data-method="upi" style="cursor: pointer;">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-mobile fa-3x text-primary mb-3"></i>
+                                    <h5>UPI Payment</h5>
+                                    <p class="text-muted">Pay using UPI ID</p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card payment-method-card" data-method="cod" style="cursor: pointer;">
+                                <div class="card-body text-center">
+                                    <i class="fa fa-money fa-3x text-success mb-3"></i>
+                                    <h5>Cash on Delivery</h5>
+                                    <p class="text-muted">Pay to collector</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- UPI Payment Form -->
+                    <div id="upiForm" style="display: none;">
+                        <h5 class="mb-3">Enter UPI Details</h5>
+                        <div class="mb-3">
+                            <label class="form-label">UPI ID</label>
+                            <input type="text" id="upiId" class="form-control" placeholder="example@upi">
+                        </div>
+                        <div class="mb-3">
+                            <label class="form-label">UPI PIN (4 digits)</label>
+                            <input type="password" id="upiPin" class="form-control" placeholder="****" maxlength="4">
+                        </div>
+                        <button type="button" class="btn-main w-100" id="payWithUPI">
+                            <i class="fa fa-lock me-2"></i> Pay Securely
+                        </button>
+                    </div>
+
+                    <!-- COD Confirmation -->
+                    <div id="codForm" style="display: none;">
+                        <div class="alert alert-warning">
+                            <i class="fa fa-info-circle me-2"></i>
+                            <strong>Cash on Delivery Selected</strong><br>
+                            You will pay the collector when they deliver your order.
+                        </div>
+                        <button type="button" class="btn-main w-100" id="confirmCOD">
+                            <i class="fa fa-check me-2"></i> Confirm COD Payment
+                        </button>
+                    </div>
+
+                    <div class="text-center mt-3">
+                        <a href="{% url 'farmer_dashboard' %}" class="btn-line">
+                            <i class="fa fa-arrow-left me-2"></i> Cancel
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<!-- Payment Processing Modal -->
+<div class="modal fade" id="paymentModal" tabindex="-1" aria-hidden="true" data-bs-backdrop="static">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content">
+            <div class="modal-body text-center p-5">
+                <div id="processingState">
+                    <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
+                        <span class="visually-hidden">Loading...</span>
+                    </div>
+                    <h4>Processing Payment...</h4>
+                    <p class="text-muted" id="processingMessage">Please wait while we process your payment</p>
+                </div>
+                <div id="successState" style="display: none;">
+                    <i class="fa fa-check-circle text-success mb-3" style="font-size: 4rem;"></i>
+                    <h4>Payment Successful!</h4>
+                    <p class="text-muted">Your order has been placed successfully</p>
+                    <p class="text-muted">Redirecting to your orders...</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<style>
+    .payment-method-card {
+        transition: all 0.3s ease;
+        border: 2px solid #e0e0e0;
+    }
+
+    .payment-method-card:hover {
+        transform: translateY(-5px);
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+        border-color: #007bff;
+    }
+
+    .payment-method-card.selected {
+        border-color: #28a745;
+        border-width: 3px;
+        background-color: #f8f9fa;
+    }
+
+    .fa-check-circle {
+        animation: scaleIn 0.5s ease-in-out;
+    }
+
+    @keyframes scaleIn {
+        0% {
+            transform: scale(0);
+        }
+
+        50% {
+            transform: scale(1.1);
+        }
+
+        100% {
+            transform: scale(1);
+        }
+    }
+</style>
+
+<script>
+    let selectedPaymentMethod = null;
+
+    // Payment method selection
+    document.querySelectorAll('.payment-method-card').forEach(card => {
+        card.addEventListener('click', function () {
+            document.querySelectorAll('.payment-method-card').forEach(c => c.classList.remove('selected'));
+            this.classList.add('selected');
+
+            selectedPaymentMethod = this.dataset.method;
+
+            document.getElementById('upiForm').style.display = 'none';
+            document.getElementById('codForm').style.display = 'none';
+
+            if (selectedPaymentMethod === 'upi') {
+                document.getElementById('upiForm').style.display = 'block';
+            } else {
+                document.getElementById('codForm').style.display = 'block';
+            }
+        });
+    });
+
+    // UPI Payment
+    document.getElementById('payWithUPI').addEventListener('click', function () {
+        const upiId = document.getElementById('upiId').value;
+        const upiPin = document.getElementById('upiPin').value;
+
+        if (!upiId || !upiPin) {
+            alert('Please enter UPI ID and PIN');
+            return;
+        }
+
+        if (upiPin.length !== 4) {
+            alert('UPI PIN must be 4 digits');
+            return;
+        }
+
+        processPayment('UPI');
+    });
+
+    // COD Payment
+    document.getElementById('confirmCOD').addEventListener('click', function () {
+        processPayment('COD');
+    });
+
+    function processPayment(method) {
+        const modal = new bootstrap.Modal(document.getElementById('paymentModal'));
+        modal.show();
+
+        document.getElementById('processingMessage').textContent = 'Processing ' + method + ' payment...';
+
+        // Simulate payment processing (2 seconds)
+        setTimeout(function () {
+            // Call backend to create order
+            fetch('{% url "farmer_payment" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}'
+                },
+                body: JSON.stringify({
+                    payment_method: method
+                })
+            })
+                .then(response => response.json())
+                .then(data => {
+                    if (data.success) {
+                        document.getElementById('processingState').style.display = 'none';
+                        document.getElementById('successState').style.display = 'block';
+
+                        // Redirect after 2 seconds
+                        setTimeout(function () {
+                            window.location.href = '{% url "farmer_orders" %}';
+                        }, 2000);
+                    } else {
+                        alert('Payment failed: ' + data.error);
+                        modal.hide();
+                    }
+                })
+                .catch(error => {
+                    alert('Error processing payment. Please try again.');
+                    modal.hide();
+                });
+        }, 2000);
+    }
+</script>
+{% endblock %}

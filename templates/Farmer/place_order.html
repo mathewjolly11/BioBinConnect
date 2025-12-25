@@ -1,0 +1,96 @@
+{% extends 'Farmer/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="section-hero" class="no-bottom" aria-label="section">
+    <div class="d-flex align-items-center flex-col">
+        <div class="col-md-8 text-center pt-50 pb-20">
+            <h1 class="wow fadeInUp" data-wow-delay=".3s">📦 Place Order</h1>
+            <p class="lead wow fadeInUp" data-wow-delay=".4s">Complete your purchase</p>
+        </div>
+    </div>
+</section>
+
+<section id="section-content" class="no-top">
+    <div class="container">
+        <div class="row">
+            <div class="col-md-8 offset-md-2">
+                <div class="de_testi bg-white p-5 rounded shadow-sm">
+                    <h4 class="mb-4">Order Details</h4>
+
+                    <!-- Item Information -->
+                    <div class="alert alert-info">
+                        <h5>{{ item_name }}</h5>
+                        <p class="mb-2"><strong>Available:</strong> {{ available_qty }} kg</p>
+                        <p class="mb-0"><strong>Price:</strong> ₹{{ price }}/kg</p>
+                    </div>
+
+                    <!-- Order Form -->
+                    <form method="post" action="{% url 'farmer_place_order' %}" class="form-border" id="orderForm">
+                        {% csrf_token %}
+                        <input type="hidden" name="order_type" value="{{ order_type }}">
+                        <input type="hidden" name="item_id" value="{{ item_id }}">
+
+                        <div class="row">
+                            <div class="col-md-12 mb-3">
+                                <label for="quantity" class="form-label">Quantity (kg) *</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" min="1"
+                                    max="{{ available_qty }}" step="0.01" required onchange="calculateTotal()">
+                                <small class="text-muted">Maximum: {{ available_qty }} kg</small>
+                            </div>
+
+                            <div class="col-md-12 mb-3">
+                                <label for="delivery_address" class="form-label">Delivery Address *</label>
+                                <textarea class="form-control" id="delivery_address" name="delivery_address" rows="3"
+                                    required
+                                    placeholder="Enter your farm/delivery address">{{ farmer.address }}</textarea>
+                            </div>
+
+                            <!-- Total Amount Display -->
+                            <div class="col-md-12 mb-4">
+                                <div class="alert alert-success">
+                                    <h5 class="mb-0">Total Amount: ₹<span id="totalAmount">0.00</span></h5>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 text-center">
+                                <button type="submit" class="btn-main" id="submitBtn">
+                                    <i class="fa fa-arrow-right"></i> Proceed to Payment
+                                </button>
+                                <a href="{% if order_type == 'waste' %}{% url 'farmer_browse_waste' %}{% else %}{% url 'farmer_browse_compost' %}{% endif %}"
+                                    class="btn-line ms-2">
+                                    Cancel
+                                </a>
+                            </div>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+    function calculateTotal() {
+        const quantity = parseFloat(document.getElementById('quantity').value) || 0;
+        const price = parseFloat('{{ price }}');
+        const total = (quantity * price).toFixed(2);
+        document.getElementById('totalAmount').textContent = total;
+    }
+
+    // Update button text based on payment method
+    document.getElementById('payment_method').addEventListener('change', function () {
+        const btnText = document.getElementById('btnText');
+        if (this.value === 'UPI') {
+            btnText.textContent = 'Proceed to Payment';
+        } else {
+            btnText.textContent = 'Confirm Order (Pay on Delivery)';
+        }
+    });
+
+    // Calculate on page load if quantity is pre-filled
+    document.addEventListener('DOMContentLoaded', function () {
+        calculateTotal();
+    });
+</script>
+{% endblock %}

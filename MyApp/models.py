@@ -137,3 +137,182 @@ class tbl_CollectionRequest(models.Model):
     def __str__(self):
         return f"Collection {self.Request_id} - {self.household}"
 
+
+# NEW: Waste Inventory for Farmer Purchasing
+class tbl_WasteInventory(models.Model):
+    """Track available waste for farmer purchase before composting"""
+    STATUS_CHOICES = [
+        ('Available', 'Available'),
+        ('Sold', 'Sold to Farmer'),
+        ('Composting', 'Sent to Composting'),
+    ]
+    
+    Inventory_id = models.AutoField(primary_key=True)
+    collection_request = models.ForeignKey(tbl_CollectionRequest, on_delete=models.CASCADE)
+    collector = models.ForeignKey('GuestApp.Collector', on_delete=models.CASCADE)
+    available_quantity_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    price_per_kg = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)
+    collection_date = models.DateTimeField()
+    is_available = models.BooleanField(default=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Available')
+    
+    class Meta:
+        ordering = ['-collection_date']
+    
+    def __str__(self):
+        return f"Inventory {self.Inventory_id} - {self.available_quantity_kg}kg ({self.status})"
+
+
+# MODIFIED: Farmer Supply with pricing and delivery fields
+class tbl_FarmerSupply(models.Model):
+    """Track direct waste supplied to farmers for animal feeding"""
+    PAYMENT_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Paid', 'Paid'),
+    ]
+    
+    DELIVERY_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Dispatched', 'Dispatched'),
+        ('Delivered', 'Delivered'),
+    ]
+    
+    Supply_id = models.AutoField(primary_key=True)
+    Farmer_id = models.ForeignKey('GuestApp.Farmer', on_delete=models.CASCADE)
+    Collection_id = models.ForeignKey(tbl_CollectionRequest, on_delete=models.CASCADE)
+    Quantity = models.DecimalField(max_digits=10, decimal_places=2)
+    Supply_Date = models.DateTimeField(auto_now_add=True)
+    
+    # NEW FIELDS
+    unit_price = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)
+    total_amount = models.DecimalField(max_digits=10, decimal_places=2)
+    payment_status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    delivery_address = models.TextField()
+    delivery_status = models.CharField(max_length=20, choices=DELIVERY_STATUS_CHOICES, default='Pending')
+    Payment_id = models.ForeignKey('tbl_PaymentTransaction', on_delete=models.SET_NULL, null=True, blank=True)
+    
+    class Meta:
+        ordering = ['-Supply_Date']
+    
+    def __str__(self):
+        return f"Supply {self.Supply_id} - {self.Farmer_id.farmer_name} - {self.Quantity}kg"
+
+
+# MODIFIED: Compost Batch with pricing
+class tbl_CompostBatch(models.Model):
+    """Compost batches from processed waste"""
+    STATUS_CHOICES = [
+        ('Active', 'Active'),
+        ('Ready', 'Ready'),
+        ('Sold', 'Sold'),
+    ]
+    
+    GRADE_CHOICES = [
+        ('Premium', 'Premium'),
+        ('Standard', 'Standard'),
+        ('Basic', 'Basic'),
+    ]
+    
+    Batch_id = models.AutoField(primary_key=True)
+    CompostManager_id = models.ForeignKey('GuestApp.CompostManager', on_delete=models.CASCADE)
+    Batch_name = models.CharField(max_length=100)
+    Source_Waste_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    Date_Created = models.DateField()
+    Status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Active')
+    Grade = models.CharField(max_length=20, choices=GRADE_CHOICES, default='Standard')
+    Stock_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    
+    # NEW FIELD
+    price_per_kg = models.DecimalField(max_digits=10, decimal_places=2, default=15.00)
+    
+    class Meta:
+        ordering = ['-Date_Created']
+    
+    def __str__(self):
+        return f"{self.Batch_name} - {self.Grade} ({self.Stock_kg}kg @ ₹{self.price_per_kg}/kg)"
+
+
+# Order and OrderItem models
+class tbl_Order(models.Model):
+    """Orders placed by farmers for waste or compost"""
+    PAYMENT_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Paid', 'Paid'),
+    ]
+    
+    Order_id = models.AutoField(primary_key=True)
+    Buyer_id = models.ForeignKey('GuestApp.Farmer', on_delete=models.CASCADE)
+    Order_Date = models.DateTimeField(auto_now_add=True)
+    Total_Amount = models.DecimalField(max_digits=10, decimal_places=2)
+    Delivery_Address = models.TextField()
+    Payment_Status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
+    
+    class Meta:
+        ordering = ['-Order_Date']
+    
+    def __str__(self):
+        return f"Order {self.Order_id} - {self.Buyer_id.farmer_name} - ₹{self.Total_Amount}"
+
+
+# MODIFIED: OrderItem to handle both waste and compost
+class tbl_OrderItem(models.Model):
+    """Items in an order - can be compost or direct waste"""
+    ITEM_TYPE_CHOICES = [
+        ('Compost', 'Compost'),
+        ('Waste', 'Direct Waste'),
+    ]
+    
+    DELIVERY_STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Dispatched', 'Dispatched'),
+        ('Delivered', 'Delivered'),
+    ]
+    
+    Item_id = models.AutoField(primary_key=True)
+    Order_id = models.ForeignKey(tbl_Order, on_delete=models.CASCADE)
+    Item_Type = models.CharField(max_length=20, choices=ITEM_TYPE_CHOICES)
+    
+    # MODIFIED: Made nullable to support both types
+    Batch_id = models.ForeignKey(tbl_CompostBatch, on_delete=models.CASCADE, null=True, blank=True)
+    FarmerSupply_id = models.ForeignKey(tbl_FarmerSupply, on_delete=models.CASCADE, null=True, blank=True)
+    
+    Quantity_kg = models.DecimalField(max_digits=10, decimal_places=2)
+    Unit_Price = models.DecimalField(max_digits=10, decimal_places=2)
+    Delivery_Status = models.CharField(max_length=20, choices=DELIVERY_STATUS_CHOICES, default='Pending')
+    
+    def __str__(self):
+        return f"Item {self.Item_id} - {self.Item_Type} - {self.Quantity_kg}kg"
+
+
+# Payment Transaction model
+class tbl_PaymentTransaction(models.Model):
+    """Track all payment transactions"""
+    TRANSACTION_TYPE_CHOICES = [
+        ('HouseholdDaily', 'Household Daily Payment'),
+        ('CompostSale', 'Compost Sale'),
+        ('WasteSale', 'Direct Waste Sale'),
+        ('CollectorSalary', 'Collector Salary'),
+        ('ManagerFee', 'Manager Processing Fee'),
+    ]
+    
+    STATUS_CHOICES = [
+        ('Success', 'Success'),
+        ('Failed', 'Failed'),
+        ('Pending', 'Pending'),
+    ]
+    
+    Transaction_id = models.AutoField(primary_key=True)
+    Payer_id = models.ForeignKey('GuestApp.CustomUser', on_delete=models.CASCADE, related_name='payments_made')
+    Receiver_id = models.ForeignKey('GuestApp.CustomUser', on_delete=models.CASCADE, related_name='payments_received')
+    Amount = models.DecimalField(max_digits=10, decimal_places=2)
+    transaction_type = models.CharField(max_length=30, choices=TRANSACTION_TYPE_CHOICES)
+    Reference_id = models.IntegerField(null=True, blank=True)
+    transaction_date = models.DateTimeField(auto_now_add=True)
+    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Success')
+    
+    class Meta:
+        ordering = ['-transaction_date']
+    
+    def __str__(self):
+        return f"Transaction {self.Transaction_id} - {self.transaction_type} - ₹{self.Amount}"
+
