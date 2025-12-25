@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Dec 24, 2025 at 02:24 AM
+-- Generation Time: Dec 25, 2025 at 05:23 PM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -67,7 +67,7 @@ CREATE TABLE IF NOT EXISTS `auth_permission` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `auth_permission_content_type_id_codename_01ab375a_uniq` (`content_type_id`,`codename`),
   KEY `auth_permission_content_type_id_2f476e4b` (`content_type_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=77 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=101 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `auth_permission`
@@ -149,7 +149,31 @@ INSERT INTO `auth_permission` (`id`, `name`, `content_type_id`, `codename`) VALU
 (73, 'Can add tbl_ household payment', 19, 'add_tbl_householdpayment'),
 (74, 'Can change tbl_ household payment', 19, 'change_tbl_householdpayment'),
 (75, 'Can delete tbl_ household payment', 19, 'delete_tbl_householdpayment'),
-(76, 'Can view tbl_ household payment', 19, 'view_tbl_householdpayment');
+(76, 'Can view tbl_ household payment', 19, 'view_tbl_householdpayment'),
+(77, 'Can add tbl_ waste inventory', 20, 'add_tbl_wasteinventory'),
+(78, 'Can change tbl_ waste inventory', 20, 'change_tbl_wasteinventory'),
+(79, 'Can delete tbl_ waste inventory', 20, 'delete_tbl_wasteinventory'),
+(80, 'Can view tbl_ waste inventory', 20, 'view_tbl_wasteinventory'),
+(81, 'Can add tbl_ compost batch', 21, 'add_tbl_compostbatch'),
+(82, 'Can change tbl_ compost batch', 21, 'change_tbl_compostbatch'),
+(83, 'Can delete tbl_ compost batch', 21, 'delete_tbl_compostbatch'),
+(84, 'Can view tbl_ compost batch', 21, 'view_tbl_compostbatch'),
+(85, 'Can add tbl_ order', 22, 'add_tbl_order'),
+(86, 'Can change tbl_ order', 22, 'change_tbl_order'),
+(87, 'Can delete tbl_ order', 22, 'delete_tbl_order'),
+(88, 'Can view tbl_ order', 22, 'view_tbl_order'),
+(89, 'Can add tbl_ payment transaction', 23, 'add_tbl_paymenttransaction'),
+(90, 'Can change tbl_ payment transaction', 23, 'change_tbl_paymenttransaction'),
+(91, 'Can delete tbl_ payment transaction', 23, 'delete_tbl_paymenttransaction'),
+(92, 'Can view tbl_ payment transaction', 23, 'view_tbl_paymenttransaction'),
+(93, 'Can add tbl_ farmer supply', 24, 'add_tbl_farmersupply'),
+(94, 'Can change tbl_ farmer supply', 24, 'change_tbl_farmersupply'),
+(95, 'Can delete tbl_ farmer supply', 24, 'delete_tbl_farmersupply'),
+(96, 'Can view tbl_ farmer supply', 24, 'view_tbl_farmersupply'),
+(97, 'Can add tbl_ order item', 25, 'add_tbl_orderitem'),
+(98, 'Can change tbl_ order item', 25, 'change_tbl_orderitem'),
+(99, 'Can delete tbl_ order item', 25, 'delete_tbl_orderitem'),
+(100, 'Can view tbl_ order item', 25, 'view_tbl_orderitem');
 
 -- --------------------------------------------------------
 
@@ -185,7 +209,7 @@ CREATE TABLE IF NOT EXISTS `django_content_type` (
   `model` varchar(100) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `django_content_type_app_label_model_76bd3d3b_uniq` (`app_label`,`model`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=26 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_content_type`
@@ -210,7 +234,13 @@ INSERT INTO `django_content_type` (`id`, `app_label`, `model`) VALUES
 (16, 'MyApp', 'tbl_collectionrequest'),
 (17, 'MyApp', 'tbl_pickuprequest'),
 (18, 'MyApp', 'tbl_bintype'),
-(19, 'MyApp', 'tbl_householdpayment');
+(19, 'MyApp', 'tbl_householdpayment'),
+(20, 'MyApp', 'tbl_wasteinventory'),
+(21, 'MyApp', 'tbl_compostbatch'),
+(22, 'MyApp', 'tbl_order'),
+(23, 'MyApp', 'tbl_paymenttransaction'),
+(24, 'MyApp', 'tbl_farmersupply'),
+(25, 'MyApp', 'tbl_orderitem');
 
 -- --------------------------------------------------------
 
@@ -225,7 +255,7 @@ CREATE TABLE IF NOT EXISTS `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=27 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_migrations`
@@ -257,7 +287,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (23, 'MyApp', '0003_tbl_route_end_house_no_and_more', '2025-12-23 09:55:01.713535'),
 (24, 'MyApp', '0004_tbl_collectionrequest_tbl_pickuprequest', '2025-12-23 10:12:18.798038'),
 (25, 'MyApp', '0005_tbl_bintype_tbl_pickuprequest_actual_weight_kg_and_more', '2025-12-23 14:51:22.084268'),
-(26, 'MyApp', '0006_tbl_pickuprequest_payment_amount_and_more', '2025-12-23 15:37:41.708457');
+(26, 'MyApp', '0006_tbl_pickuprequest_payment_amount_and_more', '2025-12-23 15:37:41.708457'),
+(27, 'MyApp', '0007_tbl_compostbatch_tbl_farmersupply_tbl_order_and_more', '2025-12-25 16:39:22.985730');
 
 -- --------------------------------------------------------
 
@@ -279,7 +310,8 @@ CREATE TABLE IF NOT EXISTS `django_session` (
 --
 
 INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALUES
-('6cuoe2owfvb49dzwqi1bzv0db0gnsesg', '.eJxVjEEOwiAQRe_C2pDSAgMu3fcMZAamUjWQlHZlvLtt0oVu_3vvv0XAbc1ha7yEOYmrUOLyuxHGJ5cDpAeWe5WxlnWZSR6KPGmTY038up3u30HGlvfaMlCcjGdCtFFb57vBAjmAaLBHpuQZrfXdLnoDblKge5eYlSOjBxCfL_q4N_8:1vY3WW:aOqeZlGY3pLisPRsn-NHlPidLmntVXIvHAo6jZk5blg', '2026-01-06 14:38:04.881063'),
+('xcfg6avviygrmocqc6l5i5aw1zu4sqoo', '.eJxVjEEOwiAQRe_C2hCwMoBL956BTGcYqRpISrsy3l2bdKHb_977L5VwXUpae57TxOqsnDr8biPSI9cN8B3rrWlqdZmnUW-K3mnX18b5edndv4OCvXzrAcDZ7D17CoLGeBsGtngCOZIF8eAi5sEyE2EMkgXIeBeioHUGkNT7A9uxOBQ:1vYp1T:Ig1P3bKB270iYUDZD8ERNVmjiTdNS6piUGeRUX79m7A', '2026-01-08 17:21:11.428866'),
+('jxnl6rg3a1bhgif9kele0to0xh2f7it2', '.eJxVjDEOwyAUQ-_CXCEgfAgdu-cM6AOfkrYiUkimqncvkTK0ky0_22_mcd-K3xutfk7sygZ2-c0CxifVA6QH1vvC41K3dQ78qPCTNj4tiV63s_t3ULCVvhYSwqhJRcwQrSRhRwRpgKx2lBxC14zRyRhQKyOMhO5BDw41qizZ5wvbNTdy:1vYoWL:Fgz2B-PpU6cilKbwOJUDVDVexvVlWN-OkBMAVcbWx70', '2026-01-08 16:49:01.895058'),
 ('4hbbnqzqcnlks0rayfyxr0iyfffba003', '.eJxVjDEOwyAUQ-_CXCEgfAgdu-cM6AOfkrYiUkimqncvkTK0ky0_22_mcd-K3xutfk7sygZ2-c0CxifVA6QH1vvC41K3dQ78qPCTNj4tiV63s_t3ULCVvhYSwqhJRcwQrSRhRwRpgKx2lBxC14zRyRhQKyOMhO5BDw41qizZ5wvbNTdy:1vY3Vw:lR6ojEGUuOHYWW1xHbhtrOsy4RWD1HcuTd6Zla6zD5s', '2026-01-06 14:37:28.300141');
 
 -- --------------------------------------------------------
@@ -364,11 +396,11 @@ CREATE TABLE IF NOT EXISTS `guestapp_customuser` (
 --
 
 INSERT INTO `guestapp_customuser` (`id`, `password`, `last_login`, `is_superuser`, `name`, `email`, `phone`, `role`, `is_verified`, `is_active`, `is_staff`, `date_joined`) VALUES
-(1, 'pbkdf2_sha256$1200000$A72hyEnyPRmDy4Nz0XFSsQ$ythB27voBa5erUEtlUzDS1Vkb9DgWDnbZL9zt4AUoA4=', '2025-12-23 16:27:53.351024', 1, 'admin', 'admin@gmail.com', NULL, 'admin', 0, 1, 1, '2025-12-23 09:34:49.101631'),
-(2, 'pbkdf2_sha256$1200000$2wC94R4QjwPKyedhI2uPHD$SikQV7Dug0/WF3qY+TvdmVu9yGd+PK168dWgV8egK88=', '2025-12-23 14:36:58.891223', 0, 'Sonit Jolly', 'sonit@gmail.com', '9447512454', 'household', 1, 1, 0, '2025-12-23 09:36:49.630503'),
-(3, 'pbkdf2_sha256$1200000$7Y8Pp0EWeEZoHuBsfjvrHh$bGwkT/6SJSmhbF3WSlzvTFbJamRHkophyw5paCmdDzg=', '2025-12-23 14:37:28.298663', 0, 'Jibin Jino', 'jibin@gmail.com', '9685748574', 'collector', 1, 1, 0, '2025-12-23 09:37:33.449651'),
+(1, 'pbkdf2_sha256$1200000$A72hyEnyPRmDy4Nz0XFSsQ$ythB27voBa5erUEtlUzDS1Vkb9DgWDnbZL9zt4AUoA4=', '2025-12-25 16:14:32.518808', 1, 'admin', 'admin@gmail.com', NULL, 'admin', 0, 1, 1, '2025-12-23 09:34:49.101631'),
+(2, 'pbkdf2_sha256$1200000$2wC94R4QjwPKyedhI2uPHD$SikQV7Dug0/WF3qY+TvdmVu9yGd+PK168dWgV8egK88=', '2025-12-25 16:51:31.171509', 0, 'Sonit Jolly', 'sonit@gmail.com', '9447512454', 'household', 1, 1, 0, '2025-12-23 09:36:49.630503'),
+(3, 'pbkdf2_sha256$1200000$7Y8Pp0EWeEZoHuBsfjvrHh$bGwkT/6SJSmhbF3WSlzvTFbJamRHkophyw5paCmdDzg=', '2025-12-25 16:49:01.893078', 0, 'Jibin Jino', 'jibin@gmail.com', '9685748574', 'collector', 1, 1, 0, '2025-12-23 09:37:33.449651'),
 (4, 'pbkdf2_sha256$1200000$B85Cr7bFLbNc59jWZQIq3Y$TNzcshBNlMfjiQ5gcijIMKGEHWhjjaE7BTL7+dRZXHI=', NULL, 0, 'Rohit P Rajeev', 'rohit@gmail.com', '7548757412', 'compost_manager', 1, 1, 0, '2025-12-23 09:38:23.782225'),
-(5, 'pbkdf2_sha256$1200000$SZpxM8tnysTZHTWgCaog9r$E2vb3m09Qccdw2cxHiGh1qql4kc6mk7LwuoyNtpEiAM=', '2025-12-23 09:39:34.782301', 0, 'Jolly Varkey', 'jolly@gmail.com', '9447613494', 'farmer', 1, 1, 0, '2025-12-23 09:38:54.169177');
+(5, 'pbkdf2_sha256$1200000$SZpxM8tnysTZHTWgCaog9r$E2vb3m09Qccdw2cxHiGh1qql4kc6mk7LwuoyNtpEiAM=', '2025-12-25 16:57:47.387898', 0, 'Jolly Varkey', 'jolly@gmail.com', '9447613494', 'farmer', 1, 1, 0, '2025-12-23 09:38:54.169177');
 
 -- --------------------------------------------------------
 
@@ -505,7 +537,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_collectionrequest` (
   PRIMARY KEY (`Request_id`),
   KEY `MyApp_tbl_collectionrequest_collector_id_88ddd704` (`collector_id`),
   KEY `MyApp_tbl_collectionrequest_household_id_5b80e140` (`household_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=10 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_collectionrequest`
@@ -519,7 +551,8 @@ INSERT INTO `myapp_tbl_collectionrequest` (`Request_id`, `total_quantity_kg`, `f
 (5, 25.00, 0.00, 0.00, '2025-12-23 15:53:02.152036', 'Completed', 1, 1),
 (6, 25.00, 0.00, 0.00, '2025-12-23 16:03:36.746796', 'Completed', 1, 1),
 (7, 22.00, 0.00, 0.00, '2025-12-23 16:04:46.089894', 'Completed', 1, 1),
-(8, 25.00, 0.00, 0.00, '2025-12-23 16:10:44.410132', 'Completed', 1, 1);
+(8, 25.00, 0.00, 0.00, '2025-12-23 16:10:44.410132', 'Completed', 1, 1),
+(9, 50.00, 0.00, 0.00, '2025-12-25 16:52:21.173191', 'Collected', 1, 1);
 
 -- --------------------------------------------------------
 
@@ -552,6 +585,27 @@ INSERT INTO `myapp_tbl_collectorassignment` (`Assign_id`, `day_of_week`, `collec
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `myapp_tbl_compostbatch`
+--
+
+DROP TABLE IF EXISTS `myapp_tbl_compostbatch`;
+CREATE TABLE IF NOT EXISTS `myapp_tbl_compostbatch` (
+  `Batch_id` int NOT NULL AUTO_INCREMENT,
+  `Batch_name` varchar(100) NOT NULL,
+  `Source_Waste_kg` decimal(10,2) NOT NULL,
+  `Date_Created` date NOT NULL,
+  `Status` varchar(20) NOT NULL,
+  `Grade` varchar(20) NOT NULL,
+  `Stock_kg` decimal(10,2) NOT NULL,
+  `price_per_kg` decimal(10,2) NOT NULL,
+  `CompostManager_id_id` bigint NOT NULL,
+  PRIMARY KEY (`Batch_id`),
+  KEY `MyApp_tbl_compostbatch_CompostManager_id_id_e3bd5a89` (`CompostManager_id_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `myapp_tbl_district`
 --
 
@@ -572,6 +626,39 @@ INSERT INTO `myapp_tbl_district` (`District_id`, `District_Name`) VALUES
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `myapp_tbl_farmersupply`
+--
+
+DROP TABLE IF EXISTS `myapp_tbl_farmersupply`;
+CREATE TABLE IF NOT EXISTS `myapp_tbl_farmersupply` (
+  `Supply_id` int NOT NULL AUTO_INCREMENT,
+  `Quantity` decimal(10,2) NOT NULL,
+  `Supply_Date` datetime(6) NOT NULL,
+  `unit_price` decimal(10,2) NOT NULL,
+  `total_amount` decimal(10,2) NOT NULL,
+  `payment_status` varchar(20) NOT NULL,
+  `delivery_address` longtext NOT NULL,
+  `delivery_status` varchar(20) NOT NULL,
+  `Collection_id_id` int NOT NULL,
+  `Farmer_id_id` bigint NOT NULL,
+  `Payment_id_id` int DEFAULT NULL,
+  PRIMARY KEY (`Supply_id`),
+  KEY `MyApp_tbl_farmersupply_Collection_id_id_aca48a68` (`Collection_id_id`),
+  KEY `MyApp_tbl_farmersupply_Farmer_id_id_1ea4de25` (`Farmer_id_id`),
+  KEY `MyApp_tbl_farmersupply_Payment_id_id_d523fbbd` (`Payment_id_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `myapp_tbl_farmersupply`
+--
+
+INSERT INTO `myapp_tbl_farmersupply` (`Supply_id`, `Quantity`, `Supply_Date`, `unit_price`, `total_amount`, `payment_status`, `delivery_address`, `delivery_status`, `Collection_id_id`, `Farmer_id_id`, `Payment_id_id`) VALUES
+(5, 12.00, '2025-12-25 17:21:11.422293', 10.00, 120.00, 'Paid', 'Anachalil(H), Mariyilkalunku,\r\nAVJ FARM\r\nthodupuzha', 'Delivered', 9, 1, NULL),
+(4, 10.00, '2025-12-25 17:17:43.777527', 10.00, 100.00, 'Paid', 'Anachalil(H), Mariyilkalunku,\r\nAVJ FARM\r\nthodupuzha', 'Delivered', 9, 1, NULL);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `myapp_tbl_householdpayment`
 --
 
@@ -588,13 +675,14 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_householdpayment` (
   PRIMARY KEY (`Payment_id`),
   KEY `MyApp_tbl_householdpayment_bin_type_id_3cafb6d7` (`bin_type_id`),
   KEY `MyApp_tbl_householdpayment_household_id_b64e5a6c` (`household_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=14 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_householdpayment`
 --
 
 INSERT INTO `myapp_tbl_householdpayment` (`Payment_id`, `amount`, `payment_date`, `payment_for_date`, `status`, `transaction_id`, `bin_type_id`, `household_id`) VALUES
+(14, 100.00, '2025-12-25 16:51:58.606213', '2025-12-25', 'Completed', 'TXN1766681518454', 2, 1),
 (13, 100.00, '2025-12-23 16:10:27.825950', '2025-12-31', 'Completed', 'TXN1766506227600', 2, 1),
 (12, 50.00, '2025-12-23 16:04:11.328070', '2025-12-24', 'Completed', 'TXN1766505851952', 1, 1),
 (11, 100.00, '2025-12-23 16:02:43.170513', '2025-12-23', 'Completed', 'TXN1766505763679', 2, 1);
@@ -625,6 +713,91 @@ INSERT INTO `myapp_tbl_location` (`Location_id`, `Ward_No`, `Ward_Name`, `Distri
 -- --------------------------------------------------------
 
 --
+-- Table structure for table `myapp_tbl_order`
+--
+
+DROP TABLE IF EXISTS `myapp_tbl_order`;
+CREATE TABLE IF NOT EXISTS `myapp_tbl_order` (
+  `Order_id` int NOT NULL AUTO_INCREMENT,
+  `Order_Date` datetime(6) NOT NULL,
+  `Total_Amount` decimal(10,2) NOT NULL,
+  `Delivery_Address` longtext NOT NULL,
+  `Payment_Status` varchar(20) NOT NULL,
+  `Buyer_id_id` bigint NOT NULL,
+  PRIMARY KEY (`Order_id`),
+  KEY `MyApp_tbl_order_Buyer_id_id_b41f89ef` (`Buyer_id_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `myapp_tbl_order`
+--
+
+INSERT INTO `myapp_tbl_order` (`Order_id`, `Order_Date`, `Total_Amount`, `Delivery_Address`, `Payment_Status`, `Buyer_id_id`) VALUES
+(5, '2025-12-25 17:21:11.422884', 120.00, 'Anachalil(H), Mariyilkalunku,\r\nAVJ FARM\r\nthodupuzha', 'Paid', 1),
+(4, '2025-12-25 17:17:43.778275', 100.00, 'Anachalil(H), Mariyilkalunku,\r\nAVJ FARM\r\nthodupuzha', 'Paid', 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `myapp_tbl_orderitem`
+--
+
+DROP TABLE IF EXISTS `myapp_tbl_orderitem`;
+CREATE TABLE IF NOT EXISTS `myapp_tbl_orderitem` (
+  `Item_id` int NOT NULL AUTO_INCREMENT,
+  `Item_Type` varchar(20) NOT NULL,
+  `Quantity_kg` decimal(10,2) NOT NULL,
+  `Unit_Price` decimal(10,2) NOT NULL,
+  `Delivery_Status` varchar(20) NOT NULL,
+  `Batch_id_id` int DEFAULT NULL,
+  `FarmerSupply_id_id` int DEFAULT NULL,
+  `Order_id_id` int NOT NULL,
+  PRIMARY KEY (`Item_id`),
+  KEY `MyApp_tbl_orderitem_Batch_id_id_8f85e1a6` (`Batch_id_id`),
+  KEY `MyApp_tbl_orderitem_FarmerSupply_id_id_b271a2ac` (`FarmerSupply_id_id`),
+  KEY `MyApp_tbl_orderitem_Order_id_id_95f4d1a6` (`Order_id_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `myapp_tbl_orderitem`
+--
+
+INSERT INTO `myapp_tbl_orderitem` (`Item_id`, `Item_Type`, `Quantity_kg`, `Unit_Price`, `Delivery_Status`, `Batch_id_id`, `FarmerSupply_id_id`, `Order_id_id`) VALUES
+(5, 'Waste', 12.00, 10.00, 'Delivered', NULL, 5, 5),
+(4, 'Waste', 10.00, 10.00, 'Delivered', NULL, 4, 4);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `myapp_tbl_paymenttransaction`
+--
+
+DROP TABLE IF EXISTS `myapp_tbl_paymenttransaction`;
+CREATE TABLE IF NOT EXISTS `myapp_tbl_paymenttransaction` (
+  `Transaction_id` int NOT NULL AUTO_INCREMENT,
+  `Amount` decimal(10,2) NOT NULL,
+  `transaction_type` varchar(30) NOT NULL,
+  `Reference_id` int DEFAULT NULL,
+  `transaction_date` datetime(6) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `Payer_id_id` bigint NOT NULL,
+  `Receiver_id_id` bigint NOT NULL,
+  PRIMARY KEY (`Transaction_id`),
+  KEY `MyApp_tbl_paymenttransaction_Payer_id_id_76eabc0d` (`Payer_id_id`),
+  KEY `MyApp_tbl_paymenttransaction_Receiver_id_id_bcd281c9` (`Receiver_id_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=6 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `myapp_tbl_paymenttransaction`
+--
+
+INSERT INTO `myapp_tbl_paymenttransaction` (`Transaction_id`, `Amount`, `transaction_type`, `Reference_id`, `transaction_date`, `status`, `Payer_id_id`, `Receiver_id_id`) VALUES
+(5, 120.00, 'WasteSale', 5, '2025-12-25 17:21:11.428225', 'Success', 5, 3),
+(4, 100.00, 'WasteSale', 4, '2025-12-25 17:17:43.783699', 'Success', 5, 3);
+
+-- --------------------------------------------------------
+
+--
 -- Table structure for table `myapp_tbl_pickuprequest`
 --
 
@@ -649,13 +822,14 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_pickuprequest` (
   KEY `MyApp_tbl_pickuprequest_household_id_071f0928` (`household_id`),
   KEY `MyApp_tbl_pickuprequest_bin_type_id_94b84ff5` (`bin_type_id`),
   KEY `MyApp_tbl_pickuprequest_payment_id_74a31eed` (`payment_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=18 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=19 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_pickuprequest`
 --
 
 INSERT INTO `myapp_tbl_pickuprequest` (`Pickup_id`, `scheduled_date`, `request_time`, `status`, `assigned_collector_id`, `household_id`, `actual_weight_kg`, `bin_type_id`, `payment_id`, `payment_amount`, `payment_date`, `payment_method`, `payment_status`, `transaction_id`) VALUES
+(18, '2025-12-25', '15:03:00.000000', 'Completed', 1, 1, 50.00, 2, 14, 100.00, '2025-12-25 16:51:58.608999', 'UPI', 'Completed', 'TXN1766681518454'),
 (17, '2025-12-31', '22:12:00.000000', 'Completed', 1, 1, 25.00, 2, 13, 100.00, '2025-12-23 16:10:27.826866', 'UPI', 'Completed', 'TXN1766506227600'),
 (16, '2025-12-24', '00:00:00.000000', 'Completed', 1, 1, 22.00, 1, 12, 50.00, '2025-12-23 16:04:11.329422', 'COD', 'Completed', 'TXN1766505851952'),
 (15, '2025-12-23', '23:01:00.000000', 'Completed', 1, 1, 25.00, 2, 11, 100.00, '2025-12-23 16:02:43.172711', 'COD', 'Completed', 'TXN1766505763679');
@@ -708,6 +882,34 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_route` (
 
 INSERT INTO `myapp_tbl_route` (`Route_id`, `name`, `location_id`, `end_house_no`, `residents_association_id`, `start_house_no`) VALUES
 (1, 'A', 1, 3, 1, 1);
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `myapp_tbl_wasteinventory`
+--
+
+DROP TABLE IF EXISTS `myapp_tbl_wasteinventory`;
+CREATE TABLE IF NOT EXISTS `myapp_tbl_wasteinventory` (
+  `Inventory_id` int NOT NULL AUTO_INCREMENT,
+  `available_quantity_kg` decimal(10,2) NOT NULL,
+  `price_per_kg` decimal(10,2) NOT NULL,
+  `collection_date` datetime(6) NOT NULL,
+  `is_available` tinyint(1) NOT NULL,
+  `status` varchar(20) NOT NULL,
+  `collection_request_id` int NOT NULL,
+  `collector_id` bigint NOT NULL,
+  PRIMARY KEY (`Inventory_id`),
+  KEY `MyApp_tbl_wasteinventory_collection_request_id_55fad03c` (`collection_request_id`),
+  KEY `MyApp_tbl_wasteinventory_collector_id_b3275b51` (`collector_id`)
+) ENGINE=MyISAM AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+
+--
+-- Dumping data for table `myapp_tbl_wasteinventory`
+--
+
+INSERT INTO `myapp_tbl_wasteinventory` (`Inventory_id`, `available_quantity_kg`, `price_per_kg`, `collection_date`, `is_available`, `status`, `collection_request_id`, `collector_id`) VALUES
+(1, 28.00, 10.00, '2025-12-25 16:52:21.174149', 1, 'Available', 9, 1);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
