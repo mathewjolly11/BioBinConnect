@@ -84,33 +84,16 @@
                             <div class="de-flex-col header-col-mid">
                                 <!-- mainemenu begin -->
                                 <ul id="mainmenu">
-                                    <li><a class="menu-item" href="{% url 'guest_index' %}">Home</a>
-                                        <!-- <ul>
-                                            <li><a href="index.html">Homepage 1</a></li>
-                                            <li><a href="homepage-2.html">Homepage 2</a></li>
-                                            <li><a href="homepage-3.html">Homepage 3</a></li>
-                                            <li><a href="homepage-4.html">Homepage 4</a></li>
-                                        </ul> -->
+                                    <li><a class="menu-item" href="{% url 'compost_manager_dashboard' %}">Dashboard</a>
                                     </li>
-                                    <li><a class="menu-item" href="services.html">Services</a>
+                                    <li><a class="menu-item" href="{% url 'waste_inventory' %}">Waste Inventory</a></li>
+                                    <li><a class="menu-item" href="#">Compost Batches</a>
                                         <ul>
-                                            <li><a href="services.html">All Services Style 1</a></li>
-                                            <li><a href="services-2.html">All Services Style 2</a></li>
-                                            <li><a href="service-single.html">Service Single</a></li>
-                                            <li><a href="pricing-table.html">Pricing Table</a></li>
-                                            <li><a href="faq.html">FAQ</a></li>
+                                            <li><a href="{% url 'create_batch' %}">Create New Batch</a></li>
+                                            <li><a href="{% url 'manage_batches' %}">Manage Batches</a></li>
                                         </ul>
                                     </li>
-                                    <li><a class="menu-item" href="projects.html">Projects</a></li>
-                                    <li><a class="menu-item" href="#">Company</a>
-                                        <ul>
-                                            <li><a href="about.html">About Us</a></li>
-                                            <li><a href="team.html">Our Team</a></li>
-                                            <li><a href="gallery.html">Gallery</a></li>
-                                        </ul>
-                                    </li>
-                                    <li><a class="menu-item" href="blog.html">Blog</a></li>
-                                    <li><a class="menu-item" href="contact.html">Contact</a></li>
+                                    <li><a class="menu-item" href="{% url 'guest_index' %}">About</a></li>
                                 </ul>
                                 <!-- mainmenu end -->
                             </div>
@@ -273,6 +256,9 @@
 
     <!-- Javascript Files
     ================================================== -->
+    <!-- Bootstrap 5 JS Bundle (includes Popper) -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
     <script src="{% static 'frontend/js/plugins.js' %}"></script>
     <script src="{% static 'frontend/js/designesia.js' %}"></script>
     <script src="{% static 'frontend/js/swiper.js' %}"></script>

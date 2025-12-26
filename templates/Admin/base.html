@@ -11,7 +11,7 @@
         -->
     <meta http-equiv="content-type" content="text/html;charset=UTF-8" />
     <meta charset="utf-8" />
-    <title>Ultra Admin Bootstrap 4 : Dashboard</title>
+    <title>BioBin Admin Dashboard</title>
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
     <meta content="" name="description" />
     <meta content="" name="author" />
@@ -570,10 +570,35 @@
                         </a>
                         <ul class="sub-menu">
                             <li>
-                                <a class="" href="{% url 'payment_report' %}">Payment Report</a>
+                                <a class="" href="{% url 'admin_reports' %}">📊 Analytics Dashboard</a>
+                            </li>
+                            <li>
+                                <a class="" href="{% url 'payment_transactions' %}">💳 Payment Transactions</a>
+                            </li>
+                            <li>
+                                <a class="" href="{% url 'manager_salaries' %}">💼 Manager Salaries</a>
+                            </li>
+                            <li>
+                                <a class="" href="{% url 'payment_report' %}">🏠 Household Payments</a>
                             </li>
                         </ul>
                     </li>
+                    <li class="">
+                        <a href="javascript:;">
+                            <i class="fa fa-shopping-cart"></i>
+                            <span class="title">Sales Management</span>
+                            <span class="arrow "></span>
+                        </a>
+                        <ul class="sub-menu">
+                            <li>
+                                <a class="" href="{% url 'admin_waste_sales' %}">Waste Sales</a>
+                            </li>
+                            <li>
+                                <a class="" href="{% url 'admin_compost_sales' %}">Compost Sales</a>
+                            </li>
+                        </ul>
+                    </li>
+                    <!-- Reports & Analytics moved to Reports submenu above -->
                     <!-- <li class="">
                         <a href="javascript:;">
                             <i class="fa fa-suitcase"></i>

@@ -33,10 +33,19 @@
 
                         <div class="row">
                             <div class="col-md-12 mb-3">
+                                {% if order_type == 'compost' %}
+                                <label for="quantity" class="form-label">Number of Packets (1kg each) *</label>
+                                <input type="number" class="form-control" id="quantity" name="quantity" min="1"
+                                    max="{{ available_qty|floatformat:0 }}" step="1" value="1" required
+                                    onchange="calculateTotal()">
+                                <small class="text-muted">Maximum: {{
+                                    available_qty|floatformat:0 }} packets available</small>
+                                {% else %}
                                 <label for="quantity" class="form-label">Quantity (kg) *</label>
                                 <input type="number" class="form-control" id="quantity" name="quantity" min="1"
                                     max="{{ available_qty }}" step="0.01" required onchange="calculateTotal()">
                                 <small class="text-muted">Maximum: {{ available_qty }} kg</small>
+                                {% endif %}
                             </div>
 
                             <div class="col-md-12 mb-3">
@@ -49,6 +58,17 @@
                             <!-- Total Amount Display -->
                             <div class="col-md-12 mb-4">
                                 <div class="alert alert-success">
+                                    {% if order_type == 'compost' %}
+                                    <div class="row">
+                                        <div class="col-6">
+                                            <strong>Packets:</strong> <span id="packetCount">1</span> × 1kg
+                                        </div>
+                                        <div class="col-6">
+                                            <strong>@ ₹200/packet</strong>
+                                        </div>
+                                    </div>
+                                    <hr class="my-2">
+                                    {% endif %}
                                     <h5 class="mb-0">Total Amount: ₹<span id="totalAmount">0.00</span></h5>
                                 </div>
                             </div>
@@ -71,24 +91,21 @@
 </section>
 
 <script>
+    const orderType = '{{ order_type }}';
+    const price = parseFloat('{{ price }}');
+
     function calculateTotal() {
         const quantity = parseFloat(document.getElementById('quantity').value) || 0;
-        const price = parseFloat('{{ price }}');
         const total = (quantity * price).toFixed(2);
         document.getElementById('totalAmount').textContent = total;
+
+        // Update packet count for compost orders
+        if (orderType === 'compost') {
+            document.getElementById('packetCount').textContent = Math.floor(quantity);
+        }
     }
 
-    // Update button text based on payment method
-    document.getElementById('payment_method').addEventListener('change', function () {
-        const btnText = document.getElementById('btnText');
-        if (this.value === 'UPI') {
-            btnText.textContent = 'Proceed to Payment';
-        } else {
-            btnText.textContent = 'Confirm Order (Pay on Delivery)';
-        }
-    });
-
-    // Calculate on page load if quantity is pre-filled
+    // Calculate on page load
     document.addEventListener('DOMContentLoaded', function () {
         calculateTotal();
     });

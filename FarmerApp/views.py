@@ -71,16 +71,23 @@ def delete_account(request):
 def farmer_browse_waste(request):
     """Browse available direct waste for animal feeding"""
     from MyApp.models import tbl_WasteInventory
+    from django.db.models import Sum
     
-    # Get available waste inventory
+    # Get all available waste and aggregate
     available_waste = tbl_WasteInventory.objects.filter(
         is_available=True,
         available_quantity_kg__gt=0,
         status='Available'
-    ).select_related('collector', 'collection_request').order_by('-collection_date')
+    )
+    
+    # Calculate totals
+    total_stock = available_waste.aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+    batch_count = available_waste.count()
     
     context = {
-        'waste_list': available_waste
+        'total_stock': total_stock,
+        'batch_count': batch_count,
+        'has_stock': total_stock > 0
     }
     return render(request, 'Farmer/browse_waste.html', context)
 
@@ -90,15 +97,26 @@ def farmer_browse_waste(request):
 def farmer_browse_compost(request):
     """Browse available processed compost for fertilizer"""
     from MyApp.models import tbl_CompostBatch
+    from django.db.models import Sum
     
-    # Get available compost batches
-    available_compost = tbl_CompostBatch.objects.filter(
+    # Get all available compost batches and aggregate total stock
+    available_batches = tbl_CompostBatch.objects.filter(
         Stock_kg__gt=0,
         Status='Ready'
-    ).select_related('CompostManager_id').order_by('-Date_Created')
+    )
+    
+    # Calculate total available stock across all batches
+    total_stock = available_batches.aggregate(total=Sum('Stock_kg'))['total'] or 0
+    batch_count = available_batches.count()
+    
+    # Get the most recent batch for display info
+    latest_batch = available_batches.order_by('-Date_Created').first() if available_batches.exists() else None
     
     context = {
-        'compost_list': available_compost
+        'total_stock': total_stock,
+        'batch_count': batch_count,
+        'latest_batch': latest_batch,
+        'has_stock': total_stock > 0
     }
     return render(request, 'Farmer/browse_compost.html', context)
 
@@ -143,53 +161,45 @@ def farmer_place_order(request):
                 return redirect('farmer_payment')
                 
             elif order_type == 'compost':
-                # Order compost
-                batch = tbl_CompostBatch.objects.get(Batch_id=item_id)
+                # Order compost - handle both single batch and combined stock
+                if item_id == 'all':
+                    # Combined compost from all batches
+                    from django.db.models import Sum
+                    available_batches = tbl_CompostBatch.objects.filter(
+                        Stock_kg__gt=0,
+                        Status='Ready'
+                    )
+                    total_stock = available_batches.aggregate(total=Sum('Stock_kg'))['total'] or 0
+                    
+                    # Validate quantity
+                    if quantity > total_stock:
+                        messages.error(request, f'Only {total_stock}kg available!')
+                        return redirect('farmer_browse_compost')
+                    
+                    unit_price = 200  # Fixed price
+                else:
+                    # Single batch order
+                    batch = tbl_CompostBatch.objects.get(Batch_id=item_id)
+                    
+                    # Validate quantity
+                    if quantity > batch.Stock_kg:
+                        messages.error(request, f'Only {batch.Stock_kg}kg available!')
+                        return redirect('farmer_browse_compost')
+                    
+                    unit_price = batch.price_per_kg
                 
-                # Validate quantity
-                if quantity > batch.Stock_kg:
-                    messages.error(request, f'Only {batch.Stock_kg}kg available!')
-                    return redirect('farmer_browse_compost')
-                
-                unit_price = batch.price_per_kg
                 total_amount = quantity * unit_price
                 
-                # Create Order
-                order = tbl_Order.objects.create(
-                    Buyer_id=farmer,
-                    Total_Amount=total_amount,
-                    Delivery_Address=delivery_address,
-                    Payment_Status='Pending' if payment_method == 'COD' else 'Paid'
-                )
-                
-                # Create OrderItem
-                order_item = tbl_OrderItem.objects.create(
-                    Order_id=order,
-                    Item_Type='Compost',
-                    Batch_id=batch,
-                    Quantity_kg=quantity,
-                    Unit_Price=unit_price,
-                    Delivery_Status='Pending'
-                )
-                
-                # Update batch stock
-                batch.Stock_kg -= quantity
-                if batch.Stock_kg == 0:
-                    batch.Status = 'Sold'
-                batch.save()
-                
-                # Create payment transaction
-                tbl_PaymentTransaction.objects.create(
-                    Payer_id=request.user,
-                    Receiver_id=batch.CompostManager_id.user,
-                    Amount=total_amount,
-                    transaction_type='CompostSale',
-                    Reference_id=order.Order_id,
-                    status='Pending' if payment_method == 'COD' else 'Success'
-                )
-                
-                messages.success(request, f'Order placed successfully! Order ID: {order.Order_id}')
-                return redirect('farmer_orders')
+                # Store order details in session for payment processing
+                request.session['pending_order'] = {
+                    'order_type': 'compost',
+                    'item_id': item_id,
+                    'quantity': str(quantity),
+                    'delivery_address': delivery_address,
+                    'total_amount': str(total_amount),
+                    'unit_price': str(unit_price)
+                }
+                return redirect('farmer_payment')
                 
         except Exception as e:
             messages.error(request, f'Error placing order: {str(e)}')
@@ -200,15 +210,43 @@ def farmer_place_order(request):
     item_id = request.GET.get('id')
     
     if order_type == 'waste':
-        item = tbl_WasteInventory.objects.get(Inventory_id=item_id)
-        item_name = f"Direct Waste from {item.collector.collector_name}"
-        available_qty = item.available_quantity_kg
-        price = item.price_per_kg
+        if item_id == 'all':
+            # Combined waste from all collections
+            from django.db.models import Sum
+            available_waste = tbl_WasteInventory.objects.filter(
+                is_available=True,
+                available_quantity_kg__gt=0,
+                status='Available'
+            )
+            total_stock = available_waste.aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+            
+            item_name = "Fresh Organic Waste for Animal Feed"
+            available_qty = total_stock
+            price = 10  # Fixed price ₹10/kg
+            item_id = 'all'  # Keep as 'all' for processing
+        else:
+            item = tbl_WasteInventory.objects.get(Inventory_id=item_id)
+            item_name = f"Direct Waste from {item.collector.collector_name}"
+            available_qty = item.available_quantity_kg
+            price = item.price_per_kg
     elif order_type == 'compost':
-        item = tbl_CompostBatch.objects.get(Batch_id=item_id)
-        item_name = f"{item.Batch_name} - {item.Grade} Compost"
-        available_qty = item.Stock_kg
-        price = item.price_per_kg
+        if item_id == 'all':
+            # Combined compost from all batches
+            from django.db.models import Sum
+            total_stock = tbl_CompostBatch.objects.filter(
+                Stock_kg__gt=0,
+                Status='Ready'
+            ).aggregate(total=Sum('Stock_kg'))['total'] or 0
+            
+            item_name = "Premium Organic Compost - Grade A"
+            available_qty = total_stock
+            price = 200  # Fixed price
+            item_id = 'all'  # Keep as 'all' for processing
+        else:
+            item = tbl_CompostBatch.objects.get(Batch_id=item_id)
+            item_name = f"{item.Batch_name} - Standard Compost"
+            available_qty = item.Stock_kg
+            price = item.price_per_kg
     else:
         return redirect('farmer_dashboard')
     
@@ -335,6 +373,96 @@ def farmer_payment(request):
                 Reference_id=order.Order_id,
                 status='Success'  # Payment completed
             )
+        
+        elif order_type == 'compost':
+            # Handle compost orders - both single batch and combined stock
+            if item_id == 'all':
+                # Combined compost from multiple batches
+                # Create Order first
+                order = tbl_Order.objects.create(
+                    Buyer_id=farmer,
+                    Total_Amount=total_amount,
+                    Delivery_Address=delivery_address,
+                    Payment_Status='Paid'
+                )
+                
+                # Deduct from batches in order (FIFO)
+                remaining_qty = quantity
+                batches = tbl_CompostBatch.objects.filter(
+                    Stock_kg__gt=0,
+                    Status='Ready'
+                ).order_by('Date_Created')
+                
+                for batch in batches:
+                    if remaining_qty <= 0:
+                        break
+                    
+                    deduct_qty = min(remaining_qty, batch.Stock_kg)
+                    
+                    # Create OrderItem for this batch
+                    tbl_OrderItem.objects.create(
+                        Order_id=order,
+                        Item_Type='Compost',
+                        Batch_id=batch,
+                        Quantity_kg=deduct_qty,
+                        Unit_Price=unit_price,
+                        Delivery_Status='Pending'
+                    )
+                    
+                    # Update batch stock
+                    batch.Stock_kg -= deduct_qty
+                    if batch.Stock_kg == 0:
+                        batch.Status = 'Sold'
+                    batch.save()
+                    
+                    remaining_qty -= deduct_qty
+                
+                # Create single payment transaction for combined order
+                tbl_PaymentTransaction.objects.create(
+                    Payer_id=request.user,
+                    Receiver_id=request.user,  # Admin handles all sales
+                    Amount=total_amount,
+                    transaction_type='CompostSale',
+                    Reference_id=order.Order_id,
+                    status='Success'
+                )
+            else:
+                # Single batch order
+                batch = tbl_CompostBatch.objects.get(Batch_id=item_id)
+                
+                # Create Order
+                order = tbl_Order.objects.create(
+                    Buyer_id=farmer,
+                    Total_Amount=total_amount,
+                    Delivery_Address=delivery_address,
+                    Payment_Status='Paid'
+                )
+                
+                # Create OrderItem
+                tbl_OrderItem.objects.create(
+                    Order_id=order,
+                    Item_Type='Compost',
+                    Batch_id=batch,
+                    Quantity_kg=quantity,
+                    Unit_Price=unit_price,
+                    Delivery_Status='Pending'
+                )
+                
+                # Update batch stock
+                batch.Stock_kg -= quantity
+                if batch.Stock_kg == 0:
+                    batch.Status = 'Sold'
+                batch.save()
+                
+                # Create payment transaction
+                tbl_PaymentTransaction.objects.create(
+                    Payer_id=request.user,
+                    Receiver_id=batch.CompostManager_id.user,
+                    Amount=total_amount,
+                    transaction_type='CompostSale',
+                    Reference_id=order.Order_id,
+                    status='Success'
+                )
         
         # Clear session
         del request.session['pending_order']

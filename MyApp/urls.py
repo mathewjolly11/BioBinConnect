@@ -3,6 +3,9 @@ from MyApp import views
 
 
 from MyApp import views
+from MyApp import reports_views
+from MyApp import payment_views
+from MyApp import salary_views
 urlpatterns = [
     path('admin', views.index, name='admin_index'),
     path('add_district/', views.add_district, name='add_district'),
@@ -26,5 +29,19 @@ urlpatterns = [
     path('view_routes/', views.view_routes, name='view_routes'),
     path('payment_report/', views.payment_report, name='payment_report'),
     path('export_payment_report/', views.export_payment_report, name='export_payment_report'),
+    
+    # Admin sales management
+    path('admin/waste-sales/', views.admin_waste_sales, name='admin_waste_sales'),
+    path('admin/compost-sales/', views.admin_compost_sales, name='admin_compost_sales'),
+    path('admin/update-delivery/<int:order_id>/', views.admin_update_delivery_status, name='admin_update_delivery'),
+    
+    # Admin reports
+    path('admin/reports/', reports_views.admin_reports, name='admin_reports'),
+    
+    # Payment transactions
+    path('admin/payment-transactions/', payment_views.payment_transactions, name='payment_transactions'),
+    
+    # Manager salaries
+    path('admin/manager-salaries/', salary_views.manager_salaries, name='manager_salaries'),
 ]
 

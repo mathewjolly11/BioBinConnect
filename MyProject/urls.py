@@ -21,10 +21,11 @@ from django.conf.urls.static import static
 from django.conf import settings
 
 
+
 urlpatterns = [
-    path('admin/', admin.site.urls),
     path('', include('GuestApp.urls')),
-    path('', include('MyApp.urls')),
+    path('', include('MyApp.urls')),  # MyApp URLs first to catch /admin/waste-sales/ etc
+    path('admin/', admin.site.urls),  # Django admin comes after
     path('farmer/', include('FarmerApp.urls')),
     path('household/', include('HouseholdApp.urls')),
     path('collector/', include('CollectorApp.urls')),

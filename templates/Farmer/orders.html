@@ -37,18 +37,19 @@
                                         {% if item.Item_Type == 'Waste' %}
                                         🌾 Direct Waste - {{ item.Quantity_kg }} kg @ ₹{{ item.Unit_Price }}/kg
                                         {% else %}
-                                        🍂 {{ item.Batch_id.Batch_name }} ({{ item.Batch_id.Grade }}) - {{
-                                        item.Quantity_kg }} kg @ ₹{{ item.Unit_Price }}/kg
+                                        🍂 Organic Compost - {{ item.Quantity_kg }} kg @ ₹{{ item.Unit_Price }}/kg
                                         {% endif %}
                                         <br>
                                         <small class="text-muted">
                                             Delivery Status:
                                             {% if item.Delivery_Status == 'Pending' %}
                                             <span class="badge bg-warning">Pending</span>
-                                            {% elif item.Delivery_Status == 'Dispatched' %}
-                                            <span class="badge bg-info">Dispatched</span>
-                                            {% else %}
+                                            {% elif item.Delivery_Status == 'In Transit' %}
+                                            <span class="badge bg-info">In Transit</span>
+                                            {% elif item.Delivery_Status == 'Delivered' %}
                                             <span class="badge bg-success">Delivered</span>
+                                            {% else %}
+                                            <span class="badge bg-secondary">{{ item.Delivery_Status }}</span>
                                             {% endif %}
                                         </small>
                                     </li>

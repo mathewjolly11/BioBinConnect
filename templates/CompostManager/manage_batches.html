@@ -1,0 +1,151 @@
+{% extends 'CompostManager/base.html' %}
+
+{% block title %}Manage Batches - BioBinConnect{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-boxes me-2"></i>Manage Compost Batches</h2>
+            <p class="text-muted">View and manage your compost batches</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'create_batch' %}" class="btn btn-success">
+                <i class="fas fa-plus-circle me-2"></i>Create New Batch
+            </a>
+        </div>
+    </div>
+
+    {% if messages %}
+    {% for message in messages %}
+    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+        {{ message }}
+        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+    </div>
+    {% endfor %}
+    {% endif %}
+
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'all' %}active{% endif %}" href="?status=all">All Batches</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'Processing' %}active{% endif %}"
+                href="?status=Processing">Processing</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'Ready' %}active{% endif %}" href="?status=Ready">Ready for
+                Sale</a>
+        </li>
+    </ul>
+
+    <!-- Batches Table -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if batches %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>Batch ID</th>
+                            <th>Batch Name</th>
+                            <th>Source Waste (kg)</th>
+                            <th>Stock (kg)</th>
+                            <th>Price/kg (₹)</th>
+                            <th>Created Date</th>
+                            <th>Status</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for batch in batches %}
+                        <tr>
+                            <td>#{{ batch.Batch_id }}</td>
+                            <td><strong>{{ batch.Batch_name }}</strong></td>
+                            <td>{{ batch.Source_Waste_kg }} kg</td>
+                            <td><strong>{{ batch.Stock_kg }} kg</strong></td>
+                            <td>₹{{ batch.price_per_kg }}</td>
+                            <td>{{ batch.Date_Created|date:"d M Y" }}</td>
+                            <td>
+                                <span
+                                    class="badge bg-{% if batch.Status == 'Processing' %}warning{% elif batch.Status == 'Ready' %}success{% else %}secondary{% endif %}">
+                                    {{ batch.Status }}
+                                </span>
+                            </td>
+                            <td>
+                                <div class="btn-group btn-group-sm" role="group">
+                                    <button type="button" class="btn btn-outline-primary" data-bs-toggle="modal"
+                                        data-bs-target="#statusModal{{ batch.Batch_id }}">
+                                        <i class="fas fa-sync-alt"></i>
+                                    </button>
+                                    <a href="{% url 'edit_batch' batch.Batch_id %}" class="btn btn-outline-secondary">
+                                        <i class="fas fa-edit"></i>
+                                    </a>
+                                </div>
+                            </td>
+                        </tr>
+
+                        <!-- Status Update Modal -->
+                        <div class="modal fade" id="statusModal{{ batch.Batch_id }}" tabindex="-1">
+                            <div class="modal-dialog">
+                                <div class="modal-content">
+                                    <div class="modal-header">
+                                        <h5 class="modal-title">Update Batch Status</h5>
+                                        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+                                    </div>
+                                    <form method="post" action="{% url 'update_batch_status' batch.Batch_id %}">
+                                        {% csrf_token %}
+                                        <div class="modal-body">
+                                            <p><strong>Batch:</strong> {{ batch.Batch_name }}</p>
+                                            <p><strong>Current Status:</strong>
+                                                <span
+                                                    class="badge bg-{% if batch.Status == 'Processing' %}warning{% elif batch.Status == 'Ready' %}success{% else %}secondary{% endif %}">
+                                                    {{ batch.Status }}
+                                                </span>
+                                            </p>
+                                            <div class="mb-3">
+                                                <label class="form-label">New Status</label>
+                                                <select name="status" class="form-control" required>
+                                                    <option value="Processing" {% if batch.Status == "Processing" %}selected{% endif %}>Processing</option>
+                                                    <option value="Ready" {% if batch.Status == "Ready" %}selected{% endif %}>Ready for Sale</option>
+                                                </select>
+                                            </div>
+                                        </div>
+                                        <div class="modal-footer">
+                                            <button type="button" class="btn btn-secondary"
+                                                data-bs-dismiss="modal">Cancel</button>
+                                            <button type="submit" class="btn btn-primary">Update Status</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-box-open fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No compost batches found</p>
+                <a href="{% url 'create_batch' %}" class="btn btn-success mt-2">
+                    <i class="fas fa-plus-circle me-2"></i>Create Your First Batch
+                </a>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs .nav-link {
+        color: #666;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #28a745;
+        border-bottom: 2px solid #28a745;
+    }
+</style>
+{% endblock %}

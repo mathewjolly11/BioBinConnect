@@ -67,6 +67,110 @@
 
     </section>
 
+    <!-- Dashboard Statistics Section -->
+    <section class="bg-light pt-5 pb-5">
+        <div class="container">
+            <div class="row mb-4">
+                <div class="col-12">
+                    <h2 class="mb-2"><i class="fas fa-chart-line me-2"></i>Compost Manager Dashboard</h2>
+                    <p class="text-muted">Overview of your waste processing operations</p>
+                </div>
+            </div>
+            <div class="row g-4">
+                <!-- Available Waste -->
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-dumpster fa-3x text-success"></i>
+                            </div>
+                            <h3 class="mb-2">{{ total_available_waste|floatformat:2 }} kg</h3>
+                            <p class="text-muted mb-3">Available Waste</p>
+                            <a href="{% url 'waste_inventory' %}" class="btn btn-outline-success btn-sm">
+                                <i class="fas fa-eye me-1"></i>View Inventory
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Active Batches -->
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-boxes fa-3x text-primary"></i>
+                            </div>
+                            <h3 class="mb-2">{{ active_batches }}</h3>
+                            <p class="text-muted mb-3">Active Batches</p>
+                            <a href="{% url 'manage_batches' %}" class="btn btn-outline-primary btn-sm">
+                                <i class="fas fa-cog me-1"></i>Manage Batches
+                            </a>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Ready Stock -->
+                <div class="col-md-4">
+                    <div class="card shadow-sm border-0 h-100">
+                        <div class="card-body text-center">
+                            <div class="mb-3">
+                                <i class="fas fa-leaf fa-3x text-warning"></i>
+                            </div>
+                            <h3 class="mb-2">{{ ready_stock|floatformat:2 }} kg</h3>
+                            <p class="text-muted mb-3">Ready to Sell</p>
+                            <a href="{% url 'create_batch' %}" class="btn btn-outline-warning btn-sm">
+                                <i class="fas fa-plus-circle me-1"></i>Create Batch
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Recent Batches -->
+            {% if recent_batches %}
+            <div class="row mt-5">
+                <div class="col-12">
+                    <h4 class="mb-3">Recent Batches</h4>
+                    <div class="table-responsive">
+                        <table class="table table-hover">
+                            <thead class="table-light">
+                                <tr>
+                                    <th>Batch Name</th>
+                                    <th>Grade</th>
+                                    <th>Stock (kg)</th>
+                                    <th>Status</th>
+                                    <th>Created</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                {% for batch in recent_batches %}
+                                <tr>
+                                    <td><strong>{{ batch.Batch_name }}</strong></td>
+                                    <td>
+                                        <span
+                                            class="badge bg-{% if batch.Grade == 'A' %}success{% elif batch.Grade == 'B' %}primary{% else %}secondary{% endif %}">
+                                            Grade {{ batch.Grade }}
+                                        </span>
+                                    </td>
+                                    <td>{{ batch.Stock_kg }} kg</td>
+                                    <td>
+                                        <span
+                                            class="badge bg-{% if batch.Status == 'Processing' %}warning{% elif batch.Status == 'Ready' %}success{% else %}secondary{% endif %}">
+                                            {{ batch.Status }}
+                                        </span>
+                                    </td>
+                                    <td>{{ batch.Date_Created|date:"d M Y" }}</td>
+                                </tr>
+                                {% endfor %}
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+            {% endif %}
+        </div>
+    </section>
+
     <section aria-label="section" class="pt-4 pb-4 bg-color">
         <div class="wow fadeInRight d-flex">
             <div class="de-marquee-list relative wow">

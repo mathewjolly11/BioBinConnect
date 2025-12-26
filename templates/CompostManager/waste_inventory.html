@@ -1,0 +1,96 @@
+{% extends 'CompostManager/base.html' %}
+
+{% block title %}Waste Inventory - BioBinConnect{% endblock %}
+
+{% block content %}
+<div class="container mt-5">
+    <div class="row mb-4">
+        <div class="col-md-8">
+            <h2><i class="fas fa-dumpster me-2"></i>Waste Inventory</h2>
+            <p class="text-muted">View and manage waste collected by collectors</p>
+        </div>
+        <div class="col-md-4 text-end">
+            <a href="{% url 'create_batch' %}" class="btn btn-success">
+                <i class="fas fa-plus-circle me-2"></i>Create Compost Batch
+            </a>
+        </div>
+    </div>
+
+    <!-- Filter Tabs -->
+    <ul class="nav nav-tabs mb-4">
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'all' %}active{% endif %}" href="?status=all">All Waste</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'available' %}active{% endif %}"
+                href="?status=available">Available</a>
+        </li>
+        <li class="nav-item">
+            <a class="nav-link {% if status_filter == 'used' %}active{% endif %}" href="?status=used">Used</a>
+        </li>
+    </ul>
+
+    <!-- Waste Inventory Table -->
+    <div class="card shadow-sm">
+        <div class="card-body">
+            {% if waste_inventory %}
+            <div class="table-responsive">
+                <table class="table table-hover">
+                    <thead class="table-light">
+                        <tr>
+                            <th>ID</th>
+                            <th>Collector</th>
+                            <th>Quantity (kg)</th>
+                            <th>Price/kg (₹)</th>
+                            <th>Collection Date</th>
+                            <th>Status</th>
+                            <th>Available</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for waste in waste_inventory %}
+                        <tr>
+                            <td>#{{ waste.Inventory_id }}</td>
+                            <td>{{ waste.collector.collector_name }}</td>
+                            <td><strong>{{ waste.available_quantity_kg }} kg</strong></td>
+                            <td>₹{{ waste.price_per_kg }}</td>
+                            <td>{{ waste.collection_date|date:"d M Y, h:i A" }}</td>
+                            <td>
+                                <span
+                                    class="badge bg-{% if waste.status == 'Available' %}success{% else %}secondary{% endif %}">
+                                    {{ waste.status }}
+                                </span>
+                            </td>
+                            <td>
+                                {% if waste.is_available %}
+                                <i class="fas fa-check-circle text-success"></i> Yes
+                                {% else %}
+                                <i class="fas fa-times-circle text-danger"></i> No
+                                {% endif %}
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            {% else %}
+            <div class="text-center py-5">
+                <i class="fas fa-inbox fa-3x text-muted mb-3"></i>
+                <p class="text-muted">No waste inventory found</p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+</div>
+
+<style>
+    .nav-tabs .nav-link {
+        color: #666;
+    }
+
+    .nav-tabs .nav-link.active {
+        color: #28a745;
+        border-bottom: 2px solid #28a745;
+    }
+</style>
+{% endblock %}

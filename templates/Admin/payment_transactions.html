@@ -1,0 +1,185 @@
+{% extends 'Admin/base.html' %}
+{% load static %}
+
+<style>
+    .stat-card {
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+</style>
+
+{% block content %}
+<section id="main-content">
+    <section class="wrapper main-wrapper">
+        <div class="col-lg-12">
+            <section class="box">
+                <header class="panel_header">
+                    <h2 class="title">💳 Payment Transactions</h2>
+                </header>
+                <div class="content-body">
+
+                    <!-- Statistics Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white stat-card">
+                                <div class="card-body text-center">
+                                    <h5>Total Transactions</h5>
+                                    <h2>{{ total_transactions }}</h2>
+                                    <small>₹{{ total_amount|floatformat:2 }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white stat-card">
+                                <div class="card-body text-center">
+                                    <h5>✅ Success</h5>
+                                    <h2>{{ success_count }}</h2>
+                                    <small>₹{{ success_amount|floatformat:2 }}</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white stat-card">
+                                <div class="card-body text-center">
+                                    <h5>⏳ Pending</h5>
+                                    <h2>{{ pending_count }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-danger text-white stat-card">
+                                <div class="card-body text-center">
+                                    <h5>❌ Failed</h5>
+                                    <h2>{{ failed_count }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Payment Method Breakdown -->
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card stat-card">
+                                <div class="card-body">
+                                    <h5>📱 UPI Payments</h5>
+                                    <h3>{{ upi_count }} transactions</h3>
+                                    <p class="text-success mb-0"><strong>₹{{ upi_amount|floatformat:2 }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card stat-card">
+                                <div class="card-body">
+                                    <h5>💵 COD Payments</h5>
+                                    <h3>{{ cod_count }} transactions</h3>
+                                    <p class="text-success mb-0"><strong>₹{{ cod_amount|floatformat:2 }}</strong></p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Filters -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="get" class="row g-3">
+                                <div class="col-md-3">
+                                    <label class="form-label">Period</label>
+                                    <select name="period" class="form-control" onchange="this.form.submit()">
+                                        <option value="7" {% if period_filter == '7' %}selected{% endif %}>Last 7 Days
+                                        </option>
+                                        <option value="30" {% if period_filter == '30' %}selected{% endif %}>Last 30 Days
+                                        </option>
+                                        <option value="90" {% if period_filter == '90' %}selected{% endif %}>Last 90 Days
+                                        </option>
+                                        <option value="all" {% if period_filter == 'all' %}selected{% endif %}>All Time
+                                        </option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Status</label>
+                                    <select name="status" class="form-control" onchange="this.form.submit()">
+                                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status
+                                        </option>
+                                        <option value="Success" {% if status_filter == 'Success' %}selected{% endif %}>
+                                            Success</option>
+                                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>
+                                            Pending</option>
+                                        <option value="Failed" {% if status_filter == 'Failed' %}selected{% endif %}>
+                                            Failed</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label class="form-label">Payment Type</label>
+                                    <select name="type" class="form-control" onchange="this.form.submit()">
+                                        <option value="all" {% if type_filter == 'all' %}selected{% endif %}>All Types
+                                        </option>
+                                        <option value="UPI" {% if type_filter == 'UPI' %}selected{% endif %}>UPI</option>
+                                        <option value="COD" {% if type_filter == 'COD' %}selected{% endif %}>COD</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Transactions Table -->
+                    <div class="card">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Transaction ID</th>
+                                            <th>Date</th>
+                                            <th>Payer</th>
+                                            <th>Receiver</th>
+                                            <th>Amount</th>
+                                            <th>Type</th>
+                                            <th>Status</th>
+                                            <th>Reference</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for txn in transactions %}
+                                        <tr>
+                                            <td>#{{ txn.Transaction_id }}</td>
+                                            <td>{{ txn.transaction_date|date:"d M Y, h:i A" }}</td>
+                                            <td>{{ txn.Payer_id.name }}</td>
+                                            <td>{{ txn.Receiver_id.name }}</td>
+                                            <td><strong>₹{{ txn.Amount|floatformat:2 }}</strong></td>
+                                            <td>
+                                                {% if txn.transaction_type == 'UPI' %}
+                                                <span class="badge bg-info">📱 UPI</span>
+                                                {% else %}
+                                                <span class="badge bg-secondary">💵 COD</span>
+                                                {% endif %}
+                                            </td>
+                                            <td>
+                                                {% if txn.status == 'Success' %}
+                                                <span class="badge bg-success">Success</span>
+                                                {% elif txn.status == 'Pending' %}
+                                                <span class="badge bg-warning">Pending</span>
+                                                {% else %}
+                                                <span class="badge bg-danger">Failed</span>
+                                                {% endif %}
+                                            </td>
+                                            <td><small>{{ txn.Reference_id|default:"-" }}</small></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="8" class="text-center">No transactions found</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+{% endblock %}

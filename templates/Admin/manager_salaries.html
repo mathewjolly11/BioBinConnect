@@ -1,0 +1,145 @@
+{% extends 'Admin/base.html' %}
+{% load static %}
+
+<style>
+    .salary-card {
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .manager-row:hover {
+        background-color: #f8f9fa;
+    }
+</style>
+
+{% block content %}
+<section id="main-content">
+    <section class="wrapper main-wrapper">
+        <div class="col-lg-12">
+            <section class="box">
+                <header class="panel_header">
+                    <h2 class="title">💼 Compost Manager Salaries</h2>
+                </header>
+                <div class="content-body">
+
+                    <!-- Summary Cards -->
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white salary-card">
+                                <div class="card-body text-center">
+                                    <h5>Total Managers</h5>
+                                    <h2>{{ total_managers }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white salary-card">
+                                <div class="card-body text-center">
+                                    <h5>Daily Rate</h5>
+                                    <h2>₹{{ daily_salary }}</h2>
+                                    <small>per manager</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card bg-success text-white salary-card">
+                                <div class="card-body text-center">
+                                    <h5>Total Salary Expense</h5>
+                                    <h2>₹{{ total_salary_expense|floatformat:2 }}</h2>
+                                    <small>for selected period</small>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Period Filter -->
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <form method="get" class="row g-3">
+                                <div class="col-md-4">
+                                    <label class="form-label">Period</label>
+                                    <select name="period" class="form-control" onchange="this.form.submit()">
+                                        <option value="7" {% if period_filter == '7' %}selected{% endif %}>Last 7 Days
+                                        </option>
+                                        <option value="30" {% if period_filter == '30' %}selected{% endif %}>Last 30 Days
+                                        </option>
+                                        <option value="90" {% if period_filter == '90' %}selected{% endif %}>Last 90 Days
+                                        </option>
+                                        <option value="all" {% if period_filter == 'all' %}selected{% endif %}>All Time
+                                            (Since Joining)</option>
+                                    </select>
+                                </div>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Salary Details Table -->
+                    <div class="card">
+                        <div class="card-body">
+                            <h5 class="mb-3">📋 Detailed Salary Breakdown</h5>
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>#</th>
+                                            <th>Manager Name</th>
+                                            <th>Email</th>
+                                            <th>Phone</th>
+                                            <th>Join Date</th>
+                                            <th>Days Worked</th>
+                                            <th>Daily Rate</th>
+                                            <th>Total Salary</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for salary in manager_salaries %}
+                                        <tr class="manager-row">
+                                            <td>{{ forloop.counter }}</td>
+                                            <td><strong>{{ salary.manager.user.name }}</strong></td>
+                                            <td>{{ salary.manager.user.email }}</td>
+                                            <td>{{ salary.manager.phone }}</td>
+                                            <td>{{ salary.join_date|date:"d M Y" }}</td>
+                                            <td><span class="badge bg-info">{{ salary.days_worked }} days</span></td>
+                                            <td>₹{{ salary.daily_rate }}</td>
+                                            <td><strong class="text-success">₹{{ salary.total_salary|floatformat:2
+                                                    }}</strong></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="8" class="text-center">No compost managers found</td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                    <tfoot class="table-info">
+                                        <tr>
+                                            <td colspan="7" class="text-end"><strong>Total Salary Expense:</strong></td>
+                                            <td><strong class="text-success">₹{{ total_salary_expense|floatformat:2
+                                                    }}</strong></td>
+                                        </tr>
+                                    </tfoot>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Salary Policy Info -->
+                    <div class="card mt-4 bg-light">
+                        <div class="card-body">
+                            <h5>ℹ️ Salary Policy</h5>
+                            <ul class="mb-0">
+                                <li>Each compost manager receives a fixed daily salary of <strong>₹1,000</strong></li>
+                                <li>Salary is calculated from the date of joining (verification date)</li>
+                                <li>Only verified compost managers are included in salary calculations</li>
+                                <li>Salary is calculated automatically based on days worked</li>
+                            </ul>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+{% endblock %}

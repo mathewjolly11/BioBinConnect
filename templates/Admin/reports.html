@@ -1,0 +1,212 @@
+{% extends 'Admin/base.html' %}
+{% load static %}
+
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+<style>
+    .report-card {
+        border-radius: 10px;
+        padding: 20px;
+        margin-bottom: 20px;
+        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    }
+
+    .stat-icon {
+        font-size: 2rem;
+        margin-bottom: 10px;
+    }
+</style>
+
+{% block content %}
+<section id="main-content">
+    <section class="wrapper main-wrapper">
+        <div class="col-lg-12">
+            <section class="box">
+                <header class="panel_header">
+                    <h2 class="title">📊 Admin Reports & Analytics</h2>
+                </header>
+                <div class="content-body">
+
+                    <!-- Period Filter -->
+                    <div class="row mb-4">
+                        <div class="col-md-12">
+                            <form method="get" class="form-inline">
+                                <label class="mr-2">Period:</label>
+                                <select name="period" class="form-control" onchange="this.form.submit()">
+                                    <option value="7" {% if period == '7' %}selected{% endif %}>Last 7 Days</option>
+                                    <option value="30" {% if period == '30' %}selected{% endif %}>Last 30 Days</option>
+                                    <option value="90" {% if period == '90' %}selected{% endif %}>Last 90 Days</option>
+                                    <option value="all" {% if period == 'all' %}selected{% endif %}>All Time</option>
+                                </select>
+                            </form>
+                        </div>
+                    </div>
+
+                    <!-- Revenue Overview -->
+                    <h4 class="mb-3">💰 Revenue Overview</h4>
+                    <div class="row mb-4">
+                        <div class="col-md-3">
+                            <div class="card bg-success text-white report-card">
+                                <div class="card-body text-center">
+                                    <div class="stat-icon">💵</div>
+                                    <h5>Total Revenue</h5>
+                                    <h2>₹{{ total_revenue|floatformat:2 }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-primary text-white report-card">
+                                <div class="card-body text-center">
+                                    <div class="stat-icon">🌾</div>
+                                    <h5>Waste Sales</h5>
+                                    <h2>₹{{ waste_revenue|floatformat:2 }}</h2>
+                                    <small>{{ waste_orders_count }} orders</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-info text-white report-card">
+                                <div class="card-body text-center">
+                                    <div class="stat-icon">🍂</div>
+                                    <h5>Compost Sales</h5>
+                                    <h2>₹{{ compost_revenue|floatformat:2 }}</h2>
+                                    <small>{{ compost_orders_count }} orders</small>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-3">
+                            <div class="card bg-warning text-white report-card">
+                                <div class="card-body text-center">
+                                    <div class="stat-icon">💳</div>
+                                    <h5>Payments</h5>
+                                    <h2>₹{{ total_payment_amount|floatformat:2 }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Inventory Overview -->
+                    <h4 class="mb-3">📦 Inventory Status</h4>
+                    <div class="row mb-4">
+                        <div class="col-md-6">
+                            <div class="card report-card">
+                                <div class="card-body">
+                                    <h5>🌾 Waste Stock</h5>
+                                    <h2>{{ total_waste_stock|floatformat:2 }} kg</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="card report-card">
+                                <div class="card-body">
+                                    <h5>🍂 Compost Stock</h5>
+                                    <h2>{{ total_compost_stock|floatformat:2 }} kg</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- User Stats -->
+                    <h4 class="mb-3">👥 User Statistics</h4>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card report-card">
+                                <div class="card-body text-center">
+                                    <h5>Collectors</h5>
+                                    <h2>{{ total_collectors }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card report-card">
+                                <div class="card-body text-center">
+                                    <h5>Compost Managers</h5>
+                                    <h2>{{ total_compost_managers }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card report-card">
+                                <div class="card-body text-center">
+                                    <h5>Active Farmers</h5>
+                                    <h2>{{ total_farmers }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Salary Report -->
+                    <h4 class="mb-3">💼 Compost Manager Salaries (₹1,000/day)</h4>
+                    <div class="card mb-4">
+                        <div class="card-body">
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-light">
+                                        <tr>
+                                            <th>Manager Name</th>
+                                            <th>Email</th>
+                                            <th>Days Worked</th>
+                                            <th>Daily Rate</th>
+                                            <th>Total Salary</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for salary in manager_salaries %}
+                                        <tr>
+                                            <td>{{ salary.manager.user.name }}</td>
+                                            <td>{{ salary.manager.user.email }}</td>
+                                            <td>{{ salary.days_worked }} days</td>
+                                            <td>₹{{ salary.daily_rate }}</td>
+                                            <td><strong>₹{{ salary.total_salary|floatformat:2 }}</strong></td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="5" class="text-center">No compost managers found</td>
+                                        </tr>
+                                        {% endfor %}
+                                        <tr class="table-info">
+                                            <td colspan="4" class="text-end"><strong>Total Salary Expense:</strong></td>
+                                            <td><strong>₹{{ total_salary_expense|floatformat:2 }}</strong></td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Profit Summary -->
+                    <h4 class="mb-3">📈 Profit Summary</h4>
+                    <div class="row mb-4">
+                        <div class="col-md-4">
+                            <div class="card bg-success text-white report-card">
+                                <div class="card-body text-center">
+                                    <h5>Total Revenue</h5>
+                                    <h2>₹{{ total_revenue|floatformat:2 }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div class="card bg-danger text-white report-card">
+                                <div class="card-body text-center">
+                                    <h5>Salary Expenses</h5>
+                                    <h2>₹{{ total_salary_expense|floatformat:2 }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-md-4">
+                            <div
+                                class="card bg-{% if net_profit >= 0 %}primary{% else %}warning{% endif %} text-white report-card">
+                                <div class="card-body text-center">
+                                    <h5>Net Profit</h5>
+                                    <h2>₹{{ net_profit|floatformat:2 }}</h2>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+{% endblock %}
