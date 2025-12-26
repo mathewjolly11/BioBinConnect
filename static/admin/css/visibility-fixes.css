@@ -1,0 +1,139 @@
+/* Fix visibility issues - ensure text is readable */
+
+/* Override any conflicting styles */
+.content-body * {
+    color: inherit;
+}
+
+/* Ensure text in cards is visible */
+.card,
+.box,
+section.box {
+    color: var(--gray-900);
+}
+
+.card-body,
+.content-body {
+    color: var(--gray-900);
+}
+
+/* Fix text visibility in colored backgrounds */
+.bg-primary,
+.bg-gradient-primary,
+.bg-success,
+.bg-gradient-success,
+.bg-danger,
+.bg-gradient-danger,
+.bg-warning,
+.bg-gradient-warning,
+.bg-info,
+.bg-gradient-info {
+    color: white !important;
+}
+
+.bg-primary *,
+.bg-gradient-primary *,
+.bg-success *,
+.bg-gradient-success *,
+.bg-danger *,
+.bg-gradient-danger *,
+.bg-warning *,
+.bg-gradient-warning *,
+.bg-info *,
+.bg-gradient-info * {
+    color: white !important;
+}
+
+/* Ensure headings are visible */
+h1,
+h2,
+h3,
+h4,
+h5,
+h6 {
+    color: var(--gray-900);
+}
+
+.text-white,
+.text-white * {
+    color: white !important;
+}
+
+/* Fix table text */
+.table {
+    color: var(--gray-900);
+}
+
+.table tbody td {
+    color: var(--gray-700);
+}
+
+/* Fix form labels and inputs */
+.form-label {
+    color: var(--gray-900);
+}
+
+.form-control,
+.form-select {
+    color: var(--gray-900);
+}
+
+/* Fix links */
+a {
+    color: var(--primary-600);
+}
+
+a:hover {
+    color: var(--primary-700);
+}
+
+/* Ensure small text is visible */
+small,
+.small {
+    color: var(--gray-600);
+}
+
+/* Fix muted text */
+.text-muted {
+    color: var(--gray-600) !important;
+}
+
+/* Fix activity items */
+.activity-item {
+    color: var(--gray-900);
+}
+
+.activity-item strong {
+    color: var(--gray-900);
+}
+
+/* Fix stats display */
+.dashboard-card h1,
+.dashboard-card h2,
+.dashboard-card h3,
+.dashboard-card h4,
+.dashboard-card h5 {
+    color: inherit;
+}
+
+/* White text cards */
+.dashboard-card.text-white,
+.dashboard-card.text-white * {
+    color: white !important;
+}
+
+/* Ensure panel headers are white */
+.panel_header,
+.panel_header *,
+.card-header,
+.card-header * {
+    color: white !important;
+}
+
+/* Fix display classes */
+.display-1,
+.display-2,
+.display-3,
+.display-4 {
+    color: inherit;
+}

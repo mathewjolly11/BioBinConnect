@@ -24,8 +24,7 @@
                         {% csrf_token %}
 
                         <div class="mb-3">
-                            <label for="{{ form.Batch_name.id_for_label }}" class="form-label">{{ form.Batch_name.label
-                                }}</label>
+                            <label for="{{ form.Batch_name.id_for_label }}" class="form-label">{{ form.Batch_name.label }}</label>
                             {{ form.Batch_name }}
                             {% if form.Batch_name.errors %}
                             <div class="text-danger">{{ form.Batch_name.errors }}</div>
@@ -34,16 +33,14 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="{{ form.Grade.id_for_label }}" class="form-label">{{ form.Grade.label
-                                    }}</label>
+                                <label for="{{ form.Grade.id_for_label }}" class="form-label">{{ form.Grade.label }}</label>
                                 {{ form.Grade }}
                                 {% if form.Grade.errors %}
                                 <div class="text-danger">{{ form.Grade.errors }}</div>
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="{{ form.price_per_kg.id_for_label }}" class="form-label">{{
-                                    form.price_per_kg.label }}</label>
+                                <label for="{{ form.price_per_kg.id_for_label }}" class="form-label">{{ form.price_per_kg.label }}</label>
                                 {{ form.price_per_kg }}
                                 {% if form.price_per_kg.errors %}
                                 <div class="text-danger">{{ form.price_per_kg.errors }}</div>
@@ -53,8 +50,7 @@
 
                         <div class="row">
                             <div class="col-md-6 mb-3">
-                                <label for="{{ form.Source_Waste_kg.id_for_label }}" class="form-label">{{
-                                    form.Source_Waste_kg.label }}</label>
+                                <label for="{{ form.Source_Waste_kg.id_for_label }}" class="form-label">{{ form.Source_Waste_kg.label }}</label>
                                 {{ form.Source_Waste_kg }}
                                 <small class="text-muted">Original source waste quantity</small>
                                 {% if form.Source_Waste_kg.errors %}
@@ -62,8 +58,7 @@
                                 {% endif %}
                             </div>
                             <div class="col-md-6 mb-3">
-                                <label for="{{ form.Stock_kg.id_for_label }}" class="form-label">{{ form.Stock_kg.label
-                                    }}</label>
+                                <label for="{{ form.Stock_kg.id_for_label }}" class="form-label">{{ form.Stock_kg.label }}</label>
                                 {{ form.Stock_kg }}
                                 <small class="text-muted">Current available stock</small>
                                 {% if form.Stock_kg.errors %}

@@ -38,8 +38,7 @@
                                 <input type="number" class="form-control" id="quantity" name="quantity" min="1"
                                     max="{{ available_qty|floatformat:0 }}" step="1" value="1" required
                                     onchange="calculateTotal()">
-                                <small class="text-muted">Maximum: {{
-                                    available_qty|floatformat:0 }} packets available</small>
+                                <small class="text-muted">Maximum: {{ available_qty|floatformat:0 }} packets available</small>
                                 {% else %}
                                 <label for="quantity" class="form-label">Quantity (kg) *</label>
                                 <input type="number" class="form-control" id="quantity" name="quantity" min="1"

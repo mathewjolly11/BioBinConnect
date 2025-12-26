@@ -40,8 +40,12 @@ urlpatterns = [
     
     # Payment transactions
     path('admin/payment-transactions/', payment_views.payment_transactions, name='payment_transactions'),
+    path('admin/payment-revenue-analytics/', payment_views.payment_revenue_analytics, name='payment_revenue_analytics'),
     
     # Manager salaries
     path('admin/manager-salaries/', salary_views.manager_salaries, name='manager_salaries'),
+    
+    # Collector salaries
+    path('admin/collector-salaries/', payment_views.collector_salaries, name='collector_salaries'),
 ]
 

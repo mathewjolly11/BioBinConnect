@@ -1,0 +1,188 @@
+{% extends 'Admin/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="main-content">
+    <section class="wrapper main-wrapper">
+
+        <!-- Header -->
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-8">
+                <h2 style="font-weight: 700; color: #1F2937; margin-bottom: 8px;">👷 Collector Salaries</h2>
+                <p style="color: #6B7280; margin: 0;">Manage and track collector salary payments</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <form method="get" class="form-inline justify-content-end">
+                    <select name="period" class="form-select w-auto" onchange="this.form.submit()"
+                        style="border-radius: 8px; font-weight: 600;">
+                        <option value="7" {% if period_filter == '7' %}selected{% endif %}>Last 7 Days</option>
+                        <option value="30" {% if period_filter == '30' %}selected{% endif %}>Last 30 Days</option>
+                        <option value="90" {% if period_filter == '90' %}selected{% endif %}>Last 90 Days</option>
+                        <option value="all" {% if period_filter == 'all' %}selected{% endif %}>All Time</option>
+                    </select>
+                </form>
+            </div>
+        </div>
+
+        <!-- Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card bg-primary text-white">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">👷</div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">{{ total_collectors }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Collectors</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card bg-success text-white">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">💰</div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ daily_salary }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Daily Rate</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card bg-warning text-white">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">📊</div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_salary_expense|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Expense</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card bg-info text-white">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">📅</div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">{{ period_filter }}{% if period_filter != 'all' %} Days{% endif %}</div>
+                    <p style="margin: 0; opacity: 0.9;">Period</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Collector Salaries Table -->
+        <div class="card">
+            <div class="card-header" style="background: linear-gradient(135deg, #1F2937 0%, #374151 100%); color: white;">
+                <h5 class="mb-0">👷 Collector Salary Details ({{ period_filter|default:"All Time" }})</h5>
+            </div>
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Collector Info</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Contact</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Join Date</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Days Worked</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Daily Rate</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Total Salary</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for salary in collector_salaries %}
+                            <tr style="transition: background-color 0.2s;">
+                                <td style="padding: 16px;">
+                                    <div>
+                                        <strong style="color: #1F2937;">{{ salary.name }}</strong>
+                                        <div style="font-size: 0.85rem; color: #6B7280;">ID: {{ salary.collector.id }}</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 16px;">
+                                    <div style="font-size: 0.9rem;">
+                                        <div>📧 {{ salary.email }}</div>
+                                        <div>📱 {{ salary.phone }}</div>
+                                    </div>
+                                </td>
+                                <td style="padding: 16px;">
+                                    <span style="background: #F3F4F6; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem;">
+                                        {{ salary.join_date|date:"M d, Y" }}
+                                    </span>
+                                </td>
+                                <td style="padding: 16px;">
+                                    <span style="background: #DBEAFE; color: #1E40AF; padding: 6px 12px; border-radius: 20px; font-weight: 600;">
+                                        {{ salary.days_worked }} days
+                                    </span>
+                                </td>
+                                <td style="padding: 16px;">
+                                    <span style="font-weight: 600; color: #059669;">&#8377;{{ salary.daily_rate }}</span>
+                                </td>
+                                <td style="padding: 16px;">
+                                    <span style="font-weight: 800; font-size: 1.1rem; color: #1F2937;">&#8377;{{ salary.total_salary|floatformat:2 }}</span>
+                                </td>
+                                <td style="padding: 16px;">
+                                    {% if salary.collector.is_active %}
+                                    <span style="background: #D1FAE5; color: #065F46; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+                                        ✅ Active
+                                    </span>
+                                    {% else %}
+                                    <span style="background: #FEE2E2; color: #991B1B; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem; font-weight: 600;">
+                                        ❌ Inactive
+                                    </span>
+                                    {% endif %}
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="7" class="text-center" style="padding: 40px; color: #6B7280;">
+                                    <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">👷</div>
+                                    <h5 style="color: #9CA3AF; margin-bottom: 8px;">No collectors found</h5>
+                                    <p style="margin: 0; font-size: 0.9rem;">There are no active collectors in the system.</p>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+
+                {% if collector_salaries %}
+                <!-- Summary Footer -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert alert-info text-center">
+                            <h5 class="mb-2">💼 Salary Summary</h5>
+                            <p class="mb-0">
+                                <strong>{{ total_collectors }}</strong> collectors earned a total of 
+                                <strong>&#8377;{{ total_salary_expense|floatformat:2 }}</strong> 
+                                over the selected period
+                            </p>
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+            </div>
+        </div>
+
+    </section>
+</section>
+
+<style>
+    .dashboard-stat-card {
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .dashboard-stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .dashboard-stat-card.bg-primary {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-success {
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-warning {
+        background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-info {
+        background: linear-gradient(135deg, #06B6D4 0%, #0891B2 100%) !important;
+    }
+
+    .table tbody tr:hover {
+        background-color: #F9FAFB !important;
+    }
+</style>
+{% endblock %}

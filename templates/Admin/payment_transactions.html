@@ -1,185 +1,202 @@
 {% extends 'Admin/base.html' %}
 {% load static %}
 
-<style>
-    .stat-card {
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-</style>
-
 {% block content %}
 <section id="main-content">
     <section class="wrapper main-wrapper">
-        <div class="col-lg-12">
-            <section class="box">
-                <header class="panel_header">
-                    <h2 class="title">💳 Payment Transactions</h2>
-                </header>
-                <div class="content-body">
 
-                    <!-- Statistics Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card bg-primary text-white stat-card">
-                                <div class="card-body text-center">
-                                    <h5>Total Transactions</h5>
-                                    <h2>{{ total_transactions }}</h2>
-                                    <small>₹{{ total_amount|floatformat:2 }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-success text-white stat-card">
-                                <div class="card-body text-center">
-                                    <h5>✅ Success</h5>
-                                    <h2>{{ success_count }}</h2>
-                                    <small>₹{{ success_amount|floatformat:2 }}</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-warning text-white stat-card">
-                                <div class="card-body text-center">
-                                    <h5>⏳ Pending</h5>
-                                    <h2>{{ pending_count }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-danger text-white stat-card">
-                                <div class="card-body text-center">
-                                    <h5>❌ Failed</h5>
-                                    <h2>{{ failed_count }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Payment Method Breakdown -->
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card stat-card">
-                                <div class="card-body">
-                                    <h5>📱 UPI Payments</h5>
-                                    <h3>{{ upi_count }} transactions</h3>
-                                    <p class="text-success mb-0"><strong>₹{{ upi_amount|floatformat:2 }}</strong></p>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card stat-card">
-                                <div class="card-body">
-                                    <h5>💵 COD Payments</h5>
-                                    <h3>{{ cod_count }} transactions</h3>
-                                    <p class="text-success mb-0"><strong>₹{{ cod_amount|floatformat:2 }}</strong></p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <form method="get" class="row g-3">
-                                <div class="col-md-3">
-                                    <label class="form-label">Period</label>
-                                    <select name="period" class="form-control" onchange="this.form.submit()">
-                                        <option value="7" {% if period_filter == '7' %}selected{% endif %}>Last 7 Days
-                                        </option>
-                                        <option value="30" {% if period_filter == '30' %}selected{% endif %}>Last 30 Days
-                                        </option>
-                                        <option value="90" {% if period_filter == '90' %}selected{% endif %}>Last 90 Days
-                                        </option>
-                                        <option value="all" {% if period_filter == 'all' %}selected{% endif %}>All Time
-                                        </option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Status</label>
-                                    <select name="status" class="form-control" onchange="this.form.submit()">
-                                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status
-                                        </option>
-                                        <option value="Success" {% if status_filter == 'Success' %}selected{% endif %}>
-                                            Success</option>
-                                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>
-                                            Pending</option>
-                                        <option value="Failed" {% if status_filter == 'Failed' %}selected{% endif %}>
-                                            Failed</option>
-                                    </select>
-                                </div>
-                                <div class="col-md-3">
-                                    <label class="form-label">Payment Type</label>
-                                    <select name="type" class="form-control" onchange="this.form.submit()">
-                                        <option value="all" {% if type_filter == 'all' %}selected{% endif %}>All Types
-                                        </option>
-                                        <option value="UPI" {% if type_filter == 'UPI' %}selected{% endif %}>UPI</option>
-                                        <option value="COD" {% if type_filter == 'COD' %}selected{% endif %}>COD</option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Transactions Table -->
-                    <div class="card">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Transaction ID</th>
-                                            <th>Date</th>
-                                            <th>Payer</th>
-                                            <th>Receiver</th>
-                                            <th>Amount</th>
-                                            <th>Type</th>
-                                            <th>Status</th>
-                                            <th>Reference</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for txn in transactions %}
-                                        <tr>
-                                            <td>#{{ txn.Transaction_id }}</td>
-                                            <td>{{ txn.transaction_date|date:"d M Y, h:i A" }}</td>
-                                            <td>{{ txn.Payer_id.name }}</td>
-                                            <td>{{ txn.Receiver_id.name }}</td>
-                                            <td><strong>₹{{ txn.Amount|floatformat:2 }}</strong></td>
-                                            <td>
-                                                {% if txn.transaction_type == 'UPI' %}
-                                                <span class="badge bg-info">📱 UPI</span>
-                                                {% else %}
-                                                <span class="badge bg-secondary">💵 COD</span>
-                                                {% endif %}
-                                            </td>
-                                            <td>
-                                                {% if txn.status == 'Success' %}
-                                                <span class="badge bg-success">Success</span>
-                                                {% elif txn.status == 'Pending' %}
-                                                <span class="badge bg-warning">Pending</span>
-                                                {% else %}
-                                                <span class="badge bg-danger">Failed</span>
-                                                {% endif %}
-                                            </td>
-                                            <td><small>{{ txn.Reference_id|default:"-" }}</small></td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="8" class="text-center">No transactions found</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
+        <!-- Header -->
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-12">
+                <h2 style="font-weight: 700; color: #1F2937; margin-bottom: 8px;">💳 Payment Transactions</h2>
+                <p style="color: #6B7280; margin: 0;">Comprehensive log of all financial activities</p>
+            </div>
         </div>
+
+        <!-- Statistics Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white"
+                    style="background: linear-gradient(135deg, #6366F1 0%, #4F46E5 100%);">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">📊</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">{{ total_transactions }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Transactions</p>
+                    <small style="opacity: 0.8;">&#8377;{{ total_amount|floatformat:2 }}</small>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white"
+                    style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">✅</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">{{ success_count }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Successful</p>
+                    <small style="opacity: 0.8;">&#8377;{{ success_amount|floatformat:2 }}</small>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white"
+                    style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">⏳</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">{{ pending_count }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Pending</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white"
+                    style="background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%);">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">❌</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">{{ failed_count }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Failed</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Payment Method Breakdown -->
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #3B82F6;">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 style="color: #6B7280; font-weight: 600;">📱 UPI Payments</h5>
+                            <h3 style="color: #1F2937; font-weight: 800; margin: 5px 0;">{{ upi_count }}</h3>
+                            <span class="badge bg-primary">&#8377;{{ upi_amount|floatformat:2 }}</span>
+                        </div>
+                        <div style="font-size: 3rem; opacity: 0.1;">📱</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #10B981;">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 style="color: #6B7280; font-weight: 600;">💵 COD Payments</h5>
+                            <h3 style="color: #1F2937; font-weight: 800; margin: 5px 0;">{{ cod_count }}</h3>
+                            <span class="badge bg-success">&#8377;{{ cod_amount|floatformat:2 }}</span>
+                        </div>
+                        <div style="font-size: 3rem; opacity: 0.1;">💵</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Filters -->
+        <div class="card mb-4" style="border: 1px solid #E5E7EB; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <div class="card-body bg-light" style="border-radius: 8px;">
+                <form method="get" class="row g-3 align-items-end">
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small text-uppercase fw-bold">Period</label>
+                        <select name="period" class="form-select" onchange="this.form.submit()">
+                            <option value="7" {% if period_filter == '7' %}selected{% endif %}>Last 7 Days</option>
+                            <option value="30" {% if period_filter == '30' %}selected{% endif %}>Last 30 Days</option>
+                            <option value="90" {% if period_filter == '90' %}selected{% endif %}>Last 90 Days</option>
+                            <option value="all" {% if period_filter == 'all' %}selected{% endif %}>All Time</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small text-uppercase fw-bold">Status</label>
+                        <select name="status" class="form-select" onchange="this.form.submit()">
+                            <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Status</option>
+                            <option value="Success" {% if status_filter == 'Success' %}selected{% endif %}>Success
+                            </option>
+                            <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending
+                            </option>
+                            <option value="Failed" {% if status_filter == 'Failed' %}selected{% endif %}>Failed</option>
+                        </select>
+                    </div>
+                    <div class="col-md-3">
+                        <label class="form-label text-muted small text-uppercase fw-bold">Payment Type</label>
+                        <select name="type" class="form-select" onchange="this.form.submit()">
+                            <option value="all" {% if type_filter == 'all' %}selected{% endif %}>All Types</option>
+                            <option value="UPI" {% if type_filter == 'UPI' %}selected{% endif %}>UPI</option>
+                            <option value="COD" {% if type_filter == 'COD' %}selected{% endif %}>COD</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Transactions Table -->
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th class="text-secondary text-uppercase small">Txn ID</th>
+                                <th class="text-secondary text-uppercase small">Date</th>
+                                <th class="text-secondary text-uppercase small">Payer</th>
+                                <th class="text-secondary text-uppercase small">Receiver</th>
+                                <th class="text-secondary text-uppercase small">Amount</th>
+                                <th class="text-secondary text-uppercase small">Type</th>
+                                <th class="text-secondary text-uppercase small">Status</th>
+                                <th class="text-secondary text-uppercase small">Reference</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for txn in transactions %}
+                            <tr>
+                                <td><span class="fw-bold text-dark">#{{ txn.Transaction_id }}</span></td>
+                                <td><small class="text-muted">{{ txn.transaction_date|date:"d M Y, h:i A" }}</small>
+                                </td>
+                                <td>{{ txn.Payer_id.name }}</td>
+                                <td>{{ txn.Receiver_id.name }}</td>
+                                <td><strong class="text-dark">&#8377;{{ txn.Amount|floatformat:2 }}</strong></td>
+                                <td>
+                                    {% if txn.transaction_type == 'UPI' %}
+                                    <span class="badge bg-info text-dark bg-opacity-10"
+                                        style="background-color: #dbeafe !important; color: #1e40af !important;">📱
+                                        UPI</span>
+                                    {% else %}
+                                    <span class="badge bg-secondary text-dark bg-opacity-10"
+                                        style="background-color: #f3f4f6 !important; color: #374151 !important;">💵
+                                        COD</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    {% if txn.status == 'Success' %}
+                                    <span class="badge bg-success bg-opacity-10"
+                                        style="background-color: #d1fae5 !important; color: #065f46 !important;">Success</span>
+                                    {% elif txn.status == 'Pending' %}
+                                    <span class="badge bg-warning bg-opacity-10"
+                                        style="background-color: #fef3c7 !important; color: #92400e !important;">Pending</span>
+                                    {% else %}
+                                    <span class="badge bg-danger bg-opacity-10"
+                                        style="background-color: #fee2e2 !important; color: #991b1b !important;">Failed</span>
+                                    {% endif %}
+                                </td>
+                                <td><small class="text-muted font-monospace">{{ txn.Reference_id|default:"-" }}</small>
+                                </td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="8" class="text-center py-5">
+                                    <div class="text-muted">
+                                        <div style="font-size: 2rem; margin-bottom: 10px;">📭</div>
+                                        No transactions found fitting criteria
+                                    </div>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </section>
 </section>
+
+<style>
+    .dashboard-stat-card {
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .dashboard-stat-card:hover {
+        transform: translateY(-5px);
+    }
+</style>
 {% endblock %}

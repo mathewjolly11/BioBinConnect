@@ -1,212 +1,182 @@
 {% extends 'Admin/base.html' %}
 {% load static %}
 
-<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-
-<style>
-    .report-card {
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .stat-icon {
-        font-size: 2rem;
-        margin-bottom: 10px;
-    }
-</style>
-
 {% block content %}
 <section id="main-content">
     <section class="wrapper main-wrapper">
-        <div class="col-lg-12">
-            <section class="box">
-                <header class="panel_header">
-                    <h2 class="title">📊 Admin Reports & Analytics</h2>
-                </header>
-                <div class="content-body">
 
-                    <!-- Period Filter -->
-                    <div class="row mb-4">
-                        <div class="col-md-12">
-                            <form method="get" class="form-inline">
-                                <label class="mr-2">Period:</label>
-                                <select name="period" class="form-control" onchange="this.form.submit()">
-                                    <option value="7" {% if period == '7' %}selected{% endif %}>Last 7 Days</option>
-                                    <option value="30" {% if period == '30' %}selected{% endif %}>Last 30 Days</option>
-                                    <option value="90" {% if period == '90' %}selected{% endif %}>Last 90 Days</option>
-                                    <option value="all" {% if period == 'all' %}selected{% endif %}>All Time</option>
-                                </select>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Revenue Overview -->
-                    <h4 class="mb-3">💰 Revenue Overview</h4>
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card bg-success text-white report-card">
-                                <div class="card-body text-center">
-                                    <div class="stat-icon">💵</div>
-                                    <h5>Total Revenue</h5>
-                                    <h2>₹{{ total_revenue|floatformat:2 }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-primary text-white report-card">
-                                <div class="card-body text-center">
-                                    <div class="stat-icon">🌾</div>
-                                    <h5>Waste Sales</h5>
-                                    <h2>₹{{ waste_revenue|floatformat:2 }}</h2>
-                                    <small>{{ waste_orders_count }} orders</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-info text-white report-card">
-                                <div class="card-body text-center">
-                                    <div class="stat-icon">🍂</div>
-                                    <h5>Compost Sales</h5>
-                                    <h2>₹{{ compost_revenue|floatformat:2 }}</h2>
-                                    <small>{{ compost_orders_count }} orders</small>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card bg-warning text-white report-card">
-                                <div class="card-body text-center">
-                                    <div class="stat-icon">💳</div>
-                                    <h5>Payments</h5>
-                                    <h2>₹{{ total_payment_amount|floatformat:2 }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Inventory Overview -->
-                    <h4 class="mb-3">📦 Inventory Status</h4>
-                    <div class="row mb-4">
-                        <div class="col-md-6">
-                            <div class="card report-card">
-                                <div class="card-body">
-                                    <h5>🌾 Waste Stock</h5>
-                                    <h2>{{ total_waste_stock|floatformat:2 }} kg</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-6">
-                            <div class="card report-card">
-                                <div class="card-body">
-                                    <h5>🍂 Compost Stock</h5>
-                                    <h2>{{ total_compost_stock|floatformat:2 }} kg</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- User Stats -->
-                    <h4 class="mb-3">👥 User Statistics</h4>
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="card report-card">
-                                <div class="card-body text-center">
-                                    <h5>Collectors</h5>
-                                    <h2>{{ total_collectors }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card report-card">
-                                <div class="card-body text-center">
-                                    <h5>Compost Managers</h5>
-                                    <h2>{{ total_compost_managers }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card report-card">
-                                <div class="card-body text-center">
-                                    <h5>Active Farmers</h5>
-                                    <h2>{{ total_farmers }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Salary Report -->
-                    <h4 class="mb-3">💼 Compost Manager Salaries (₹1,000/day)</h4>
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <div class="table-responsive">
-                                <table class="table table-hover">
-                                    <thead class="table-light">
-                                        <tr>
-                                            <th>Manager Name</th>
-                                            <th>Email</th>
-                                            <th>Days Worked</th>
-                                            <th>Daily Rate</th>
-                                            <th>Total Salary</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for salary in manager_salaries %}
-                                        <tr>
-                                            <td>{{ salary.manager.user.name }}</td>
-                                            <td>{{ salary.manager.user.email }}</td>
-                                            <td>{{ salary.days_worked }} days</td>
-                                            <td>₹{{ salary.daily_rate }}</td>
-                                            <td><strong>₹{{ salary.total_salary|floatformat:2 }}</strong></td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="5" class="text-center">No compost managers found</td>
-                                        </tr>
-                                        {% endfor %}
-                                        <tr class="table-info">
-                                            <td colspan="4" class="text-end"><strong>Total Salary Expense:</strong></td>
-                                            <td><strong>₹{{ total_salary_expense|floatformat:2 }}</strong></td>
-                                        </tr>
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Profit Summary -->
-                    <h4 class="mb-3">📈 Profit Summary</h4>
-                    <div class="row mb-4">
-                        <div class="col-md-4">
-                            <div class="card bg-success text-white report-card">
-                                <div class="card-body text-center">
-                                    <h5>Total Revenue</h5>
-                                    <h2>₹{{ total_revenue|floatformat:2 }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div class="card bg-danger text-white report-card">
-                                <div class="card-body text-center">
-                                    <h5>Salary Expenses</h5>
-                                    <h2>₹{{ total_salary_expense|floatformat:2 }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-4">
-                            <div
-                                class="card bg-{% if net_profit >= 0 %}primary{% else %}warning{% endif %} text-white report-card">
-                                <div class="card-body text-center">
-                                    <h5>Net Profit</h5>
-                                    <h2>₹{{ net_profit|floatformat:2 }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                </div>
-            </section>
+        <!-- Header -->
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-8">
+                <h2 style="font-weight: 700; color: #1F2937; margin-bottom: 8px;">📊 Reports & Analytics</h2>
+                <p style="color: #6B7280; margin: 0;">Detailed financial and operational insights</p>
+            </div>
+            <div class="col-md-4 text-end">
+                <form method="get" class="form-inline justify-content-end">
+                    <select name="period" class="form-select w-auto" onchange="this.form.submit()"
+                        style="border-radius: 8px; font-weight: 600;">
+                        <option value="7" {% if period == '7' %}selected{% endif %}>Last 7 Days</option>
+                        <option value="30" {% if period == '30' %}selected{% endif %}>Last 30 Days</option>
+                        <option value="90" {% if period == '90' %}selected{% endif %}>Last 90 Days</option>
+                        <option value="all" {% if period == 'all' %}selected{% endif %}>All Time</option>
+                    </select>
+                </form>
+            </div>
         </div>
+
+        <!-- Profit Summary -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="dashboard-stat-card bg-success text-white">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">💵</div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_revenue|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Revenue</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="dashboard-stat-card bg-danger text-white">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">💸</div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_salary_expense|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Salary Expenses</p>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="dashboard-stat-card text-white {% if net_profit >= 0 %}bg-primary{% else %}bg-warning{% endif %}">
+                    <div style="font-size: 2.5rem; margin-bottom: 8px;">📈</div>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ net_profit|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Net Profit</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Revenue Overview -->
+        <h4 style="font-weight: 700; color: #1F2937; margin-bottom: 20px;">💰 Revenue Breakdown</h4>
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2rem; margin-bottom: 12px;">🌾</div>
+                        <h4 style="color: #6366F1; font-weight: 700;">&#8377;{{ waste_revenue|floatformat:2 }}</h4>
+                        <p style="color: #6B7280; font-size: 0.9rem; margin: 0;">Waste Sales</p>
+                        <span class="badge bg-secondary mt-2">{{ waste_orders_count }} orders</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2rem; margin-bottom: 12px;">🍂</div>
+                        <h4 style="color: #6366F1; font-weight: 700;">&#8377;{{ compost_revenue|floatformat:2 }}</h4>
+                        <p style="color: #6B7280; font-size: 0.9rem; margin: 0;">Compost Sales</p>
+                        <span class="badge bg-secondary mt-2">{{ compost_orders_count }} orders</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2rem; margin-bottom: 12px;">💳</div>
+                        <h4 style="color: #6366F1; font-weight: 700;">&#8377;{{ total_payment_amount|floatformat:2 }}
+                        </h4>
+                        <p style="color: #6B7280; font-size: 0.9rem; margin: 0;">Payment Transactions</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Inventory Status -->
+        <h4 style="font-weight: 700; color: #1F2937; margin-bottom: 20px;">📦 Live Inventory</h4>
+        <div class="row mb-4">
+            <div class="col-md-6 mb-3">
+                <div class="card" style="border-left: 5px solid #F59E0B;">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 style="margin: 0; color: #6B7280;">Waste Stock</h5>
+                            <h3 style="font-weight: 800; color: #1F2937; margin-top: 5px;">{{ total_waste_stock|floatformat:2 }} kg</h3>
+                        </div>
+                        <div style="font-size: 2.5rem; opacity: 0.2;">🌾</div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 mb-3">
+                <div class="card" style="border-left: 5px solid #10B981;">
+                    <div class="card-body d-flex justify-content-between align-items-center">
+                        <div>
+                            <h5 style="margin: 0; color: #6B7280;">Compost Stock</h5>
+                            <h3 style="font-weight: 800; color: #1F2937; margin-top: 5px;">{{ total_compost_stock|floatformat:2 }} kg</h3>
+                        </div>
+                        <div style="font-size: 2.5rem; opacity: 0.2;">🍂</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Manager Salaries Preview -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 style="font-weight: 700; color: #1F2937;">💼 Manager Salaries Preview</h4>
+            <a href="{% url 'manager_salaries' %}" class="btn btn-primary btn-sm">View Full Details</a>
+        </div>
+        <div class="card">
+            <div class="card-body">
+                <div class="table-responsive">
+                    <table class="table table-hover">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Manager Name</th>
+                                <th>Days Worked</th>
+                                <th>Daily Rate</th>
+                                <th>Total Salary</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for salary in manager_salaries|slice:":5" %}
+                            <tr>
+                                <td>{{ salary.manager.user.name }}</td>
+                                <td>{{ salary.days_worked }} days</td>
+                                <td>&#8377;{{ salary.daily_rate }}</td>
+                                <td><strong>&#8377;{{ salary.total_salary|floatformat:2 }}</strong></td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted">No compost managers found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
     </section>
 </section>
+
+<style>
+    .dashboard-stat-card {
+        border-radius: 12px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .dashboard-stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .dashboard-stat-card.bg-success {
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-danger {
+        background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-primary {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-warning {
+        background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+    }
+</style>
 {% endblock %}

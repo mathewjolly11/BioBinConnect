@@ -1,12 +1,103 @@
 from django.shortcuts import redirect, render
 from django.contrib import messages
+from django.db.models import Sum, Count
+from django.utils import timezone
+from datetime import timedelta
 
 from MyApp.forms import DistrictForm,LocationForm,RAForm
 from MyApp.models import tbl_residentsassociation
 
 # Create your views here.
 def index(request):
-    return render(request, 'Admin/index.html')
+    """Enhanced admin dashboard with real-time statistics"""
+    from MyApp.models import (
+        tbl_Order, tbl_PaymentTransaction, tbl_WasteInventory, 
+        tbl_CompostBatch, tbl_HouseholdPayment
+    )
+    from GuestApp.models import Collector, CompostManager, Farmer, Household
+    
+    # User Statistics
+    total_collectors = Collector.objects.count()
+    total_managers = CompostManager.objects.count()
+    total_farmers = Farmer.objects.count()
+    total_households = Household.objects.count()
+    total_users = total_collectors + total_managers + total_farmers + total_households
+    
+    # Pending verifications - count users with is_verified=False
+    pending_collectors = Collector.objects.filter(user__is_verified=False).count()
+    pending_managers = CompostManager.objects.filter(user__is_verified=False).count()
+    pending_farmers = Farmer.objects.filter(user__is_verified=False).count()
+    pending_households = Household.objects.filter(user__is_verified=False).count()
+    pending_verifications = pending_collectors + pending_managers + pending_farmers + pending_households
+    
+    # Revenue Statistics (Last 30 days)
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    
+    # Orders revenue
+    recent_orders = tbl_Order.objects.filter(Order_Date__gte=thirty_days_ago)
+    total_revenue = recent_orders.aggregate(total=Sum('Total_Amount'))['total'] or 0
+    total_orders = recent_orders.count()
+    
+    # Payment transactions
+    successful_payments = tbl_PaymentTransaction.objects.filter(
+        status='Success',
+        transaction_date__gte=thirty_days_ago
+    )
+    payment_revenue = successful_payments.aggregate(total=Sum('Amount'))['total'] or 0
+    
+    # Household payments
+    household_payments = tbl_HouseholdPayment.objects.filter(
+        payment_date__gte=thirty_days_ago,
+        status='Completed'
+    )
+    household_revenue = household_payments.aggregate(total=Sum('amount'))['total'] or 0
+    
+    # Inventory Statistics
+    waste_stock = tbl_WasteInventory.objects.filter(is_available=True).aggregate(
+        total=Sum('available_quantity_kg')
+    )['total'] or 0
+    
+    compost_stock = tbl_CompostBatch.objects.filter(Status='Available').aggregate(
+        total=Sum('Stock_kg')
+    )['total'] or 0
+    
+    # Today's statistics
+    today = timezone.now().date()
+    today_orders = tbl_Order.objects.filter(Order_Date__date=today).count()
+    today_revenue = tbl_Order.objects.filter(Order_Date__date=today).aggregate(
+        total=Sum('Total_Amount')
+    )['total'] or 0
+    
+    # Recent activities (last 5 orders)
+    recent_activities = tbl_Order.objects.select_related('Buyer_id').order_by('-Order_Date')[:5]
+    
+    context = {
+        # User stats
+        'total_users': total_users,
+        'total_collectors': total_collectors,
+        'total_managers': total_managers,
+        'total_farmers': total_farmers,
+        'pending_verifications': pending_verifications,
+        
+        # Revenue stats
+        'total_revenue': total_revenue,
+        'total_orders': total_orders,
+        'payment_revenue': payment_revenue,
+        'household_revenue': household_revenue,
+        
+        # Inventory stats
+        'waste_stock': waste_stock,
+        'compost_stock': compost_stock,
+        
+        # Today's stats
+        'today_orders': today_orders,
+        'today_revenue': today_revenue,
+        
+        # Recent activities
+        'recent_activities': recent_activities,
+    }
+    
+    return render(request, 'Admin/index.html', context)
 def add_district(request):
     if request.method == 'POST':
         form = DistrictForm(request.POST)

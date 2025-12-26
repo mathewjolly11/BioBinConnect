@@ -60,6 +60,10 @@
     <link href="{% static 'backend/assets/css/responsive.css' %}" rel="stylesheet" type="text/css" />
     <!-- CORE CSS TEMPLATE - END -->
 
+    <!-- MODERN ADMIN STYLES -->
+    <link href="{% static 'admin/css/modern-admin.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin/css/visibility-fixes.css' %}" rel="stylesheet" type="text/css" />
+
 </head>
 <!-- END HEAD -->
 
@@ -573,10 +577,16 @@
                                 <a class="" href="{% url 'admin_reports' %}">📊 Analytics Dashboard</a>
                             </li>
                             <li>
+                                <a class="" href="{% url 'payment_revenue_analytics' %}">💰 Payment Revenue Analytics</a>
+                            </li>
+                            <li>
                                 <a class="" href="{% url 'payment_transactions' %}">💳 Payment Transactions</a>
                             </li>
                             <li>
                                 <a class="" href="{% url 'manager_salaries' %}">💼 Manager Salaries</a>
+                            </li>
+                            <li>
+                                <a class="" href="{% url 'collector_salaries' %}">👷 Collector Salaries</a>
                             </li>
                             <li>
                                 <a class="" href="{% url 'payment_report' %}">🏠 Household Payments</a>
@@ -1161,7 +1171,8 @@
         type="text/javascript"></script>
     <script src="{% static 'backend/assets/plugins/gauge/gauge.min.js' %}" type="text/javascript"></script>
     <script src="{% static 'backend/assets/plugins/icheck/icheck.min.js' %}" type="text/javascript"></script>
-    <script src="{% static 'backend/assets/js/dashboard.js' %}" type="text/javascript"></script>
+    <!-- Commented out dashboard.js as it causes errors when chart containers don't exist -->
+    <!-- <script src="{% static 'backend/assets/js/dashboard.js' %}" type="text/javascript"></script> -->
     <!-- OTHER SCRIPTS INCLUDED ON THIS PAGE - END -->
 
     <!-- CORE TEMPLATE JS - START -->
@@ -1170,12 +1181,6 @@
     <!-- SweetAlert2 CDN -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
     <!-- END CORE TEMPLATE JS - END -->
-
-    <!-- Sidebar Graph - START -->
-    <script src="{% static 'backend/assets/plugins/sparkline-chart/jquery.sparkline.min.js' %}"
-        type="text/javascript"></script>
-    <script src="{% static 'backend/assets/js/chart-sparkline.js' %}" type="text/javascript"></script>
-    <!-- Sidebar Graph - END -->
 
 
 
@@ -1247,12 +1252,3 @@
 </body>
 
 </html>
-
-
-
-
-
-<script type="text/javascript">
-
-
-</script>

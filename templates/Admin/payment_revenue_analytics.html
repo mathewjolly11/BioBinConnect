@@ -1,0 +1,316 @@
+{% extends 'Admin/base.html' %}
+{% load static %}
+
+{% block content %}
+<section id="main-content">
+    <section class="wrapper main-wrapper">
+
+        <!-- Header -->
+        <div class="row mb-4 align-items-center">
+            <div class="col-md-12">
+                <h2 style="font-weight: 700; color: #1F2937; margin-bottom: 8px;"><i class="fas fa-chart-line me-2"></i>Revenue & Profit Analytics</h2>
+                <p style="color: #6B7280; margin: 0;">Comprehensive profit analysis with revenues, expenses, and net profit calculations</p>
+            </div>
+        </div>
+
+        <!-- Period Filter -->
+        <div class="card mb-4" style="border: 1px solid #E5E7EB; box-shadow: 0 1px 2px rgba(0,0,0,0.05);">
+            <div class="card-body bg-light" style="border-radius: 8px;">
+                <form method="get" class="row align-items-center">
+                    <div class="col-auto">
+                        <label class="form-label text-muted small text-uppercase fw-bold mb-0 me-2">Time Period:</label>
+                    </div>
+                    <div class="col-md-4">
+                        <select name="period" class="form-select" onchange="this.form.submit()">
+                            <option value="7" {% if period_filter == '7' %}selected{% endif %}>Last 7 Days</option>
+                            <option value="30" {% if period_filter == '30' %}selected{% endif %}>Last 30 Days</option>
+                            <option value="90" {% if period_filter == '90' %}selected{% endif %}>Last 90 Days</option>
+                            <option value="all" {% if period_filter == 'all' %}selected{% endif %}>All Time</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+        </div>
+
+        <!-- Revenue Summary Cards -->
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white bg-success" style="border-radius: 16px;">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">💰</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_revenue|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Revenue</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white bg-danger" style="border-radius: 16px;">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">💸</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_expenses|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Expenses</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white {% if gross_profit >= 0 %}bg-primary{% else %}bg-warning{% endif %}" style="border-radius: 16px;">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">{% if gross_profit >= 0 %}📈{% else %}📉{% endif %}</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ gross_profit|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Net Profit</p>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="dashboard-stat-card text-white"
+                    style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%); border-radius: 16px;">
+                    <div style="font-size: 2rem; margin-bottom: 8px;">📊</div>
+                    <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">{{ profit_margin|floatformat:1 }}%</div>
+                    <p style="margin: 0; opacity: 0.9;">Profit Margin</p>
+                </div>
+            </div>
+        </div>
+
+        <!-- Transaction Statistics -->
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #10B981; border-radius: 12px;">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px; color: #10B981;">💳</div>
+                        <h5 style="color: #6B7280; margin: 0;">Total Transactions</h5>
+                        <h3 style="font-weight: 800; color: #1F2937; margin: 8px 0;">{{ total_transactions }}</h3>
+                        <small style="color: #10B981; font-weight: 600;">All Revenue Sources</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #F59E0B; border-radius: 12px;">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px; color: #F59E0B;">�️</div>
+                        <h5 style="color: #6B7280; margin: 0;">Waste Orders</h5>
+                        <h3 style="font-weight: 800; color: #1F2937; margin: 8px 0;">{{ waste_order_count }}</h3>
+                        <small style="color: #F59E0B; font-weight: 600;">&#8377;{{ waste_order_revenue|floatformat:2 }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #10B981; border-radius: 12px;">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px; color: #10B981;">🌱</div>
+                        <h5 style="color: #6B7280; margin: 0;">Compost Orders</h5>
+                        <h3 style="font-weight: 800; color: #1F2937; margin: 8px 0;">{{ compost_order_count }}</h3>
+                        <small style="color: #10B981; font-weight: 600;">&#8377;{{ compost_order_revenue|floatformat:2 }}</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #3B82F6; border-radius: 12px;">
+                    <div class="card-body text-center">
+                        <div style="font-size: 2.5rem; margin-bottom: 12px; color: #3B82F6;">🏠</div>
+                        <h5 style="color: #6B7280; margin: 0;">Household Payments</h5>
+                        <h3 style="font-weight: 800; color: #1F2937; margin: 8px 0;">{{ household_count }}</h3>
+                        <small style="color: #3B82F6; font-weight: 600;">&#8377;{{ household_revenue|floatformat:2 }}</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Profit & Loss Statement -->
+        <div class="card mb-4">
+            <div class="card-header" style="background: linear-gradient(135deg, #1F2937 0%, #374151 100%); color: white;">
+                <h5 class="mb-0">📊 Profit & Loss Statement ({{ period_filter|default:"All Time" }})</h5>
+            </div>
+            <div class="card-body">
+                <div class="row">
+                    <!-- Revenue Breakdown -->
+                    <div class="col-md-6">
+                        <h6 class="text-success fw-bold mb-3">📊 Revenue Sources</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>�️ Waste Order Sales</td>
+                                <td class="text-end fw-bold">&#8377;{{ waste_order_revenue|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td>🌱 Compost Order Sales</td>
+                                <td class="text-end fw-bold">&#8377;{{ compost_order_revenue|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td>🏠 Household Payments</td>
+                                <td class="text-end fw-bold">&#8377;{{ household_revenue|floatformat:2 }}</td>
+                            </tr>
+                            <tr class="table-success">
+                                <td><strong>Total Revenue</strong></td>
+                                <td class="text-end"><strong>&#8377;{{ total_revenue|floatformat:2 }}</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Expense Breakdown -->
+                    <div class="col-md-6">
+                        <h6 class="text-danger fw-bold mb-3">💸 Expense Breakdown</h6>
+                        <table class="table table-sm">
+                            <tr>
+                                <td>💼 Manager Salaries</td>
+                                <td class="text-end fw-bold">&#8377;{{ total_manager_salary|floatformat:2 }}</td>
+                            </tr>
+                            <tr>
+                                <td>👷 Collector Salaries</td>
+                                <td class="text-end fw-bold">&#8377;{{ collector_salary_expense|floatformat:2 }}</td>
+                            </tr>
+                            <tr class="table-danger">
+                                <td><strong>Total Expenses</strong></td>
+                                <td class="text-end"><strong>&#8377;{{ total_expenses|floatformat:2 }}</strong></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Net Profit Summary -->
+                <div class="row mt-4">
+                    <div class="col-12">
+                        <div class="alert {% if gross_profit >= 0 %}alert-success{% else %}alert-danger{% endif %} text-center">
+                            <h4 class="mb-2">
+                                {% if gross_profit >= 0 %}💰{% else %}⚠️{% endif %}
+                                Net {% if gross_profit >= 0 %}Profit{% else %}Loss{% endif %}
+                            </h4>
+                            <h2 class="fw-bold">&#8377;{{ gross_profit|floatformat:2 }}</h2>
+                            <p class="mb-0">Profit Margin: <strong>{{ profit_margin|floatformat:1 }}%</strong></p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <!-- Daily Profit Trend -->
+            <div class="col-lg-8 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="mb-3" style="font-weight: 700; color: #1F2937;">📈 Daily Profit Trend (Last 7 Days)</h5>
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead class="table-light">
+                                    <tr>
+                                        <th>Date</th>
+                                        <th>Revenue</th>
+                                        <th>Expenses</th>
+                                        <th>Profit/Loss</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for day in daily_data %}
+                                    <tr>
+                                        <td><strong>{{ day.date }}</strong></td>
+                                        <td class="text-success">&#8377;{{ day.revenue|floatformat:2 }}</td>
+                                        <td class="text-danger">&#8377;{{ day.expenses|floatformat:2 }}</td>
+                                        <td><strong class="{% if day.profit >= 0 %}text-success{% else %}text-danger{% endif %}">&#8377;{{ day.profit|floatformat:2 }}</strong></td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                                <tfoot class="table-light">
+                                    <tr>
+                                        <td><strong>Period Total</strong></td>
+                                        <td><strong class="text-success">&#8377;{{ total_revenue|floatformat:2 }}</strong></td>
+                                        <td><strong class="text-danger">&#8377;{{ total_expenses|floatformat:2 }}</strong></td>
+                                        <td><strong class="{% if gross_profit >= 0 %}text-success{% else %}text-danger{% endif %}">&#8377;{{ gross_profit|floatformat:2 }}</strong></td>
+                                    </tr>
+                                </tfoot>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Top Revenue Sources -->
+            <div class="col-lg-4 mb-4">
+                <div class="card">
+                    <div class="card-body">
+                        <h5 class="mb-3" style="font-weight: 700; color: #1F2937;">🏆 Top Payment Recipients</h5>
+                        <div class="space-y-3">
+                            {% for receiver in top_receivers %}
+                            <div style="padding: 12px; background: #F9FAFB; border-radius: 8px; margin-bottom: 8px;">
+                                <div style="font-weight: 600; color: #1F2937;">{{ receiver.Receiver_id__name }}</div>
+                                <div style="color: #10B981; font-weight: 700;">&#8377;{{ receiver.total_received|floatformat:2 }}</div>
+                                <small style="color: #6B7280;">{{ receiver.transaction_count }} transactions</small>
+                            </div>
+                            {% empty %}
+                            <p class="text-muted">No payment data available</p>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Recent High-Value Transactions -->
+        <div class="card mb-4">
+            <div class="card-body">
+                <h5 class="mb-3" style="font-weight: 700; color: #1F2937;">💰 Recent High-Value Transactions</h5>
+                <div class="table-responsive">
+                    <table class="table table-hover align-middle">
+                        <thead class="table-light">
+                            <tr>
+                                <th>Transaction ID</th>
+                                <th>Amount</th>
+                                <th>Type</th>
+                                <th>Payer</th>
+                                <th>Receiver</th>
+                                <th>Date</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for transaction in recent_transactions %}
+                            <tr>
+                                <td><strong>#{{ transaction.Transaction_id }}</strong></td>
+                                <td><span class="text-success fw-bold">&#8377;{{ transaction.Amount|floatformat:2 }}</span></td>
+                                <td>
+                                    <span class="badge {% if transaction.transaction_type == 'UPI' %}bg-primary{% else %}bg-warning{% endif %}">
+                                        {{ transaction.transaction_type }}
+                                    </span>
+                                </td>
+                                <td>{{ transaction.Payer_id.name|default:"N/A" }}</td>
+                                <td>{{ transaction.Receiver_id.name|default:"N/A" }}</td>
+                                <td>{{ transaction.transaction_date|date:"d M Y, H:i" }}</td>
+                            </tr>
+                            {% empty %}
+                            <tr>
+                                <td colspan="6" class="text-center py-5 text-muted">No transactions found</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    </section>
+</section>
+
+<style>
+    .dashboard-stat-card {
+        border-radius: 16px;
+        padding: 24px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+        transition: transform 0.3s;
+    }
+
+    .dashboard-stat-card:hover {
+        transform: translateY(-5px);
+    }
+
+    .dashboard-stat-card.bg-success {
+        background: linear-gradient(135deg, #10B981 0%, #059669 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-danger {
+        background: linear-gradient(135deg, #EF4444 0%, #DC2626 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-primary {
+        background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%) !important;
+    }
+
+    .dashboard-stat-card.bg-warning {
+        background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%) !important;
+    }
+
+    .space-y-3 > * + * {
+        margin-top: 0.75rem;
+    }
+</style>
+{% endblock %}
