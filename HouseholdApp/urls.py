@@ -10,4 +10,6 @@ urlpatterns = [
     path('my-requests/', views.view_requests, name='view_requests'),
     path('make-payment/', views.make_payment, name='make_payment'),
     path('payment-history/', views.payment_history, name='payment_history'),
+    path('services/', views.services, name='household_services'),
+    path('contact/', views.contact, name='household_contact'),
 ]

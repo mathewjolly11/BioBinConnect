@@ -275,15 +275,27 @@ def signup(request):
     return redirect('login')
 
 def logout_view(request):
-    """
-    Logs out the user and redirects to the login page.
-    Clears session and prevents back button access.
-    """
+    """Logout the user and redirect to login page"""
     logout(request)
-    messages.success(request, 'logout_success')
-    response = redirect('login')
-    # Prevent caching to stop back button access
-    response['Cache-Control'] = 'no-cache, no-store, must-revalidate, max-age=0'
-    response['Pragma'] = 'no-cache'
-    response['Expires'] = '0'
-    return response
+    messages.success(request, 'You have been logged out successfully.')
+    return redirect('login')
+
+def services(request):
+    """Display services page for guests"""
+    return render(request, 'Guest/services.html')
+
+def contact(request):
+    """Display contact page for guests"""
+    return render(request, 'Guest/contact.html')
+
+def about_us(request):
+    """Display about us page for guests"""
+    return render(request, 'Guest/about.html')
+
+def faq(request):
+    """Display FAQ page for guests"""
+    return render(request, 'Guest/faq.html')
+
+def how_it_works(request):
+    """Display how it works page for guests"""
+    return render(request, 'Guest/how_it_works.html')

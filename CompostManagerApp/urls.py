@@ -11,4 +11,9 @@ urlpatterns = [
     path('profile/', views.compost_manager_profile, name='compost_manager_profile'),
     path('profile/edit/', views.edit_profile, name='compost_manager_edit_profile'),
     path('profile/delete/', views.delete_account, name='compost_manager_delete_account'),
+    
+    # Info pages
+    path('services/', views.services, name='compost_manager_services'),
+    path('contact/', views.contact, name='compost_manager_contact'),
+    path('about/', views.about_us, name='compost_manager_about'),
 ]

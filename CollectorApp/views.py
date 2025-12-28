@@ -9,7 +9,69 @@ from GuestApp.forms import CollectorEditForm, ProfileEditForm
 @login_required(login_url='login')
 @never_cache
 def collector_dashboard(request):
-    return render(request, 'Collector/index.html')
+    from MyApp.models import tbl_PickupRequest, tbl_CollectionRequest, tbl_WasteInventory, tbl_FarmerSupply
+    from django.db.models import Sum
+    from django.utils import timezone
+    from datetime import timedelta
+    
+    collector = Collector.objects.get(user=request.user)
+    
+    # Today's pickups
+    today = timezone.now().date()
+    today_pickups = tbl_PickupRequest.objects.filter(
+        assigned_collector=collector,
+        scheduled_date=today
+    )
+    today_pickups_count = today_pickups.count()
+    
+    # This month's collections
+    month_start = timezone.now().replace(day=1)
+    collections_this_month = tbl_CollectionRequest.objects.filter(
+        collector=collector,
+        collection_date__gte=month_start
+    ).count()
+    
+    # Total waste collected (this month)
+    waste_collected = tbl_CollectionRequest.objects.filter(
+        collector=collector,
+        collection_date__gte=month_start
+    ).aggregate(total=Sum('total_quantity_kg'))['total'] or 0
+    
+    # All time collections
+    total_collections = tbl_CollectionRequest.objects.filter(
+        collector=collector
+    ).count()
+    
+    # Waste inventory (available for farmers)
+    available_waste = tbl_WasteInventory.objects.filter(
+        collector=collector,
+        is_available=True
+    ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+    
+    # Pending deliveries
+    pending_deliveries = tbl_FarmerSupply.objects.filter(
+        Collection_id__collector=collector,
+        delivery_status='Pending'
+    ).count()
+    
+    # Recent collections
+    recent_collections = tbl_CollectionRequest.objects.filter(
+        collector=collector
+    ).order_by('-collection_date')[:5]
+    
+    context = {
+        'collector': collector,
+        'today_pickups': today_pickups,
+        'today_pickups_count': today_pickups_count,
+        'collections_this_month': collections_this_month,
+        'waste_collected': waste_collected,
+        'total_collections': total_collections,
+        'available_waste': available_waste,
+        'pending_deliveries': pending_deliveries,
+        'recent_collections': recent_collections,
+    }
+    
+    return render(request, 'Collector/index.html', context)
 
 @login_required(login_url='login')
 @never_cache
@@ -256,3 +318,18 @@ def update_delivery_status(request, supply_id):
         messages.error(request, 'Order not found or unauthorized access.')
     
     return redirect('collector_sales_orders')
+
+def services(request):
+    """Display services page for collectors"""
+    collector = Collector.objects.get(user=request.user)
+    return render(request, 'Collector/services.html', {'collector': collector})
+
+def contact(request):
+    """Display contact page for collectors"""
+    collector = Collector.objects.get(user=request.user)
+    return render(request, 'Collector/contact.html', {'collector': collector})
+
+def about_us(request):
+    """Display about page for collectors"""
+    collector = Collector.objects.get(user=request.user)
+    return render(request, 'Collector/about.html', {'collector': collector})

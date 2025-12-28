@@ -16,18 +16,18 @@
     <meta content="" name="description" />
     <meta content="" name="author" />
 
-    <link rel="shortcut icon" href="{% static 'backend/assets/images/favicon.png' %}" type="image/x-icon" />
+    <link rel="shortcut icon" href="{% static 'backend/assets/images/icon.webp' %}" type="image/x-icon" />
     <!-- Favicon -->
     <link rel="apple-touch-icon-precomposed"
-        href="{% static 'backend/assets/images/apple-touch-icon-57-precomposed.png' %}">
+        href="{% static 'backend/assets/images/icon.webp' %}">
     <!-- For iPhone -->
     <link rel="apple-touch-icon-precomposed" sizes="114x114"
-        href="{% static 'backend/assets/images/apple-touch-icon-114-precomposed.png' %}">
+        href="{% static 'backend/assets/images/icon.webp' %}">
     <!-- For iPhone 4 Retina display -->
     <link rel="apple-touch-icon-precomposed" sizes="72x72"
-        href="{% static 'backend/assets/images/apple-touch-icon-72-precomposed.png' %}"> <!-- For iPad -->
+        href="{% static 'backend/assets/images/icon.webp' %}"> <!-- For iPad -->
     <link rel="apple-touch-icon-precomposed" sizes="144x144"
-        href="{% static 'backend/assets/images/apple-touch-icon-144-precomposed.png' %}">
+        href="{% static 'backend/assets/images/icon.webp' %}">
     <!-- For iPad Retina display -->
 
 
@@ -63,13 +63,89 @@
     <!-- MODERN ADMIN STYLES -->
     <link href="{% static 'admin/css/modern-admin.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'admin/css/visibility-fixes.css' %}" rel="stylesheet" type="text/css" />
+    <style>
+        /* Mobile Layout Fixes */
+        @media (max-width: 768px) {
+            .page-container, #main-content {
+                margin-top: 0 !important;
+                padding-top: 80px !important;
+                margin-left: 0 !important;
+                padding-left: 15px !important;
+                padding-right: 15px !important;
+                width: 100% !important;
+            }
+            .wrapper.main-wrapper {
+                padding: 0 !important;
+                margin-top: 0 !important;
+            }
+            .page-sidebar {
+                display: none !important;
+            }
+            .page-topbar {
+                display: none !important;
+            }
+        }
+        /* Desktop Overflow Fix for Dropdowns */
+        .page-topbar, .quick-area {
+            overflow: visible !important;
+        }
+    </style>
 
 </head>
 <!-- END HEAD -->
 
 <!-- BEGIN BODY -->
 
-<body class="d-flex flex-column min-vh-100"><!-- START TOPBAR -->
+<body class="d-flex flex-column min-vh-100">
+    <!-- MOBILE HEADER -->
+    <div class="mobile-header d-flex d-md-none align-items-center justify-content-between px-3"
+         style="height: 70px; background: #fff; border-bottom: 1px solid #eee; position: fixed; top: 0; left: 0; right: 0; z-index: 1001; box-shadow: 0 2px 4px rgba(0,0,0,0.05);">
+        <!-- Left: Logo -->
+        <a href="{% url 'admin_index' %}" class="d-flex align-items-center">
+            <img src="{% static 'backend/assets/images/adminlogo.jpg' %}" alt="BioBinConnect" style="height: 45px; width: auto; object-fit: contain;">
+        </a>
+        
+        <!-- Right: Menu Toggle -->
+        <a href="#" data-toggle="collapse" data-target="#mobile-nav-dropdown" class="btn btn-sm d-flex align-items-center gap-2" 
+           style="background: #f3f4f6; border-radius: 8px; padding: 8px 12px; color: #374151; font-weight: 600; text-decoration: none;">
+            <span>MENU</span>
+            <i class="fa fa-bars"></i>
+        </a>
+    </div>
+
+    <!-- MOBILE DROPDOWN NAVIGATION -->
+    <div id="mobile-nav-dropdown" class="collapse d-md-none bg-white border-bottom shadow-sm" 
+         style="position: fixed; top: 70px; left: 0; right: 0; z-index: 1000; max-height: calc(100vh - 70px); overflow-y: auto;">
+        <div class="p-3">
+            <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-2">Management</h6>
+            <a href="{% url 'admin_index' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-dashboard me-2"></i> Dashboard</a>
+            <a href="{% url 'view_users' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-users me-2"></i> Users</a>
+            <a href="{% url 'view_districts' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-map-marker me-2"></i> Districts & Locations</a>
+            <a href="{% url 'view_ra' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-building me-2"></i> Residents Associations</a>
+
+            <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Operations</h6>
+            <a href="{% url 'view_assignments' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-tasks me-2"></i> Assignments</a>
+            <a href="{% url 'view_routes' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-truck me-2"></i> Routes</a>
+
+            <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Sales</h6>
+            <a href="{% url 'admin_waste_sales' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-recycle me-2"></i> Waste Sales</a>
+            <a href="{% url 'admin_compost_sales' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-leaf me-2"></i> Compost Sales</a>
+
+            <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Reports & Finance</h6>
+            <a href="{% url 'admin_reports' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-bar-chart me-2"></i> Analytics</a>
+            <a href="{% url 'payment_transactions' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-credit-card me-2"></i> Transactions</a>
+            <a href="{% url 'manager_salaries' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-briefcase me-2"></i> Manager Salaries</a>
+            <a href="{% url 'collector_salaries' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-hard-hat me-2"></i> Collector Salaries</a>
+
+            <div class="mt-4 mb-3">
+                <a href="#" id="mobile-logout-btn-dropdown" class="btn btn-danger w-100">
+                    <i class="fa fa-power-off me-2"></i> Logout
+                </a>
+            </div>
+        </div>
+    </div>
+
+    <!-- START TOPBAR -->
     <div class='page-topbar '>
         <div class='logo-area' style="position:relative; z-index:10; background: transparent;">
             <a href="{% url 'admin_index' %}">
@@ -391,12 +467,12 @@
             <div class='float-right'>
                 <ul class="info-menu right-links list-inline list-unstyled">
                     <li class="profile list-inline-item">
-                        <a href="#" data-toggle="dropdown" class="toggle">
-                            <img src="{% static 'backend/assets/data/profile/profile.png' %}" alt="user-image"
+                        <a href="#" data-toggle="dropdown" class="nav-link dropdown-toggle">
+                            <img src="{% static 'backend/assets/images/adminlogo.jpg' %}" alt="user-image"
                                 class="rounded-circle img-inline">
-                            <span>Jason Bourne <i class="fa fa-angle-down"></i></span>
+                            <span>Admin <i class="fa fa-angle-down"></i></span>
                         </a>
-                        <ul class="dropdown-menu profile animated fadeIn">
+                        <ul class="dropdown-menu dropdown-menu-right profile">
                             <li class="dropdown-item">
                                 <a href="#settings">
                                     <i class="fa fa-wrench"></i>
@@ -409,26 +485,13 @@
                                     Profile
                                 </a>
                             </li>
-                            <li class="dropdown-item">
-                                <a href="#help">
-                                    <i class="fa fa-info"></i>
-                                    Help
-                                </a>
-                            </li>
                             <li class="last dropdown-item">
-                                <a href="#" id="logout-btn">
-                                    <i class="fa fa-lock"></i>
+                                <a href="#" id="logout-btn" class="text-danger">
+                                    <i class="fa fa-power-off"></i>
                                     Logout
                                 </a>
                             </li>
                         </ul>
-                    </li>
-                    <li class="chat-toggle-wrapper list-inline-item">
-                        <a href="#" data-toggle="chatbar" class="toggle_chat">
-                            <i class="fa fa-comments"></i>
-                            <span class="badge badge-pill badge-warning">9</span>
-                            <i class="fa fa-times"></i>
-                        </a>
                     </li>
                 </ul>
             </div>
@@ -450,7 +513,7 @@
 
                     <div class="profile-image col-lg-4 col-md-4 col-4">
                         <a href="ui-profile.html">
-                            <img src="{% static 'backend/assets/data/profile/profile.png' %}"
+                            <img src="{% static 'backend/assets/images/adminlogo.jpg' %}"
                                 class="img-fluid rounded-circle">
                         </a>
                     </div>
@@ -458,13 +521,13 @@
                     <div class="profile-details col-lg-8 col-md-8 col-8">
 
                         <h3>
-                            <a href="ui-profile.html">Jason Bourne</a>
+                            <a href="ui-profile.html">Admin</a>
 
                             <!-- Available statuses: online, idle, busy, away and offline -->
                             <span class="profile-status online"></span>
                         </h3>
 
-                        <p class="profile-title">Web Developer</p>
+                        <p class="profile-title">Administrator</p>
 
                     </div>
 

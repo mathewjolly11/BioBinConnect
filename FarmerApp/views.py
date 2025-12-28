@@ -9,7 +9,56 @@ from GuestApp.forms import FarmerEditForm, ProfileEditForm
 @login_required(login_url='login')
 @never_cache
 def farmer_dashboard(request):
-    return render(request, 'Farmer/index.html')
+    from MyApp.models import tbl_Order, tbl_WasteInventory, tbl_CompostBatch
+    from django.db.models import Sum
+    from django.utils import timezone
+    
+    farmer = Farmer.objects.get(user=request.user)
+    
+    # Orders summary
+    total_orders = tbl_Order.objects.filter(Buyer_id=farmer).count()
+    pending_payment = tbl_Order.objects.filter(
+        Buyer_id=farmer,
+        Payment_Status='Pending'
+    ).count()
+    paid_orders = tbl_Order.objects.filter(
+        Buyer_id=farmer,
+        Payment_Status='Paid'
+    ).count()
+    
+    # Total spent (all time)
+    total_spent = tbl_Order.objects.filter(
+        Buyer_id=farmer,
+        Payment_Status='Paid'
+    ).aggregate(total=Sum('Total_Amount'))['total'] or 0
+    
+    # Available inventory
+    available_waste = tbl_WasteInventory.objects.filter(
+        is_available=True,
+        status='Available'
+    ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+    
+    available_compost = tbl_CompostBatch.objects.filter(
+        Status='Ready'
+    ).aggregate(total=Sum('Stock_kg'))['total'] or 0
+    
+    # Recent orders
+    recent_orders = tbl_Order.objects.filter(
+        Buyer_id=farmer
+    ).order_by('-Order_Date')[:5]
+    
+    context = {
+        'farmer': farmer,
+        'total_orders': total_orders,
+        'pending_payment': pending_payment,
+        'paid_orders': paid_orders,
+        'total_spent': total_spent,
+        'available_waste': available_waste,
+        'available_compost': available_compost,
+        'recent_orders': recent_orders,
+    }
+    
+    return render(request, 'Farmer/index.html', context)
 
 @login_required(login_url='login')
 @never_cache
@@ -305,6 +354,21 @@ def farmer_payment(request):
             'order_details': pending_order
         }
         return render(request, 'Farmer/payment_processing.html', context)
+
+def services(request):
+    """Display services page for farmers"""
+    farmer = Farmer.objects.get(user=request.user)
+    return render(request, 'Farmer/services.html', {'farmer': farmer})
+
+def contact(request):
+    """Display contact page for farmers"""
+    farmer = Farmer.objects.get(user=request.user)
+    return render(request, 'Farmer/contact.html', {'farmer': farmer})
+
+def about_us(request):
+    """Display about page for farmers"""
+    farmer = Farmer.objects.get(user=request.user)
+    return render(request, 'Farmer/about.html', {'farmer': farmer})
     
     # If POST request, process the payment and create order
     farmer = Farmer.objects.get(user=request.user)

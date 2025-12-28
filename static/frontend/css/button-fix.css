@@ -1,0 +1,26 @@
+/* Critical fix for button enlargement - loads last to override all other CSS */
+button.btn,
+button.btn:active,
+button.btn:focus,
+button.btn:hover,
+button.btn:focus-visible,
+.btn,
+.btn:active,
+.btn:focus,
+.btn:hover,
+.btn:focus-visible,
+a.btn,
+a.btn:active,
+a.btn:focus,
+a.btn:hover,
+a.btn:focus-visible {
+  transform: none !important;
+  -webkit-transform: none !important;
+  -moz-transform: none !important;
+  -ms-transform: none !important;
+  -o-transform: none !important;
+  scale: 1 !important;
+  animation: none !important;
+  -webkit-animation: none !important;
+  transition: background-color 0.15s ease, color 0.15s ease !important;
+}

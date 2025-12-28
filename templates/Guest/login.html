@@ -1,460 +1,568 @@
-{% extends 'Guest/base.html' %}
-{% load static %}
-{% block content %}
+{% extends 'Guest/base.html' %} {% load static %} {% block content %}
 <!-- credits to the writter @leonam-silva-de-souza -->
-<br><br><br><br>
+<br /><br /><br /><br />
 <div class="login-register-page">
-    <div class="container">
-        <div class="form-box login">
-            <form action="" method="post">
-                {% csrf_token %}
-                <h1>Login</h1><br>
+  <div class="container">
+    <div class="form-box login">
+      <form action="" method="post">
+        {% csrf_token %}
+        <h1>Login</h1>
+        <br />
 
-                <div class="input-box">
-                    {{ login_form.username }}
-                    <i class='bx bxs-user'></i>
-                </div>
-                <div class="input-box">
-                    {{ login_form.password }}
-                    <i class='bx bxs-lock-alt'></i>
-                </div>
-                <div class="forgot-link">
-                    <a href="#">Forgot Password?</a>
-                </div>
-                <button type="submit" class="btn" name="form_type" value="login">Login</button>
-                <!-- <p>or login with social platforms</p>
+        <div class="input-box">
+          {{ login_form.username }}
+          <i class="bx bxs-user"></i>
+        </div>
+        <div class="input-box">
+          {{ login_form.password }}
+          <i class="bx bxs-lock-alt"></i>
+        </div>
+        <div class="forgot-link">
+          <a href="#">Forgot Password?</a>
+        </div>
+        <button type="submit" class="btn" name="form_type" value="login">
+          Login
+        </button>
+        <!-- <p>or login with social platforms</p>
                   <div class="social-icons">
                       <a href="#"><i class='bx bxl-google' ></i></a>
                       <a href="#"><i class='bx bxl-facebook' ></i></a>
                       <a href="#"><i class='bx bxl-github' ></i></a>
                       <a href="#"><i class='bx bxl-linkedin' ></i></a>
                   </div> -->
-            </form>
-        </div>
-
-        <div class="form-box register">
-            <form id="register-form" action="{% url 'signup' %}" method="post" enctype="multipart/form-data" novalidate>
-                {% csrf_token %}
-                <div class="role-select-box" style="margin-bottom: 30px;">
-                    <h1>Registration</h1><br>
-                    <div class="input-box">
-                        {{ user_form.role }}
-                        <i class='bx bxs-user-circle'></i>
-                    </div>
-                </div>
-
-                <!-- Step 1: Basic Information -->
-                <div class="register-step step-1 active">
-                    <!-- Role-specific name fields -->
-                    <div class="role-fields role-farmer">
-                        <div class="input-box" style="margin-bottom: 15px;">
-                            {{ farmer_form.farmer_name }}
-                            <i class='bx bxs-user'></i>
-                        </div>
-                    </div>
-
-                    <div class="role-fields role-collector" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 15px;">
-                            {{ collector_form.collector_name }}
-                            <i class='bx bxs-user'></i>
-                        </div>
-                    </div>
-
-                    <div class="role-fields role-compost_manager" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 15px;">
-                            {{ compost_form.compostmanager_name }}
-                            <i class='bx bxs-user'></i>
-                        </div>
-                    </div>
-
-                    <div class="role-fields role-household" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 15px;">
-                            {{ household_form.household_name }}
-                            <i class='bx bxs-user'></i>
-                        </div>
-                    </div>
-
-                    <!-- Email -->
-                    <div class="input-box" style="margin-bottom: 20px;">
-                        {{ user_form.email }}
-                        <i class='bx bxs-envelope'></i>
-                    </div>
-
-                    <button type="button" class="btn next-step" style="width: 100%; margin-top: 10px;">Next</button>
-                </div>
-                <!-- Step 2: Security & Contact -->
-                <div class="register-step step-2">
-                    <!-- Password fields -->
-                    <div class="input-box" style="margin-bottom: 15px;">
-                        {{ user_form.password1 }}
-                        <i class='bx bxs-lock-alt'></i>
-                    </div>
-
-                    <div class="input-box" style="margin-bottom: 15px;">
-                        {{ user_form.password2 }}
-                        <i class='bx bxs-lock-alt'></i>
-                    </div>
-
-                    <!-- Phone field -->
-                    <div class="input-box" style="margin-bottom: 20px;">
-                        {{ user_form.phone }}
-                        <i class='bx bxs-phone'></i>
-                    </div>
-
-                    <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button type="button" class="btn prev-step" style="flex: 1;">Previous</button>
-                        <button type="button" class="btn next-step" style="flex: 1;">Next</button>
-                    </div>
-                </div>
-                <!-- Step 3: Address Information -->
-                <div class="register-step step-3">
-                    <!-- Role-specific address fields -->
-                    <div class="role-fields role-farmer">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            {{ farmer_form.address }}
-                            <i class='bx bxs-home'></i>
-                        </div>
-                    </div>
-
-                    <div class="role-fields role-collector" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            {{ collector_form.address }}
-                            <i class='bx bxs-home'></i>
-                        </div>
-                    </div>
-
-                    <div class="role-fields role-compost_manager" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            {{ compost_form.address }}
-                            <i class='bx bxs-home'></i>
-                        </div>
-                    </div>
-
-                    <div class="role-fields role-household" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            {{ household_form.address }}
-                            <i class='bx bxs-home'></i>
-                        </div>
-                    </div>
-
-                    <div style="display: flex; gap: 10px; margin-top: 20px;">
-                        <button type="button" class="btn prev-step" style="flex: 1;">Previous</button>
-                        <button type="button" class="btn next-step" style="flex: 1;">Next</button>
-                    </div>
-                </div>
-                <!-- Step 4: Additional Information -->
-                <div class="register-step step-4">
-                    <!-- Farmer Additional Fields -->
-                    <div class="role-fields role-farmer">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">Aadhar
-                                Image</label>
-                            {{ farmer_form.aadhaar_image }}
-                            <i class='bx bxs-file-image'></i>
-                        </div>
-                    </div>
-
-                    <!-- Collector Additional Fields -->
-                    <div class="role-fields role-collector" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">License
-                                Image</label>
-                            {{ collector_form.license_image }}
-                            <i class='bx bxs-file-image'></i>
-                        </div>
-                    </div>
-
-                    <!-- Compost Manager Additional Fields -->
-                    <div class="role-fields role-compost_manager" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            {{ compost_form.license_number }}
-                            <i class='bx bxs-id-card'></i>
-                        </div>
-                    </div>
-
-                    <!-- Household Additional Fields -->
-                    <div class="role-fields role-household" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 15px;">
-                            <label
-                                style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">District</label>
-                            {{ household_form.district }}
-                            <i class='bx bxs-map'></i>
-                        </div>
-
-                        <div class="input-box" style="margin-bottom: 15px;">
-                            <label
-                                style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">Location</label>
-                            {{ household_form.location }}
-                            <i class='bx bxs-location-plus'></i>
-                        </div>
-
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">Residents
-                                Association</label>
-                            {{ household_form.residents_association }}
-                            <i class='bx bxs-group'></i>
-                        </div>
-                    </div>
-
-                    <!-- Different buttons for different roles -->
-                    <div class="role-fields role-farmer role-collector role-compost_manager">
-                        <div style="display: flex; gap: 10px; margin-top: 20px;">
-                            <button type="button" class="btn prev-step" style="flex: 1;">Previous</button>
-                            <button type="submit" class="btn" name="form_type" value="register"
-                                style="flex: 1; background: linear-gradient(45deg, #4CAF50, #45a049);">Complete
-                                Registration</button>
-                        </div>
-                    </div>
-
-                    <div class="role-fields role-household" style="display:none;">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">House
-                                No</label>
-                            {{ household_form.house_no }}
-                            <i class='bx bxs-home'></i>
-                        </div>
-                        <div style="display: flex; gap: 10px; margin-top: 20px;">
-                            <button type="button" class="btn prev-step" style="flex: 1;">Previous</button>
-                            <button type="button" class="btn next-step" style="flex: 1;">Next</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Step 5: Document Upload (Household Only) -->
-                <div class="register-step step-5" style="display:none;">
-                    <!-- Only show for household users -->
-                    <div class="role-fields role-household">
-                        <div class="input-box" style="margin-bottom: 20px;">
-                            <label style="display: block; margin-bottom: 8px; color: #666; font-weight: 500;">Aadhar
-                                Image</label>
-                            {{ household_form.aadhaar_image }}
-                            <i class='bx bxs-file-image'></i>
-                        </div>
-
-                        <div style="display: flex; gap: 10px; margin-top: 20px;">
-                            <button type="button" class="btn prev-step" style="flex: 1;">Previous</button>
-                            <button type="submit" class="btn" name="form_type" value="register"
-                                style="flex: 1; background: linear-gradient(45deg, #4CAF50, #45a049);">Complete
-                                Registration</button>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- <p>or register with social platforms</p>
-                  <div class="social-icons">
-                      <a href="#"><i class='bx bxl-google' ></i></a>
-                      <a href="#"><i class='bx bxl-facebook' ></i></a>
-                      <a href="#"><i class='bx bxl-github' ></i></a>
-                      <a href="#"><i class='bx bxl-linkedin' ></i></a>
-                  </div> -->
-            </form>
-            <script>
-                // Multi-step registration form logic with role selection
-                (function () {
-                    const regForm = document.getElementById('register-form');
-                    if (!regForm) return;
-                    const steps = regForm.querySelectorAll('.register-step');
-                    const nextBtn = regForm.querySelector('.next-step');
-                    const prevBtn = regForm.querySelector('.prev-step');
-                    const roleSelect = regForm.querySelector('#id_role'); // Django form field ID
-                    const roleFields = regForm.querySelectorAll('.role-fields');
-
-                    let currentStepIndex = 0;
-                    let maxSteps = 4; // Default for farmer, collector, compost
-
-                    function updateMaxSteps(role) {
-                        if (role === 'household') {
-                            maxSteps = 5;
-                            // Show step 5 for household
-                            const step5 = regForm.querySelector('.step-5');
-                            if (step5) step5.style.display = '';
-                        } else {
-                            maxSteps = 4;
-                            // Hide step 5 for other roles
-                            const step5 = regForm.querySelector('.step-5');
-                            if (step5) step5.style.display = 'none';
-                        }
-                    }
-
-                    function showStep(idx) {
-                        steps.forEach((step, i) => {
-                            if (i === idx) {
-                                step.classList.add('active');
-                                step.style.display = 'block';
-                            } else {
-                                step.classList.remove('active');
-                                step.style.display = 'none';
-                            }
-                        });
-                        currentStepIndex = idx;
-                    }
-
-                    function showRoleFields(role) {
-                        console.log('Showing fields for role:', role); // Debug log
-                        roleFields.forEach(fields => {
-                            // Check if this field group should be shown
-                            const shouldShow = fields.classList.contains('role-' + role) ||
-                                fields.className.includes('role-' + role);
-
-                            if (shouldShow) {
-                                fields.style.display = '';
-                            } else {
-                                fields.style.display = 'none';
-                            }
-                        });
-                        updateMaxSteps(role);
-                    }
-
-                    if (roleSelect) {
-                        roleSelect.addEventListener('change', function () {
-                            showRoleFields(this.value);
-                        });
-                        // Show default role fields on load
-                        if (roleSelect.value) {
-                            showRoleFields(roleSelect.value);
-                        }
-                    }
-
-                    if (nextBtn) {
-                        document.querySelectorAll('.next-step').forEach(btn => {
-                            btn.addEventListener('click', function () {
-                                if (currentStepIndex < maxSteps - 1) {
-                                    showStep(currentStepIndex + 1);
-                                }
-                            });
-                        });
-                    }
-
-                    if (prevBtn) {
-                        document.querySelectorAll('.prev-step').forEach(btn => {
-                            btn.addEventListener('click', function () {
-                                if (currentStepIndex > 0) {
-                                    showStep(currentStepIndex - 1);
-                                }
-                            });
-                        });
-                    }
-
-                    // Ensure first step is visible on load
-                    showStep(0);
-
-                    // Initialize role fields on page load - wait for DOM to be ready
-                    setTimeout(() => {
-                        if (roleSelect && roleSelect.value) {
-                            showRoleFields(roleSelect.value);
-                        } else {
-                            // Default to farmer if no role selected
-                            showRoleFields('farmer');
-                        }
-                    }, 100);
-                })();
-            </script>
-        </div>
-
-        <div class="toggle-box">
-            <div class="toggle-panel toggle-left">
-                <h1>Hello, Welcome!</h1>
-                <p>Don't have an account?</p>
-                <button class="btn register-btn">Register</button>
-            </div>
-
-            <div class="toggle-panel toggle-right">
-                <h1>Welcome Back!</h1>
-                <p>Already have an account?</p>
-                <button class="btn login-btn">Login</button>
-            </div>
-        </div>
+      </form>
     </div>
+
+    <div class="form-box register">
+      <form
+        id="register-form"
+        action="{% url 'signup' %}"
+        method="post"
+        enctype="multipart/form-data"
+        novalidate
+      >
+        {% csrf_token %}
+        <div class="role-select-box" style="margin-bottom: 30px">
+          <h1>Registration</h1>
+          <br />
+          <div class="input-box">
+            {{ user_form.role }}
+            <i class="bx bxs-user-circle"></i>
+          </div>
+        </div>
+
+        <!-- Step 1: Basic Information -->
+        <div class="register-step step-1 active">
+          <!-- Role-specific name fields -->
+          <div class="role-fields role-farmer">
+            <div class="input-box" style="margin-bottom: 15px">
+              {{ farmer_form.farmer_name }}
+              <i class="bx bxs-user"></i>
+            </div>
+          </div>
+
+          <div class="role-fields role-collector" style="display: none">
+            <div class="input-box" style="margin-bottom: 15px">
+              {{ collector_form.collector_name }}
+              <i class="bx bxs-user"></i>
+            </div>
+          </div>
+
+          <div class="role-fields role-compost_manager" style="display: none">
+            <div class="input-box" style="margin-bottom: 15px">
+              {{ compost_form.compostmanager_name }}
+              <i class="bx bxs-user"></i>
+            </div>
+          </div>
+
+          <div class="role-fields role-household" style="display: none">
+            <div class="input-box" style="margin-bottom: 15px">
+              {{ household_form.household_name }}
+              <i class="bx bxs-user"></i>
+            </div>
+          </div>
+
+          <!-- Email -->
+          <div class="input-box" style="margin-bottom: 20px">
+            {{ user_form.email }}
+            <i class="bx bxs-envelope"></i>
+          </div>
+
+          <button
+            type="button"
+            class="btn next-step"
+            style="width: 100%; margin-top: 10px"
+          >
+            Next
+          </button>
+        </div>
+        <!-- Step 2: Security & Contact -->
+        <div class="register-step step-2">
+          <!-- Password fields -->
+          <div class="input-box" style="margin-bottom: 15px">
+            {{ user_form.password1 }}
+            <i class="bx bxs-lock-alt"></i>
+          </div>
+
+          <div class="input-box" style="margin-bottom: 15px">
+            {{ user_form.password2 }}
+            <i class="bx bxs-lock-alt"></i>
+          </div>
+
+          <!-- Phone field -->
+          <div class="input-box" style="margin-bottom: 20px">
+            {{ user_form.phone }}
+            <i class="bx bxs-phone"></i>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 20px">
+            <button type="button" class="btn prev-step" style="flex: 1">
+              Previous
+            </button>
+            <button type="button" class="btn next-step" style="flex: 1">
+              Next
+            </button>
+          </div>
+        </div>
+        <!-- Step 3: Address Information -->
+        <div class="register-step step-3">
+          <!-- Role-specific address fields -->
+          <div class="role-fields role-farmer">
+            <div class="input-box" style="margin-bottom: 20px">
+              {{ farmer_form.address }}
+              <i class="bx bxs-home"></i>
+            </div>
+          </div>
+
+          <div class="role-fields role-collector" style="display: none">
+            <div class="input-box" style="margin-bottom: 20px">
+              {{ collector_form.address }}
+              <i class="bx bxs-home"></i>
+            </div>
+          </div>
+
+          <div class="role-fields role-compost_manager" style="display: none">
+            <div class="input-box" style="margin-bottom: 20px">
+              {{ compost_form.address }}
+              <i class="bx bxs-home"></i>
+            </div>
+          </div>
+
+          <div class="role-fields role-household" style="display: none">
+            <div class="input-box" style="margin-bottom: 20px">
+              {{ household_form.address }}
+              <i class="bx bxs-home"></i>
+            </div>
+          </div>
+
+          <div style="display: flex; gap: 10px; margin-top: 20px">
+            <button type="button" class="btn prev-step" style="flex: 1">
+              Previous
+            </button>
+            <button type="button" class="btn next-step" style="flex: 1">
+              Next
+            </button>
+          </div>
+        </div>
+        <!-- Step 4: Additional Information -->
+        <div class="register-step step-4">
+          <!-- Farmer Additional Fields -->
+          <div class="role-fields role-farmer">
+            <div class="input-box" style="margin-bottom: 20px">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #666;
+                  font-weight: 500;
+                "
+                >Aadhar Image</label
+              >
+              {{ farmer_form.aadhaar_image }}
+              <i class="bx bxs-file-image"></i>
+            </div>
+          </div>
+
+          <!-- Collector Additional Fields -->
+          <div class="role-fields role-collector" style="display: none">
+            <div class="input-box" style="margin-bottom: 20px">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #666;
+                  font-weight: 500;
+                "
+                >License Image</label
+              >
+              {{ collector_form.license_image }}
+              <i class="bx bxs-file-image"></i>
+            </div>
+          </div>
+
+          <!-- Compost Manager Additional Fields -->
+          <div class="role-fields role-compost_manager" style="display: none">
+            <div class="input-box" style="margin-bottom: 20px">
+              {{ compost_form.license_number }}
+              <i class="bx bxs-id-card"></i>
+            </div>
+          </div>
+
+          <!-- Household Additional Fields (Split Part 1) -->
+          <div class="role-fields role-household" style="display: none">
+            <div class="input-box" style="margin-bottom: 15px">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #666;
+                  font-weight: 500;
+                "
+                >District</label
+              >
+              {{ household_form.district }}
+              <i class="bx bxs-map"></i>
+            </div>
+
+            <div class="input-box" style="margin-bottom: 15px">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #666;
+                  font-weight: 500;
+                "
+                >Location</label
+              >
+              {{ household_form.location }}
+              <i class="bx bxs-location-plus"></i>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px">
+              <button type="button" class="btn prev-step" style="flex: 1">
+                Previous
+              </button>
+              <button type="button" class="btn next-step" style="flex: 1">
+                Next
+              </button>
+            </div>
+          </div>
+
+          <!-- Different buttons for different roles (Non-Household finish here) -->
+          <div
+            class="role-fields role-farmer role-collector role-compost_manager"
+          >
+            <div style="display: flex; gap: 10px; margin-top: 20px">
+              <button type="button" class="btn prev-step" style="flex: 1">
+                Previous
+              </button>
+              <button
+                type="submit"
+                class="btn"
+                name="form_type"
+                value="register"
+                style="
+                  flex: 1;
+                  background: linear-gradient(45deg, #4caf50, #45a049);
+                "
+              >
+                Complete Registration
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 5: Household Additional Info Part 2 -->
+        <div class="register-step step-5" style="display: none">
+          <div class="role-fields role-household">
+            <div class="input-box" style="margin-bottom: 20px">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #666;
+                  font-weight: 500;
+                "
+                >Residents Association</label
+              >
+              {{ household_form.residents_association }}
+              <i class="bx bxs-group"></i>
+            </div>
+
+            <div class="input-box" style="margin-bottom: 20px">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #666;
+                  font-weight: 500;
+                "
+                >House No</label
+              >
+              {{ household_form.house_no }}
+              <i class="bx bxs-home"></i>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px">
+              <button type="button" class="btn prev-step" style="flex: 1">
+                Previous
+              </button>
+              <button type="button" class="btn next-step" style="flex: 1">
+                Next
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Step 6: Document Upload (Household Only) -->
+        <div class="register-step step-6" style="display: none">
+          <!-- Only show for household users -->
+          <div class="role-fields role-household">
+            <div class="input-box" style="margin-bottom: 20px">
+              <label
+                style="
+                  display: block;
+                  margin-bottom: 8px;
+                  color: #666;
+                  font-weight: 500;
+                "
+                >Aadhar Image</label
+              >
+              {{ household_form.aadhaar_image }}
+              <i class="bx bxs-file-image"></i>
+            </div>
+
+            <div style="display: flex; gap: 10px; margin-top: 20px">
+              <button type="button" class="btn prev-step" style="flex: 1">
+                Previous
+              </button>
+              <button
+                type="submit"
+                class="btn"
+                name="form_type"
+                value="register"
+                style="
+                  flex: 1;
+                  background: linear-gradient(45deg, #4caf50, #45a049);
+                "
+              >
+                Complete Registration
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- <p>or register with social platforms</p>
+                  <div class="social-icons">
+                      <a href="#"><i class='bx bxl-google' ></i></a>
+                      <a href="#"><i class='bx bxl-facebook' ></i></a>
+                      <a href="#"><i class='bx bxl-github' ></i></a>
+                      <a href="#"><i class='bx bxl-linkedin' ></i></a>
+                  </div> -->
+      </form>
+      <script>
+        // Multi-step registration form logic with role selection
+        (function () {
+          const regForm = document.getElementById("register-form");
+          if (!regForm) return;
+          const steps = regForm.querySelectorAll(".register-step");
+          const nextBtn = regForm.querySelector(".next-step");
+          const prevBtn = regForm.querySelector(".prev-step");
+          const roleSelect = regForm.querySelector("#id_role"); // Django form field ID
+          const roleFields = regForm.querySelectorAll(".role-fields");
+
+          let currentStepIndex = 0;
+          let maxSteps = 4; // Default for farmer, collector, compost
+
+          function updateMaxSteps(role) {
+            if (role === "household") {
+              maxSteps = 6;
+              // Ensure step 5 and 6 are generally available to be shown
+            } else {
+              maxSteps = 4;
+            }
+          }
+
+          function showStep(idx) {
+            steps.forEach((step, i) => {
+              if (i === idx) {
+                step.classList.add("active");
+                step.style.display = "block";
+              } else {
+                step.classList.remove("active");
+                step.style.display = "none";
+              }
+            });
+            currentStepIndex = idx;
+          }
+
+          function showRoleFields(role) {
+            console.log("Showing fields for role:", role); // Debug log
+            roleFields.forEach((fields) => {
+              // Check if this field group should be shown
+              const shouldShow =
+                fields.classList.contains("role-" + role) ||
+                fields.className.includes("role-" + role);
+
+              if (shouldShow) {
+                fields.style.display = "";
+              } else {
+                fields.style.display = "none";
+              }
+            });
+            updateMaxSteps(role);
+          }
+
+          if (roleSelect) {
+            roleSelect.addEventListener("change", function () {
+              showRoleFields(this.value);
+            });
+            // Show default role fields on load
+            if (roleSelect.value) {
+              showRoleFields(roleSelect.value);
+            }
+          }
+
+          if (nextBtn) {
+            document.querySelectorAll(".next-step").forEach((btn) => {
+              btn.addEventListener("click", function () {
+                if (currentStepIndex < maxSteps - 1) {
+                  showStep(currentStepIndex + 1);
+                }
+              });
+            });
+          }
+
+          if (prevBtn) {
+            document.querySelectorAll(".prev-step").forEach((btn) => {
+              btn.addEventListener("click", function () {
+                if (currentStepIndex > 0) {
+                  showStep(currentStepIndex - 1);
+                }
+              });
+            });
+          }
+
+          // Ensure first step is visible on load
+          showStep(0);
+
+          // Initialize role fields on page load - wait for DOM to be ready
+          setTimeout(() => {
+            if (roleSelect && roleSelect.value) {
+              showRoleFields(roleSelect.value);
+            } else {
+              // Default to farmer if no role selected
+              showRoleFields("farmer");
+            }
+          }, 100);
+        })();
+      </script>
+    </div>
+
+    <div class="toggle-box">
+      <div class="toggle-panel toggle-left">
+        <h1>Hello, Welcome!</h1>
+        <p>Don't have an account?</p>
+        <button class="btn register-btn">Register</button>
+      </div>
+
+      <div class="toggle-panel toggle-right">
+        <h1>Welcome Back!</h1>
+        <p>Already have an account?</p>
+        <button class="btn login-btn">Login</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <!-- SweetAlert for Admin Login Success -->
 <script>
-    document.addEventListener('DOMContentLoaded', function () {
-        const container = document.querySelector('.container');
-        const registerBtn = document.querySelector('.register-btn');
-        const loginBtn = document.querySelector('.login-btn');
+  document.addEventListener('DOMContentLoaded', function () {
+      const container = document.querySelector('.container');
+      const registerBtn = document.querySelector('.register-btn');
+      const loginBtn = document.querySelector('.login-btn');
 
-        if (registerBtn && loginBtn && container) {
-            registerBtn.addEventListener('click', () => {
-                container.classList.add("active");
-            });
+      if (registerBtn && loginBtn && container) {
+          registerBtn.addEventListener('click', () => {
+              container.classList.add("active");
+          });
 
-            loginBtn.addEventListener('click', () => {
-                container.classList.remove("active");
-            });
-        }
+          loginBtn.addEventListener('click', () => {
+              container.classList.remove("active");
+          });
+      }
 
-        {% if show_register %}
-        if (container) {
-            container.classList.add("active");
-        }
-        {% endif %}
+      {% if show_register %}
+      if (container) {
+          container.classList.add("active");
+      }
+      {% endif %}
 
-        {% if messages %}
-        {% for message in messages %}
-        console.log('Message found:', '{{ message.message }}', 'Tags:', '{{ message.tags }}');
-        {% if message.message == 'admin_login_success' %}
-        console.log('Showing admin success alert');
-        Swal.fire({
-            title: 'Welcome Admin!',
-            text: 'You have successfully logged in as Administrator',
-            icon: 'success',
-            confirmButtonText: 'Continue to Dashboard',
-            confirmButtonColor: '#6366f1',
-            background: '#fff',
-            allowOutsideClick: false,
-            allowEscapeKey: false,
-            timer: null,
-            showClass: {
-                popup: 'animate__animated animate__fadeInUp'
-            },
-            hideClass: {
-                popup: 'animate__animated animate__fadeOutDown'
-            }
-        }).then((result) => {
-            console.log('SweetAlert closed, redirecting...');
-            window.location.href = "{% url 'admin_index' %}";
-        });
-        {% elif message.message == 'signup_success' %}
-        Swal.fire({
-            title: 'Registration Successful!',
-            text: 'Your account has been created successfully. Please login to continue.',
-            icon: 'success',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#4CAF50'
-        });
-        {% elif message.message == 'account_not_verified' %}
-        Swal.fire({
-            title: 'Account Not Verified',
-            text: 'Your account is pending admin approval. Please wait for verification before logging in.',
-            icon: 'warning',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#ff9800'
-        });
-        {% elif message.message == 'logout_success' %}
-        Swal.fire({
-            title: 'Logged Out Successfully',
-            text: 'You have been logged out. See you again soon!',
-            icon: 'success',
-            confirmButtonText: 'OK',
-            confirmButtonColor: '#6c9a2e',
-            iconColor: '#6c9a2e'
-        });
-        {% elif message.tags == 'error' %}
-        console.log('Showing error alert');
-        Swal.fire({
-            title: 'Error!',
-            text: '{{ message.message }}',
-            icon: 'error',
-            confirmButtonText: 'Try Again',
-            confirmButtonColor: '#ef4444'
-        });
-        {% endif %}
-        {% endfor %}
-        {% else %}
-        console.log('No messages found');
-        {% endif %}
-    });
+      {% if messages %}
+      {% for message in messages %}
+      console.log('Message found:', '{{ message.message }}', 'Tags:', '{{ message.tags }}');
+      {% if message.message == 'admin_login_success' %}
+      console.log('Showing admin success alert');
+      Swal.fire({
+          title: 'Welcome Admin!',
+          text: 'You have successfully logged in as Administrator',
+          icon: 'success',
+          confirmButtonText: 'Continue to Dashboard',
+          confirmButtonColor: '#6366f1',
+          background: '#fff',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          timer: null,
+          showClass: {
+              popup: 'animate__animated animate__fadeInUp'
+          },
+          hideClass: {
+              popup: 'animate__animated animate__fadeOutDown'
+          }
+      }).then((result) => {
+          console.log('SweetAlert closed, redirecting...');
+          window.location.href = "{% url 'admin_index' %}";
+      });
+      {% elif message.message == 'signup_success' %}
+      Swal.fire({
+          title: 'Registration Successful!',
+          text: 'Your account has been created successfully. Please login to continue.',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#4CAF50'
+      });
+      {% elif message.message == 'account_not_verified' %}
+      Swal.fire({
+          title: 'Account Not Verified',
+          text: 'Your account is pending admin approval. Please wait for verification before logging in.',
+          icon: 'warning',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#ff9800'
+      });
+      {% elif message.message == 'logout_success' %}
+      Swal.fire({
+          title: 'Logged Out Successfully',
+          text: 'You have been logged out. See you again soon!',
+          icon: 'success',
+          confirmButtonText: 'OK',
+          confirmButtonColor: '#6c9a2e',
+          iconColor: '#6c9a2e'
+      });
+      {% elif message.tags == 'error' %}
+      console.log('Showing error alert');
+      Swal.fire({
+          title: 'Error!',
+          text: '{{ message.message }}',
+          icon: 'error',
+          confirmButtonText: 'Try Again',
+          confirmButtonColor: '#ef4444'
+      });
+      {% endif %}
+      {% endfor %}
+      {% else %}
+      console.log('No messages found');
+      {% endif %}
+  });
 </script>
 
 {% endblock %}

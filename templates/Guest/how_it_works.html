@@ -1,0 +1,461 @@
+{% extends 'Guest/base.html' %} {% load static %} {% block content %}
+<section
+  id="main-content"
+  style="background-color: #f3f4f6; min-height: 100vh; padding-top: 100px"
+>
+  <div class="container">
+    <br /><br /><br /><br />
+    <!-- Page Header -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 style="font-weight: 800; color: #111827; margin-bottom: 16px">
+          How It Works
+        </h1>
+        <p style="color: #6b7280; font-size: 1.1rem">
+          A simple 4-step process to sustainable waste management
+        </p>
+      </div>
+    </div>
+
+    <!-- Process Steps -->
+    <div class="row g-4 mb-5">
+      <div class="col-md-6 col-lg-3">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+            text-align: center;
+          "
+        >
+          <div
+            style="
+              width: 80px;
+              height: 80px;
+              background: #ecfdf5;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              color: #10b981;
+              font-size: 2.5rem;
+              font-weight: 800;
+            "
+          >
+            1
+          </div>
+          <h4 style="font-weight: 700; color: #111827; margin-bottom: 15px">
+            Sign Up
+          </h4>
+          <p style="color: #6b7280; line-height: 1.6">
+            Create your account by selecting your role and providing necessary
+            details. Wait for admin approval.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+            text-align: center;
+          "
+        >
+          <div
+            style="
+              width: 80px;
+              height: 80px;
+              background: #fef3c7;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              color: #f59e0b;
+              font-size: 2.5rem;
+              font-weight: 800;
+            "
+          >
+            2
+          </div>
+          <h4 style="font-weight: 700; color: #111827; margin-bottom: 15px">
+            Schedule Pickup
+          </h4>
+          <p style="color: #6b7280; line-height: 1.6">
+            Choose your bin type, select a convenient date, and complete the
+            payment securely online.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+            text-align: center;
+          "
+        >
+          <div
+            style="
+              width: 80px;
+              height: 80px;
+              background: #dbeafe;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              color: #3b82f6;
+              font-size: 2.5rem;
+              font-weight: 800;
+            "
+          >
+            3
+          </div>
+          <h4 style="font-weight: 700; color: #111827; margin-bottom: 15px">
+            Collection
+          </h4>
+          <p style="color: #6b7280; line-height: 1.6">
+            Our assigned collector picks up your biodegradable waste on the
+            scheduled date and time.
+          </p>
+        </div>
+      </div>
+
+      <div class="col-md-6 col-lg-3">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+            text-align: center;
+          "
+        >
+          <div
+            style="
+              width: 80px;
+              height: 80px;
+              background: #f3e8ff;
+              border-radius: 50%;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin: 0 auto 20px;
+              color: #9333ea;
+              font-size: 2.5rem;
+              font-weight: 800;
+            "
+          >
+            4
+          </div>
+          <h4 style="font-weight: 700; color: #111827; margin-bottom: 15px">
+            Composting
+          </h4>
+          <p style="color: #6b7280; line-height: 1.6">
+            Waste is converted into nutrient-rich compost and sold to farmers
+            for sustainable agriculture.
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- For Each Role -->
+    <div class="row mb-5">
+      <div class="col-12 text-center mb-4">
+        <h2 style="font-weight: 800; color: #111827">
+          How It Works For Each Role
+        </h2>
+      </div>
+
+      <!-- Households -->
+      <div class="col-lg-6 mb-4">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <div style="display: flex; align-items: center; margin-bottom: 20px">
+            <div
+              style="
+                width: 60px;
+                height: 60px;
+                background: #ecfdf5;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #10b981;
+                font-size: 2rem;
+                margin-right: 15px;
+              "
+            >
+              🏠
+            </div>
+            <h3 style="font-weight: 700; color: #111827; margin: 0">
+              For Households
+            </h3>
+          </div>
+          <ul style="color: #6b7280; line-height: 2; padding-left: 20px">
+            <li>Register and get admin approval</li>
+            <li>Request pickup by selecting bin type and date</li>
+            <li>Make secure payment (UPI or COD)</li>
+            <li>Collector automatically assigned based on location</li>
+            <li>Track request status in real-time</li>
+            <li>View payment history and receipts</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Collectors -->
+      <div class="col-lg-6 mb-4">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <div style="display: flex; align-items: center; margin-bottom: 20px">
+            <div
+              style="
+                width: 60px;
+                height: 60px;
+                background: #fef3c7;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #f59e0b;
+                font-size: 2rem;
+                margin-right: 15px;
+              "
+            >
+              🚛
+            </div>
+            <h3 style="font-weight: 700; color: #111827; margin: 0">
+              For Collectors
+            </h3>
+          </div>
+          <ul style="color: #6b7280; line-height: 2; padding-left: 20px">
+            <li>Register with vehicle and license details</li>
+            <li>Get assigned to specific routes by admin</li>
+            <li>View assigned pickup requests</li>
+            <li>Collect waste from households</li>
+            <li>Log collection details (weight, status)</li>
+            <li>Track earnings and collection history</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Compost Managers -->
+      <div class="col-lg-6 mb-4">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <div style="display: flex; align-items: center; margin-bottom: 20px">
+            <div
+              style="
+                width: 60px;
+                height: 60px;
+                background: #dbeafe;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #3b82f6;
+                font-size: 2rem;
+                margin-right: 15px;
+              "
+            >
+              🌱
+            </div>
+            <h3 style="font-weight: 700; color: #111827; margin: 0">
+              For Compost Managers
+            </h3>
+          </div>
+          <ul style="color: #6b7280; line-height: 2; padding-left: 20px">
+            <li>Register with facility and license information</li>
+            <li>Receive biodegradable waste from collectors</li>
+            <li>Process waste into high-quality compost</li>
+            <li>List compost products for farmers</li>
+            <li>Manage inventory and pricing</li>
+            <li>Track production and sales</li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Farmers -->
+      <div class="col-lg-6 mb-4">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <div style="display: flex; align-items: center; margin-bottom: 20px">
+            <div
+              style="
+                width: 60px;
+                height: 60px;
+                background: #f3e8ff;
+                border-radius: 12px;
+                display: flex;
+                align-items: center;
+                justify-content: center;
+                color: #9333ea;
+                font-size: 2rem;
+                margin-right: 15px;
+              "
+            >
+              🌾
+            </div>
+            <h3 style="font-weight: 700; color: #111827; margin: 0">
+              For Farmers
+            </h3>
+          </div>
+          <ul style="color: #6b7280; line-height: 2; padding-left: 20px">
+            <li>Register with farm details</li>
+            <li>Browse available compost products</li>
+            <li>Place orders for organic compost</li>
+            <li>Make secure payments</li>
+            <li>Schedule delivery or pickup</li>
+            <li>Track order status and history</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+
+    <!-- Benefits -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div
+          style="
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            border-radius: 20px;
+            padding: 50px;
+            color: white;
+          "
+        >
+          <h2 style="font-weight: 800; margin-bottom: 30px; text-align: center">
+            Benefits of BioBinConnect
+          </h2>
+          <div class="row g-4">
+            <div class="col-md-4 text-center">
+              <div style="font-size: 3rem; margin-bottom: 15px">🌍</div>
+              <h5 style="font-weight: 700; margin-bottom: 10px">
+                Environmental
+              </h5>
+              <p style="opacity: 0.9">
+                Reduces landfill waste and greenhouse gas emissions
+              </p>
+            </div>
+            <div class="col-md-4 text-center">
+              <div style="font-size: 3rem; margin-bottom: 15px">💰</div>
+              <h5 style="font-weight: 700; margin-bottom: 10px">Economic</h5>
+              <p style="opacity: 0.9">
+                Creates jobs and supports local circular economy
+              </p>
+            </div>
+            <div class="col-md-4 text-center">
+              <div style="font-size: 3rem; margin-bottom: 15px">🤝</div>
+              <h5 style="font-weight: 700; margin-bottom: 10px">Community</h5>
+              <p style="opacity: 0.9">
+                Connects stakeholders for sustainable development
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- CTA -->
+    <div class="row">
+      <div class="col-12 text-center">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+          "
+        >
+          <h3 style="font-weight: 700; color: #111827; margin-bottom: 20px">
+            Ready to Get Started?
+          </h3>
+          <p style="color: #6b7280; margin-bottom: 30px">
+            Join thousands of users making a difference
+          </p>
+          <a
+            href="{% url 'signup' %}"
+            class="btn"
+            style="
+              background: #10b981;
+              color: white;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-weight: 600;
+              text-decoration: none;
+              display: inline-block;
+              margin-right: 10px;
+            "
+            >Create Account</a
+          >
+          <a
+            href="{% url 'guest_services' %}"
+            class="btn"
+            style="
+              background: white;
+              color: #10b981;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-weight: 600;
+              text-decoration: none;
+              display: inline-block;
+              border: 2px solid #10b981;
+            "
+            >Learn More</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding-bottom: 60px"></div>
+</section>
+{% endblock %}

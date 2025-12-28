@@ -87,16 +87,19 @@
                                             <li><a href="homepage-4.html">Homepage 4</a></li>
                                         </ul> -->
                                     </li>
-                                    <li><a class="menu-item" href="services.html">Services</a>
-                                        <ul>
+                                    <li><a class="menu-item" href="{% url 'guest_services' %}">Services</a>
+                                        <!-- <ul>
                                             <li><a href="services.html">All Services Style 1</a></li>
                                             <li><a href="services-2.html">All Services Style 2</a></li>
                                             <li><a href="service-single.html">Service Single</a></li>
                                             <li><a href="pricing-table.html">Pricing Table</a></li>
                                             <li><a href="faq.html">FAQ</a></li>
-                                        </ul>
+                                        </ul> -->
                                     </li>
-                                    <li><a class="menu-item" href="projects.html">Projects</a></li>
+                                    <li><a class="menu-item" href="{% url 'guest_about' %}">About Us</a></li>
+                                    <li><a class="menu-item" href="{% url 'guest_how_it_works' %}">How It Works</a></li>
+                                    <li><a class="menu-item" href="{% url 'guest_faq' %}">FAQ</a></li>
+                                    <!-- <li><a class="menu-item" href="projects.html">Projects</a></li>
                                     <li><a class="menu-item" href="#">Company</a>
                                         <ul>
                                             <li><a href="about.html">About Us</a></li>
@@ -104,8 +107,8 @@
                                             <li><a href="gallery.html">Gallery</a></li>
                                         </ul>
                                     </li>
-                                    <li><a class="menu-item" href="blog.html">Blog</a></li>
-                                    <li><a class="menu-item" href="contact.html">Contact</a></li>
+                                    <li><a class="menu-item" href="blog.html">Blog</a></li> -->
+                                    <li><a class="menu-item" href="{% url 'guest_contact' %}">Contact</a></li>
                                 </ul>
                                 <!-- mainmenu end -->
                             </div>
@@ -143,27 +146,25 @@
                         <div class="row">
                             <div class="col-lg-6 col-sm-6">
                                 <div class="widget">
-                                    <h5>Company</h5>
+                                    <h5>Quick Links</h5>
                                     <ul>
-                                        <li><a href="index.html">Home</a></li>
-                                        <li><a href="services.html">Our Services</a></li>
-                                        <li><a href="projects.html">Projects</a></li>
-                                        <li><a href="about.html">About Us</a></li>
-                                        <li><a href="blog.html">Blog</a></li>
-                                        <li><a href="contact.html">Contact</a></li>
+                                        <li><a href="{% url 'guest_index' %}">Home</a></li>
+                                        <li><a href="{% url 'guest_services' %}">Services</a></li>
+                                        <li><a href="{% url 'guest_about' %}">About Us</a></li>
+                                        <li><a href="{% url 'guest_how_it_works' %}">How It Works</a></li>
+                                        <li><a href="{% url 'guest_faq' %}">FAQ</a></li>
+                                        <li><a href="{% url 'guest_contact' %}">Contact</a></li>
                                     </ul>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-sm-6">
                                 <div class="widget">
-                                    <h5>Our Services</h5>
+                                    <h5>Get Started</h5>
                                     <ul>
-                                        <li><a href="service-single.html">Waste Collection</a></li>
-                                        <li><a href="service-single.html">Commercial Recycling</a></li>
-                                        <li><a href="service-single.html">Dumpster Rental</a></li>
-                                        <li><a href="service-single.html">Organic Waste</a></li>
-                                        <li><a href="service-single.html">E-waste Disposal</a></li>
-                                        <li><a href="service-single.html">Medical Waste</a></li>
+                                        <li><a href="{% url 'signup' %}">Sign Up</a></li>
+                                        <li><a href="{% url 'login' %}">Login</a></li>
+                                        <li><a href="{% url 'booking' %}">Schedule Pickup</a></li>
+                                    </ul>
                                     </ul>
                                 </div>
                             </div>

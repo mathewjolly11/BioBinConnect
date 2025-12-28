@@ -13,4 +13,9 @@ urlpatterns = [
     path('place-order/', views.farmer_place_order, name='farmer_place_order'),
     path('orders/', views.farmer_orders, name='farmer_orders'),
     path('payment/', views.farmer_payment, name='farmer_payment'),
+    
+    # Info pages
+    path('services/', views.services, name='farmer_services'),
+    path('contact/', views.contact, name='farmer_contact'),
+    path('about/', views.about_us, name='farmer_about'),
 ]

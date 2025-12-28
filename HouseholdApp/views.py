@@ -9,7 +9,66 @@ from GuestApp.forms import HouseholdEditForm, ProfileEditForm
 @login_required(login_url='login')
 @never_cache
 def household_dashboard(request):
-    return render(request, 'HouseHold/index.html')
+    from MyApp.models import tbl_PickupRequest, tbl_HouseholdPayment
+    from django.db.models import Sum
+    from django.utils import timezone
+    from datetime import timedelta
+    
+    household = Household.objects.get(user=request.user)
+    
+    # Pickup requests summary
+    total_requests = tbl_PickupRequest.objects.filter(household=household).count()
+    pending_requests = tbl_PickupRequest.objects.filter(
+        household=household, 
+        status='Pending'
+    ).count()
+    completed_requests = tbl_PickupRequest.objects.filter(
+        household=household, 
+        status='Completed'
+    ).count()
+    
+    # Next scheduled pickup
+    next_pickup = tbl_PickupRequest.objects.filter(
+        household=household,
+        status__in=['Pending', 'Approved'],
+        scheduled_date__gte=timezone.now().date()
+    ).order_by('scheduled_date').first()
+    
+    # Payment summary (last 30 days)
+    thirty_days_ago = timezone.now() - timedelta(days=30)
+    total_paid = tbl_HouseholdPayment.objects.filter(
+        household=household,
+        payment_date__gte=thirty_days_ago
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    
+    # All time payments
+    total_paid_all_time = tbl_HouseholdPayment.objects.filter(
+        household=household
+    ).aggregate(total=Sum('amount'))['total'] or 0
+    
+    # Recent payments
+    recent_payments = tbl_HouseholdPayment.objects.filter(
+        household=household
+    ).order_by('-payment_date')[:5]
+    
+    # Recent requests
+    recent_requests = tbl_PickupRequest.objects.filter(
+        household=household
+    ).order_by('-scheduled_date')[:5]
+    
+    context = {
+        'household': household,
+        'total_requests': total_requests,
+        'pending_requests': pending_requests,
+        'completed_requests': completed_requests,
+        'next_pickup': next_pickup,
+        'total_paid': total_paid,
+        'total_paid_all_time': total_paid_all_time,
+        'recent_payments': recent_payments,
+        'recent_requests': recent_requests,
+    }
+    
+    return render(request, 'HouseHold/index.html', context)
 
 @login_required(login_url='login')
 @never_cache
@@ -230,4 +289,17 @@ def payment_history(request):
     
     return render(request, 'HouseHold/payment_history.html', {'payments': payments})
 
+@login_required(login_url='login')
+@never_cache
+def services(request):
+    """Display services page for households"""
+    household = Household.objects.get(user=request.user)
+    return render(request, 'HouseHold/services.html', {'household': household})
+
+@login_required(login_url='login')
+@never_cache
+def contact(request):
+    """Display contact page for households"""
+    household = Household.objects.get(user=request.user)
+    return render(request, 'HouseHold/contact.html', {'household': household})
 

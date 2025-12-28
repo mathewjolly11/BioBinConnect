@@ -12,4 +12,9 @@ urlpatterns = [
     path('waste-inventory/', views.collector_waste_inventory, name='collector_waste_inventory'),
     path('sales-orders/', views.collector_sales_orders, name='collector_sales_orders'),
     path('update-delivery/<int:supply_id>/', views.update_delivery_status, name='update_delivery_status'),
+    
+    # Info pages
+    path('services/', views.services, name='collector_services'),
+    path('contact/', views.contact, name='collector_contact'),
+    path('about/', views.about_us, name='collector_about'),
 ]

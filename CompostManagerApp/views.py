@@ -236,3 +236,18 @@ def delete_account(request):
         return redirect('login')
     
     return render(request, 'CompostManager/delete_account_confirm.html')
+
+def services(request):
+    """Display services page for compost managers"""
+    manager = CompostManager.objects.get(user=request.user)
+    return render(request, 'CompostManager/services.html', {'manager': manager})
+
+def contact(request):
+    """Display contact page for compost managers"""
+    manager = CompostManager.objects.get(user=request.user)
+    return render(request, 'CompostManager/contact.html', {'manager': manager})
+
+def about_us(request):
+    """Display about page for compost managers"""
+    manager = CompostManager.objects.get(user=request.user)
+    return render(request, 'CompostManager/about.html', {'manager': manager})

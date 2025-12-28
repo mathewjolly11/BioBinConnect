@@ -1,0 +1,281 @@
+{% extends 'HouseHold/base.html' %} {% load static %} {% block title %}Contact
+Us - BioBinConnect{% endblock %} {% block content %}
+<section
+  id="main-content"
+  style="background-color: #f3f4f6; min-height: 100vh; padding-top: 100px"
+>
+  <div class="container"><br><br><br><br>
+    <!-- Page Header -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 style="font-weight: 800; color: #111827; margin-bottom: 16px">
+          Contact Us
+        </h1>
+        <p style="color: #6b7280; font-size: 1.1rem">
+          We're here to help! Get in touch with us
+        </p>
+      </div>
+    </div>
+
+    <div class="row g-4">
+      <!-- Contact Information -->
+      <div class="col-lg-6">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <h3 style="font-weight: 700; color: #111827; margin-bottom: 30px">
+            Get In Touch
+          </h3>
+          <p style="color: #6b7280; line-height: 1.6; margin-bottom: 30px">
+            Have questions about our waste management services? We're here to
+            help you make your community cleaner and greener.
+          </p>
+
+          <div class="row g-4">
+            <div class="col-12">
+              <div style="display: flex; align-items: start; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 48px;
+                    background: #ecfdf5;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #10b981;
+                    font-size: 1.5rem;
+                    flex-shrink: 0;
+                  "
+                >
+                  ⏰
+                </div>
+                <div>
+                  <h6
+                    style="font-weight: 700; color: #111827; margin-bottom: 4px"
+                  >
+                    We're Open
+                  </h6>
+                  <p style="color: #6b7280; margin: 0">
+                    Monday - Friday<br />08:00 AM - 06:00 PM
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div style="display: flex; align-items: start; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 48px;
+                    background: #eff6ff;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #3b82f6;
+                    font-size: 1.5rem;
+                    flex-shrink: 0;
+                  "
+                >
+                  📧
+                </div>
+                <div>
+                  <h6
+                    style="font-weight: 700; color: #111827; margin-bottom: 4px"
+                  >
+                    Email Us
+                  </h6>
+                  <p style="color: #6b7280; margin: 0">
+                    <a
+                      href="mailto:contact@biobinconnect.com"
+                      style="color: #10b981; text-decoration: none"
+                      >contact@biobinconnect.com</a
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+
+            <div class="col-12">
+              <div style="display: flex; align-items: start; gap: 16px">
+                <div
+                  style="
+                    width: 48px;
+                    height: 48px;
+                    background: #fef3c7;
+                    border-radius: 12px;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: #f59e0b;
+                    font-size: 1.5rem;
+                    flex-shrink: 0;
+                  "
+                >
+                  📞
+                </div>
+                <div>
+                  <h6
+                    style="font-weight: 700; color: #111827; margin-bottom: 4px"
+                  >
+                    Call Us
+                  </h6>
+                  <p style="color: #6b7280; margin: 0">
+                    <a
+                      href="tel:+911234567890"
+                      style="color: #10b981; text-decoration: none"
+                      >+91 123 456 7890</a
+                    >
+                  </p>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions -->
+      <div class="col-lg-6">
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <h3 style="font-weight: 700; color: #111827; margin-bottom: 30px">
+            Quick Actions
+          </h3>
+          <p style="color: #6b7280; line-height: 1.6; margin-bottom: 30px">
+            Need immediate assistance? Use these quick links to access our
+            services.
+          </p>
+
+          <div class="d-grid gap-3">
+            <a href="{% url 'request_pickup' %}" style="text-decoration: none">
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 12px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">📦</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    Request Pickup
+                  </h6>
+                  <small style="color: #6b7280"
+                    >Schedule a new waste collection</small
+                  >
+                </div>
+              </div>
+            </a>
+
+            <a href="{% url 'view_requests' %}" style="text-decoration: none">
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 12px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">📋</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    View My Requests
+                  </h6>
+                  <small style="color: #6b7280">Track your pickup status</small>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="{% url 'household_profile' %}"
+              style="text-decoration: none"
+            >
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 12px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">👤</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    My Profile
+                  </h6>
+                  <small style="color: #6b7280"
+                    >Update your account details</small
+                  >
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- FAQ Section -->
+    <div class="row mt-5">
+      <div class="col-12">
+        <div
+          style="
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            border-radius: 20px;
+            padding: 50px;
+            text-align: center;
+            color: white;
+          "
+        >
+          <h2 style="font-weight: 800; margin-bottom: 16px">Have Questions?</h2>
+          <p style="font-size: 1.1rem; margin-bottom: 30px; opacity: 0.9">
+            Check your dashboard for real-time updates on your requests and
+            payments
+          </p>
+          <a
+            href="{% url 'household_dashboard' %}"
+            class="btn"
+            style="
+              background: white;
+              color: #10b981;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-weight: 600;
+              text-decoration: none;
+              display: inline-block;
+            "
+            >Go to Dashboard</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding-bottom: 60px"></div>
+</section>
+{% endblock %}

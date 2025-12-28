@@ -1,0 +1,229 @@
+{% extends 'Guest/base.html' %} {% load static %} {% block content %}
+<section
+  id="main-content"
+  style="background-color: #f3f4f6; min-height: 100vh; padding-top: 100px"
+>
+  <div class="container">
+    <br /><br /><br /><br />
+    <!-- Page Header -->
+    <div class="row mb-5">
+      <div class="col-12 text-center">
+        <h1 style="font-weight: 800; color: #111827; margin-bottom: 16px">
+          Frequently Asked Questions
+        </h1>
+        <p style="color: #6b7280; font-size: 1.1rem">
+          Find answers to common questions about BioBinConnect
+        </p>
+      </div>
+    </div>
+
+    <!-- FAQ Sections -->
+    <div class="row">
+      <div class="col-lg-8 mx-auto">
+        <!-- General Questions -->
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+          "
+        >
+          <h3 style="font-weight: 700; color: #111827; margin-bottom: 30px">
+            General Questions
+          </h3>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              What is BioBinConnect?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              BioBinConnect is a web-based platform that connects households,
+              waste collectors, compost managers, and farmers to create a
+              sustainable circular economy for biodegradable waste management.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              Who can use BioBinConnect?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              BioBinConnect serves four types of users: Households (waste
+              generators), Collectors (pickup service providers), Compost
+              Managers (waste processors), and Farmers (compost buyers).
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              How does the circular economy work?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              Households generate biodegradable waste → Collectors pick it up →
+              Compost Managers convert it into nutrient-rich compost → Farmers
+              purchase the compost for sustainable agriculture. This creates a
+              zero-waste cycle.
+            </p>
+          </div>
+        </div>
+
+        <!-- For Households -->
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+          "
+        >
+          <h3 style="font-weight: 700; color: #111827; margin-bottom: 30px">
+            For Households
+          </h3>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              How do I schedule a pickup?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              After registering and logging in, navigate to "Request Pickup"
+              from your dashboard. Select your bin type, choose a date, and
+              complete the payment. A collector will be automatically assigned
+              based on your location.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              What types of waste can I dispose of?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              BioBinConnect accepts biodegradable waste including food scraps,
+              vegetable peels, fruit waste, garden waste, and other organic
+              materials. We offer different bin sizes to suit your needs.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              How do I track my pickup request?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              Go to "My Requests" in your dashboard to view all your pickup
+              requests, their status (Pending, Approved, Completed), assigned
+              collector information, and scheduled dates.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              What payment methods are accepted?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              We accept UPI and Cash on Delivery (COD). Payment is required when
+              scheduling a pickup request.
+            </p>
+          </div>
+        </div>
+
+        <!-- Account & Technical -->
+        <div
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 40px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            margin-bottom: 30px;
+          "
+        >
+          <h3 style="font-weight: 700; color: #111827; margin-bottom: 30px">
+            Account & Technical
+          </h3>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              How do I create an account?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              Click "Sign Up" or "Login/Register" in the navigation menu. Fill
+              in your details, select your role (Household, Collector, Compost
+              Manager, or Farmer), and submit. Admin approval is required before
+              you can log in.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              Why is my account not verified?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              All new accounts require admin verification to ensure authenticity
+              and maintain platform quality. You'll receive confirmation once
+              your account is approved.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              Can I update my profile information?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              Yes! Go to "My Profile" from your dashboard and click "Edit
+              Profile" to update your personal information, contact details, and
+              address.
+            </p>
+          </div>
+
+          <div style="margin-bottom: 25px">
+            <h5 style="font-weight: 700; color: #1f2937; margin-bottom: 10px">
+              How do I delete my account?
+            </h5>
+            <p style="color: #6b7280; line-height: 1.6">
+              You can delete your account from the "Edit Profile" page. Please
+              note that this action is permanent and cannot be undone.
+            </p>
+          </div>
+        </div>
+
+        <!-- Still have questions? -->
+        <div
+          style="
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            border-radius: 16px;
+            padding: 40px;
+            text-align: center;
+            color: white;
+          "
+        >
+          <h3 style="font-weight: 700; margin-bottom: 15px">
+            Still Have Questions?
+          </h3>
+          <p style="opacity: 0.9; margin-bottom: 25px">
+            We're here to help! Contact our support team
+          </p>
+          <a
+            href="{% url 'guest_contact' %}"
+            class="btn"
+            style="
+              background: white;
+              color: #10b981;
+              padding: 14px 32px;
+              border-radius: 12px;
+              font-weight: 600;
+              text-decoration: none;
+              display: inline-block;
+            "
+            >Contact Us</a
+          >
+        </div>
+      </div>
+    </div>
+  </div>
+  <div style="padding-bottom: 60px"></div>
+</section>
+{% endblock %}
