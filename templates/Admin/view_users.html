@@ -42,28 +42,31 @@
                     <h2 class="title text-center">User Verification</h2>
                 </header>
                 <div class="content-body">
-                    <div class="row justify-content-center">
+                    <div class="row">
                         <div class="col-md-12">
-                            <table class="table table-bordered table-hover">
-                                <thead class="thead-light">
-                                    <tr>
-                                        <th>S.No</th>
-                                        <th>Name</th>
-                                        <th>Email</th>
-                                        <th>Phone</th>
-                                        <th>Role</th>
-                                        <th>Address</th>
-                                        <th>Joined Date</th>
-                                        <th>Status</th>
-                                        <th class="text-center">Actions</th>
-                                    </tr>
-                                </thead>
+                            <div class="table-responsive">
+                                <table class="table table-bordered table-hover table-striped">
+                                    <thead class="thead-dark">
+                                        <tr>
+                                            <th style="width: 5%;">S.No</th>
+                                            <th style="width: 12%;">Name</th>
+                                            <th style="width: 15%;">Email</th>
+                                            <th style="width: 10%;">Phone</th>
+                                            <th style="width: 8%;">Role</th>
+                                        <th style="width: 12%;">House No./RA</th>
+                                        <th style="width: 10%;">Location</th>
+                                        <th style="width: 13%;">Address</th>
+                                        <th style="width: 8%;">Joined Date</th>
+                                        <th style="width: 7%;">Status</th>
+                                        <th style="width: 10%; text-align: center;">Actions</th>
+                                        </tr>
+                                    </thead>
                                 <tbody>
                                     {% for data in user_data %}
                                     <tr>
                                         <td>{{ forloop.counter }}</td>
                                         <td>{{ data.user.name }}</td>
-                                        <td>{{ data.user.email }}</td>
+                                        <td><span class="email-text">{{ data.user.email }}</span></td>
                                         <td>
                                             {% if data.role_details %}
                                             {{ data.role_details.phone }}
@@ -72,31 +75,78 @@
                                             {% endif %}
                                         </td>
                                         <td>
-                                            <span class="badge 
+                                            <span class="badge badge-sm
                                                 {% if data.user.role == 'household' %}badge-primary
                                                 {% elif data.user.role == 'collector' %}badge-info
                                                 {% elif data.user.role == 'compost_manager' %}badge-success
                                                 {% elif data.user.role == 'farmer' %}badge-warning
                                                 {% endif %}">
-                                                {{ data.user.get_role_display }}
+                                                {% if data.user.role == 'household' %}House
+                                                {% elif data.user.role == 'collector' %}Collect
+                                                {% elif data.user.role == 'compost_manager' %}Manager
+                                                {% elif data.user.role == 'farmer' %}Farmer
+                                                {% endif %}
                                             </span>
                                         </td>
                                         <td>
+                                            {% if data.role_details and data.user.role == 'household' %}
+                                                <div class="house-info">
+                                                    {% if data.role_details.house_no %}
+                                                        <strong>House:</strong> {{ data.role_details.house_no }}<br>
+                                                    {% endif %}
+                                                    {% if data.role_details.residents_association %}
+                                                        <small class="text-muted">RA: {{ data.role_details.residents_association.Association_Name|truncatewords:3 }}</small>
+                                                    {% endif %}
+                                                    {% if not data.role_details.house_no and not data.role_details.residents_association %}
+                                                        N/A
+                                                    {% endif %}
+                                                </div>
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                        <td>
                                             {% if data.role_details %}
-                                            {{ data.role_details.address|truncatewords:5 }}
+                                                {% if data.user.role == 'household' %}
+                                                    {{ data.role_details.location.Ward_Name|default:"N/A" }}
+                                                {% elif data.user.role == 'collector' %}
+                                                    {{ data.role_details.address|truncatewords:3 }}
+                                                {% elif data.user.role == 'compost_manager' %}
+                                                    {{ data.role_details.address|truncatewords:3 }}
+                                                {% elif data.user.role == 'farmer' %}
+                                                    {{ data.role_details.address|truncatewords:3 }}
+                                                {% else %}
+                                                    N/A
+                                                {% endif %}
+                                            {% else %}
+                                                N/A
+                                            {% endif %}
+                                        </td>
+                                        <td>
+                                            {% if data.role_details %}
+                                            <span class="address-text" title="{{ data.role_details.address }}">{{ data.role_details.address|truncatewords:3 }}</span>
                                             {% else %}
                                             N/A
                                             {% endif %}
                                         </td>
-                                        <td>{{ data.user.date_joined|date:"M d, Y" }}</td>
+                                        <td style="font-size: 0.8rem;">{{ data.user.date_joined|date:"M d, Y" }}</td>
                                         <td>
                                             {% if data.user.is_verified %}
-                                            <span class="badge badge-success">Verified</span>
+                                            <span class="badge badge-sm badge-success">✓</span>
                                             {% else %}
-                                            <span class="badge badge-danger">Pending</span>
+                                            <span class="badge badge-sm badge-danger">⏳</span>
                                             {% endif %}
                                         </td>
                                         <td class="text-center">
+                                            {% if data.role_details and data.role_details.aadhaar_image %}
+                                            <a href="{% url 'view_aadhaar' data.user.id %}" 
+                                               class="btn btn-sm btn-info mb-1" 
+                                               target="_blank"
+                                               title="View Aadhaar Image">
+                                                <i class="fa fa-image"></i>
+                                            </a>
+                                            <br>
+                                            {% endif %}
                                             {% if data.user.is_verified %}
                                             <a href="#" data-href="{% url 'reject_user' data.user.id %}"
                                                 class="btn btn-sm btn-warning swal-reject">Revoke</a>
@@ -108,11 +158,12 @@
                                     </tr>
                                     {% empty %}
                                     <tr>
-                                        <td colspan="9" class="text-center">No users found.</td>
+                                        <td colspan="11" class="text-center">No users found.</td>
                                     </tr>
                                     {% endfor %}
                                 </tbody>
                             </table>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -170,9 +221,80 @@
         padding: 0.5em 0.75em;
         font-size: 0.875rem;
     }
+    
+    .badge-sm {
+        padding: 0.25em 0.5em;
+        font-size: 0.75rem;
+    }
 
     .table td {
         vertical-align: middle;
+        font-size: 0.9rem;
+    }
+    
+    .table th {
+        font-size: 0.85rem;
+        font-weight: 600;
+        white-space: nowrap;
+    }
+    
+    .table-responsive {
+        border-radius: 0.5rem;
+        box-shadow: 0 0 10px rgba(0,0,0,0.1);
+    }
+    
+    .btn-sm {
+        padding: 0.25rem 0.5rem;
+        font-size: 0.75rem;
+    }
+    
+    .email-text {
+        font-size: 0.8rem;
+        word-break: break-word;
+    }
+    
+    .address-text {
+        font-size: 0.8rem;
+        max-width: 150px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+    
+    /* Ensure table fits on smaller screens */
+    @media (max-width: 768px) {
+        .table-responsive {
+            font-size: 0.8rem;
+        }
+        .table th, .table td {
+            padding: 0.3rem;
+        }
+    }
+    
+    /* Action buttons styling */
+    .btn-info {
+        background-color: #17a2b8;
+        border-color: #17a2b8;
+    }
+    
+    .btn-info:hover {
+        background-color: #138496;
+        border-color: #117a8b;
+    }
+    
+    /* House info styling */
+    .house-info {
+        font-size: 0.85rem;
+        line-height: 1.3;
+    }
+    
+    .house-info strong {
+        color: #495057;
+    }
+    
+    .house-info small {
+        display: block;
+        font-size: 0.75rem;
     }
 </style>
 {% endblock %}

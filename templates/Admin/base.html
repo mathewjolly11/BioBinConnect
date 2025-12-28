@@ -512,7 +512,7 @@
                 <div class="profile-info row">
 
                     <div class="profile-image col-lg-4 col-md-4 col-4">
-                        <a href="ui-profile.html">
+                        <a href="{% url 'admin_profile' %}">
                             <img src="{% static 'backend/assets/images/adminlogo.jpg' %}"
                                 class="img-fluid rounded-circle">
                         </a>
@@ -521,7 +521,7 @@
                     <div class="profile-details col-lg-8 col-md-8 col-8">
 
                         <h3>
-                            <a href="ui-profile.html">Admin</a>
+                            <a href="{% url 'admin_profile' %}">Admin</a>
 
                             <!-- Available statuses: online, idle, busy, away and offline -->
                             <span class="profile-status online"></span>
@@ -788,7 +788,7 @@
                                 <a class="" href="ui-pricing.html">Pricing tables</a>
                             </li>
                             <li>
-                                <a class="" href="ui-profile.html">Profile</a>
+                                <a class="" href="{% url 'admin_profile' %}">Profile</a>
                             </li>
                             <li>
                                 <a class="" href="ui-timeline.html">Timeline</a>

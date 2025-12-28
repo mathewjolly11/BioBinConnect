@@ -483,3 +483,48 @@ def admin_update_delivery_status(request, order_id):
     # Redirect back to appropriate page
     referer = request.META.get('HTTP_REFERER', '/')
     return redirect(referer)
+
+def admin_profile(request):
+    """View for admin profile page"""
+    context = {
+        'user': request.user,
+    }
+    return render(request, 'Admin/admin_profile.html', context)
+
+def view_aadhaar(request, user_id):
+    """View to display user's Aadhaar image"""
+    from GuestApp.models import CustomUser, Household, Farmer
+    from django.http import Http404
+    
+    try:
+        user = CustomUser.objects.get(id=user_id)
+        aadhaar_image = None
+        user_type = None
+        
+        if user.role == 'household':
+            try:
+                household = Household.objects.get(user=user)
+                aadhaar_image = household.aadhaar_image
+                user_type = 'Household'
+            except Household.DoesNotExist:
+                pass
+        elif user.role == 'farmer':
+            try:
+                farmer = Farmer.objects.get(user=user)
+                aadhaar_image = farmer.aadhaar_image
+                user_type = 'Farmer'
+            except Farmer.DoesNotExist:
+                pass
+        
+        if not aadhaar_image:
+            raise Http404("Aadhaar image not found for this user")
+        
+        context = {
+            'user': user,
+            'aadhaar_image': aadhaar_image,
+            'user_type': user_type,
+        }
+        return render(request, 'Admin/view_aadhaar.html', context)
+        
+    except CustomUser.DoesNotExist:
+        raise Http404("User not found")

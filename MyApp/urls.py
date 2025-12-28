@@ -47,5 +47,11 @@ urlpatterns = [
     
     # Collector salaries
     path('admin/collector-salaries/', payment_views.collector_salaries, name='collector_salaries'),
+    
+    # Admin profile
+    path('admin/profile/', views.admin_profile, name='admin_profile'),
+    
+    # View Aadhaar image
+    path('view_aadhaar/<int:user_id>/', views.view_aadhaar, name='view_aadhaar'),
 ]
 

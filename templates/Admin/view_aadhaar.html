@@ -1,0 +1,168 @@
+{% extends "Admin/base.html" %}
+{% load static %}
+{% block content %}
+<!-- SweetAlert2 CDN -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<!-- START CONTENT -->
+<section id="main-content" class=" ">
+    <section class="wrapper main-wrapper">
+        <div class="col-lg-10 offset-lg-1">
+            <section class="box ">
+                <header class="panel_header">
+                    <h2 class="title text-center">Aadhaar Document - {{ user_type }} Verification</h2>
+                </header>
+                <div class="content-body">
+                    <div class="row">
+                        <div class="col-md-4">
+                            <div class="card">
+                                <div class="card-header bg-primary text-white">
+                                    <h5 class="mb-0">User Information</h5>
+                                </div>
+                                <div class="card-body">
+                                    <div class="user-info">
+                                        <p><strong>Name:</strong> {{ user.name }}</p>
+                                        <p><strong>Email:</strong> {{ user.email }}</p>
+                                        <p><strong>Role:</strong> {{ user.get_role_display }}</p>
+                                        <p><strong>Status:</strong> 
+                                            {% if user.is_verified %}
+                                                <span class="badge badge-success">Verified</span>
+                                            {% else %}
+                                                <span class="badge badge-warning">Pending</span>
+                                            {% endif %}
+                                        </p>
+                                        <p><strong>Joined:</strong> {{ user.date_joined|date:"M d, Y" }}</p>
+                                    </div>
+                                    
+                                    <div class="mt-3">
+                                        <a href="{% url 'view_users' %}" class="btn btn-secondary btn-sm">
+                                            <i class="fa fa-arrow-left"></i> Back to Users
+                                        </a>
+                                        {% if not user.is_verified %}
+                                        <a href="{% url 'approve_user' user.id %}" class="btn btn-success btn-sm ml-2">
+                                            <i class="fa fa-check"></i> Approve User
+                                        </a>
+                                        {% endif %}
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        
+                        <div class="col-md-8">
+                            <div class="card">
+                                <div class="card-header bg-info text-white">
+                                    <h5 class="mb-0">Aadhaar Document</h5>
+                                </div>
+                                <div class="card-body text-center">
+                                    {% if aadhaar_image %}
+                                        <div class="aadhaar-image-container">
+                                            <img src="{{ aadhaar_image.url }}" 
+                                                 alt="Aadhaar Image for {{ user.name }}" 
+                                                 class="img-fluid aadhaar-image"
+                                                 onclick="openImageModal(this.src)">
+                                            <p class="mt-2 text-muted">Click image to view in full size</p>
+                                        </div>
+                                    {% else %}
+                                        <div class="no-image">
+                                            <i class="fa fa-file-image-o fa-5x text-muted"></i>
+                                            <p class="mt-3">No Aadhaar image available</p>
+                                        </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+
+<!-- Image Modal -->
+<div class="modal fade" id="imageModal" tabindex="-1" role="dialog" aria-labelledby="imageModalLabel" aria-hidden="true">
+    <div class="modal-dialog modal-lg modal-dialog-centered" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="imageModalLabel">Aadhaar Document - Full View</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body text-center">
+                <img id="modalImage" src="" alt="Full size Aadhaar image" class="img-fluid">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <a id="downloadLink" href="" download class="btn btn-primary">Download Image</a>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- END CONTENT -->
+
+<script>
+function openImageModal(imageSrc) {
+    document.getElementById('modalImage').src = imageSrc;
+    document.getElementById('downloadLink').href = imageSrc;
+    $('#imageModal').modal('show');
+}
+
+// Handle image load errors
+document.addEventListener('DOMContentLoaded', function() {
+    const aadhaarImage = document.querySelector('.aadhaar-image');
+    if (aadhaarImage) {
+        aadhaarImage.onerror = function() {
+            this.style.display = 'none';
+            this.nextElementSibling.innerHTML = 'Error loading image';
+        };
+    }
+});
+</script>
+
+<style>
+.aadhaar-image {
+    max-width: 100%;
+    height: auto;
+    border: 2px solid #ddd;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: transform 0.2s ease-in-out;
+    box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+.aadhaar-image:hover {
+    transform: scale(1.02);
+    border-color: #007bff;
+}
+
+.aadhaar-image-container {
+    padding: 20px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+.user-info p {
+    margin-bottom: 8px;
+    font-size: 0.95rem;
+}
+
+.card {
+    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+    border: none;
+}
+
+.no-image {
+    padding: 40px;
+    background-color: #f8f9fa;
+    border-radius: 8px;
+}
+
+@media (max-width: 768px) {
+    .col-md-4, .col-md-8 {
+        margin-bottom: 20px;
+    }
+}
+</style>
+
+{% endblock %}
