@@ -47,9 +47,7 @@
     <!-- Hero Section -->
     <div class="row mb-5">
       <div class="col-12">
-        <div
-          class="hero-card"
-          style="
+        <div class="hero-card" style="
             background: linear-gradient(135deg, #10b981 0%, #047857 100%);
             border-radius: 24px;
             padding: 40px;
@@ -58,43 +56,30 @@
             overflow: hidden;
             box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
             z-index: 1;
-          "
-        >
+          ">
           <div class="row align-items-center position-relative">
             <div class="col-md-8">
-              <span
-                class="badge bg-white text-success mb-3"
-                style="padding: 8px 16px; border-radius: 20px; font-weight: 600"
-                >Household Dashboard</span
-              >
-              <h1
-                style="
+              <span class="badge bg-white text-success mb-3"
+                style="padding: 8px 16px; border-radius: 20px; font-weight: 600">Household Dashboard</span>
+              <h1 style="
                   font-size: 2.5rem;
                   font-weight: 800;
                   margin-bottom: 12px;
                   line-height: 1.2;
-                "
-              >
+                ">
                 Welcome back,<br />{{ household.household_name }}! 👋
               </h1>
-              <p
-                style="
+              <p style="
                   font-size: 1.1rem;
                   opacity: 0.9;
                   margin-bottom: 24px;
                   max-width: 500px;
-                "
-              >
-                {% if next_pickup %} Your next pickup is scheduled for {{
-                next_pickup.scheduled_date }}. {% else %} No upcoming pickups
-                scheduled. Request a pickup today! {% endif %}
+                ">
+                {% if next_pickup %} Your next pickup is scheduled for {{next_pickup.scheduled_date }}. {% else %} No upcoming pickups scheduled. Request a pickup today! {% endif %}
               </p>
               <div class="d-flex gap-3" style="position: relative; z-index: 10">
-                <button
-                  onclick="window.location.href='{% url 'request_pickup' %}'"
-                  class="custom-btn custom-btn-primary"
-                  type="button"
-                  style="
+                <button onclick="window.location.href='{% url 'request_pickup' %}'"
+                  class="custom-btn custom-btn-primary" type="button" style="
                     background: white;
                     color: #10b981;
                     border-radius: 12px;
@@ -102,15 +87,11 @@
                     border: none;
                     padding: 12px 24px;
                     outline: none;
-                  "
-                >
+                  ">
                   Request Pickup
                 </button>
-                <button
-                  onclick="window.location.href='{% url 'view_requests' %}'"
-                  class="custom-btn custom-btn-secondary"
-                  type="button"
-                  style="
+                <button onclick="window.location.href='{% url 'view_requests' %}'"
+                  class="custom-btn custom-btn-secondary" type="button" style="
                     background: rgba(255, 255, 255, 0.2);
                     color: white;
                     border-radius: 12px;
@@ -118,46 +99,37 @@
                     border: none;
                     padding: 12px 24px;
                     outline: none;
-                  "
-                >
+                  ">
                   View Requests
                 </button>
               </div>
             </div>
             <div class="col-md-4 text-center d-none d-md-block">
-              <div
-                style="
+              <div style="
                   background: rgba(255, 255, 255, 0.15);
                   backdrop-filter: blur(10px);
                   border-radius: 16px;
                   padding: 24px;
                   text-align: left;
-                "
-              >
+                ">
                 <div class="mb-3">
-                  <small
-                    style="
+                  <small style="
                       opacity: 0.8;
                       text-transform: uppercase;
                       font-weight: 600;
                       font-size: 0.75rem;
-                    "
-                    >Total Paid (30 days)</small
-                  >
+                    ">Total Paid (30 days)</small>
                   <div style="font-size: 2rem; font-weight: 800">
                     &#8377;{{ total_paid|floatformat:0 }}
                   </div>
                 </div>
                 <div class="mb-0">
-                  <small
-                    style="
+                  <small style="
                       opacity: 0.8;
                       text-transform: uppercase;
                       font-weight: 600;
                       font-size: 0.75rem;
-                    "
-                    >Pending Requests</small
-                  >
+                    ">Pending Requests</small>
                   <div style="font-size: 1.5rem; font-weight: 700">
                     {{ pending_requests }}
                   </div>
@@ -170,32 +142,26 @@
     </div>
 
     <!-- Statistics Grid -->
-    <h4
-      style="
+    <h4 style="
         font-weight: 700;
         color: #111827;
         margin-bottom: 24px;
         padding-left: 10px;
-      "
-    >
+      ">
       Your Activity
     </h4>
     <div class="row mb-5">
       <!-- Total Requests -->
       <div class="col-md-3 mb-4">
-        <div
-          class="stat-card h-100"
-          style="
+        <div class="stat-card h-100" style="
             background: white;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
-          "
-        >
-          <div
-            style="
+          ">
+          <div style="
               width: 48px;
               height: 48px;
               background: #eff6ff;
@@ -206,18 +172,15 @@
               margin-bottom: 16px;
               color: #3b82f6;
               font-size: 1.5rem;
-            "
-          >
+            ">
             📋
           </div>
-          <h3
-            style="
+          <h3 style="
               font-weight: 800;
               color: #111827;
               margin-bottom: 4px;
               font-size: 1.75rem;
-            "
-          >
+            ">
             {{ total_requests }}
           </h3>
           <p style="color: #6b7280; font-size: 0.95rem; margin: 0">
@@ -228,19 +191,15 @@
 
       <!-- Completed Requests -->
       <div class="col-md-3 mb-4">
-        <div
-          class="stat-card h-100"
-          style="
+        <div class="stat-card h-100" style="
             background: white;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
-          "
-        >
-          <div
-            style="
+          ">
+          <div style="
               width: 48px;
               height: 48px;
               background: #ecfdf5;
@@ -251,18 +210,15 @@
               margin-bottom: 16px;
               color: #10b981;
               font-size: 1.5rem;
-            "
-          >
+            ">
             ✅
           </div>
-          <h3
-            style="
+          <h3 style="
               font-weight: 800;
               color: #111827;
               margin-bottom: 4px;
               font-size: 1.75rem;
-            "
-          >
+            ">
             {{ completed_requests }}
           </h3>
           <p style="color: #6b7280; font-size: 0.95rem; margin: 0">Completed</p>
@@ -271,19 +227,15 @@
 
       <!-- Pending Requests -->
       <div class="col-md-3 mb-4">
-        <div
-          class="stat-card h-100"
-          style="
+        <div class="stat-card h-100" style="
             background: white;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
-          "
-        >
-          <div
-            style="
+          ">
+          <div style="
               width: 48px;
               height: 48px;
               background: #fef3c7;
@@ -294,18 +246,15 @@
               margin-bottom: 16px;
               color: #f59e0b;
               font-size: 1.5rem;
-            "
-          >
+            ">
             ⏳
           </div>
-          <h3
-            style="
+          <h3 style="
               font-weight: 800;
               color: #111827;
               margin-bottom: 4px;
               font-size: 1.75rem;
-            "
-          >
+            ">
             {{ pending_requests }}
           </h3>
           <p style="color: #6b7280; font-size: 0.95rem; margin: 0">Pending</p>
@@ -314,19 +263,15 @@
 
       <!-- Total Paid -->
       <div class="col-md-3 mb-4">
-        <div
-          class="stat-card h-100"
-          style="
+        <div class="stat-card h-100" style="
             background: white;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
-          "
-        >
-          <div
-            style="
+          ">
+          <div style="
               width: 48px;
               height: 48px;
               background: #ecfdf5;
@@ -337,18 +282,15 @@
               margin-bottom: 16px;
               color: #059669;
               font-size: 1.5rem;
-            "
-          >
+            ">
             💰
           </div>
-          <h3
-            style="
+          <h3 style="
               font-weight: 800;
               color: #111827;
               margin-bottom: 4px;
               font-size: 1.75rem;
-            "
-          >
+            ">
             &#8377;{{ total_paid_all_time|floatformat:0 }}
           </h3>
           <p style="color: #6b7280; font-size: 0.95rem; margin: 0">
@@ -362,47 +304,36 @@
     <div class="row">
       <!-- Next Pickup -->
       <div class="col-lg-8 mb-4">
-        <div
-          style="
+        <div style="
             background: white;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
             height: 100%;
-          "
-        >
+          ">
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 style="font-weight: 700; color: #111827; margin: 0">
-              {% if next_pickup %}Next Scheduled Pickup{% else %}Recent
-              Requests{% endif %}
+              {% if next_pickup %}Next Scheduled Pickup{% else %}RecentRequests{% endif %}
             </h5>
-            <a
-              href="{% url 'view_requests' %}"
-              style="
+            <a href="{% url 'view_requests' %}" style="
                 color: #10b981;
                 font-weight: 600;
                 text-decoration: none;
                 font-size: 0.9rem;
-              "
-              >View All</a
-            >
+              ">View All</a>
           </div>
 
           {% if next_pickup %}
-          <div
-            style="
+          <div style="
               background: #f9fafb;
               border-radius: 12px;
               padding: 20px;
               border-left: 4px solid #10b981;
-            "
-          >
+            ">
             <div class="row">
               <div class="col-md-6">
-                <p
-                  style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px"
-                >
+                <p style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px">
                   Date
                 </p>
                 <h6 style="color: #111827; font-weight: 700">
@@ -410,9 +341,7 @@
                 </h6>
               </div>
               <div class="col-md-6">
-                <p
-                  style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px"
-                >
+                <p style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px">
                   Bin Type
                 </p>
                 <h6 style="color: #111827; font-weight: 700">
@@ -420,9 +349,7 @@
                 </h6>
               </div>
               <div class="col-md-6 mt-3">
-                <p
-                  style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px"
-                >
+                <p style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px">
                   Status
                 </p>
                 <span class="badge status-badge-{{ next_pickup.status|lower }}">
@@ -431,9 +358,7 @@
               </div>
               {% if next_pickup.assigned_collector %}
               <div class="col-md-6 mt-3">
-                <p
-                  style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px"
-                >
+                <p style="color: #6b7280; font-size: 0.85rem; margin-bottom: 4px">
                   Collector
                 </p>
                 <h6 style="color: #111827; font-weight: 700">
@@ -445,43 +370,34 @@
           </div>
           {% else %}
           <div class="table-responsive">
-            <table
-              class="table table-hover align-middle"
-              style="border-collapse: separate; border-spacing: 0 8px"
-            >
+            <table class="table table-hover align-middle" style="border-collapse: separate; border-spacing: 0 8px">
               <thead style="background: transparent">
                 <tr>
-                  <th
-                    style="
+                  <th style="
                       border: none;
                       color: #9ca3af;
                       font-weight: 600;
                       text-transform: uppercase;
                       font-size: 0.75rem;
-                    "
-                  >
+                    ">
                     Date
                   </th>
-                  <th
-                    style="
+                  <th style="
                       border: none;
                       color: #9ca3af;
                       font-weight: 600;
                       text-transform: uppercase;
                       font-size: 0.75rem;
-                    "
-                  >
+                    ">
                     Bin Type
                   </th>
-                  <th
-                    style="
+                  <th style="
                       border: none;
                       color: #9ca3af;
                       font-weight: 600;
                       text-transform: uppercase;
                       font-size: 0.75rem;
-                    "
-                  >
+                    ">
                     Status
                   </th>
                 </tr>
@@ -489,31 +405,25 @@
               <tbody>
                 {% for request in recent_requests %}
                 <tr style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02)">
-                  <td
-                    style="
+                  <td style="
                       border: none;
                       background: #f9fafb;
                       border-top-left-radius: 10px;
                       border-bottom-left-radius: 10px;
                       padding: 16px;
-                    "
-                  >
-                    <span style="font-weight: 700; color: #4b5563"
-                      >{{ request.scheduled_date }}</span
-                    >
+                    ">
+                    <span style="font-weight: 700; color: #4b5563">{{ request.scheduled_date }}</span>
                   </td>
                   <td style="border: none; background: #f9fafb; padding: 16px">
                     {{ request.bin_type.name }}
                   </td>
-                  <td
-                    style="
+                  <td style="
                       border: none;
                       background: #f9fafb;
                       border-top-right-radius: 10px;
                       border-bottom-right-radius: 10px;
                       padding: 16px;
-                    "
-                  >
+                    ">
                     <span class="badge status-badge-{{ request.status|lower }}">
                       {{ request.status }}
                     </span>
@@ -535,28 +445,21 @@
 
       <!-- Quick Actions -->
       <div class="col-lg-4 mb-4">
-        <div
-          style="
+        <div style="
             background: white;
             border-radius: 20px;
             padding: 30px;
             box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
             height: 100%;
-          "
-        >
+          ">
           <h5 style="font-weight: 700; color: #111827; margin-bottom: 24px">
             Quick Actions
           </h5>
 
           <div class="d-grid gap-3">
-            <a
-              href="{% url 'request_pickup' %}"
-              class="action-btn"
-              style="text-decoration: none"
-            >
-              <div
-                style="
+            <a href="{% url 'request_pickup' %}" class="action-btn" style="text-decoration: none">
+              <div style="
                   background: #f3f4f6;
                   border-radius: 16px;
                   padding: 20px;
@@ -564,8 +467,7 @@
                   display: flex;
                   align-items: center;
                   border: 1px solid transparent;
-                "
-              >
+                ">
                 <span style="font-size: 1.5rem; margin-right: 16px">📦</span>
                 <div>
                   <h6 style="font-weight: 700; color: #1f2937; margin: 0">
@@ -576,13 +478,8 @@
               </div>
             </a>
 
-            <a
-              href="{% url 'make_payment' %}"
-              class="action-btn"
-              style="text-decoration: none"
-            >
-              <div
-                style="
+            <a href="{% url 'make_payment' %}" class="action-btn" style="text-decoration: none">
+              <div style="
                   background: #f3f4f6;
                   border-radius: 16px;
                   padding: 20px;
@@ -590,8 +487,7 @@
                   display: flex;
                   align-items: center;
                   border: 1px solid transparent;
-                "
-              >
+                ">
                 <span style="font-size: 1.5rem; margin-right: 16px">💳</span>
                 <div>
                   <h6 style="font-weight: 700; color: #1f2937; margin: 0">
@@ -602,13 +498,8 @@
               </div>
             </a>
 
-            <a
-              href="{% url 'payment_history' %}"
-              class="action-btn"
-              style="text-decoration: none"
-            >
-              <div
-                style="
+            <a href="{% url 'payment_history' %}" class="action-btn" style="text-decoration: none">
+              <div style="
                   background: #f3f4f6;
                   border-radius: 16px;
                   padding: 20px;
@@ -616,8 +507,7 @@
                   display: flex;
                   align-items: center;
                   border: 1px solid transparent;
-                "
-              >
+                ">
                 <span style="font-size: 1.5rem; margin-right: 16px">📊</span>
                 <div>
                   <h6 style="font-weight: 700; color: #1f2937; margin: 0">
@@ -628,13 +518,8 @@
               </div>
             </a>
 
-            <a
-              href="{% url 'household_profile' %}"
-              class="action-btn"
-              style="text-decoration: none"
-            >
-              <div
-                style="
+            <a href="{% url 'household_profile' %}" class="action-btn" style="text-decoration: none">
+              <div style="
                   background: #f3f4f6;
                   border-radius: 16px;
                   padding: 20px;
@@ -642,8 +527,7 @@
                   display: flex;
                   align-items: center;
                   border: 1px solid transparent;
-                "
-              >
+                ">
                 <span style="font-size: 1.5rem; margin-right: 16px">👤</span>
                 <div>
                   <h6 style="font-weight: 700; color: #1f2937; margin: 0">

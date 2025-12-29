@@ -122,6 +122,7 @@
             <a href="{% url 'view_users' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-users me-2"></i> Users</a>
             <a href="{% url 'view_districts' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-map-marker me-2"></i> Districts & Locations</a>
             <a href="{% url 'view_ra' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-building me-2"></i> Residents Associations</a>
+            <a href="{% url 'view_bin_types' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-trash me-2"></i> Bin Types</a>
 
             <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Operations</h6>
             <a href="{% url 'view_assignments' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-tasks me-2"></i> Assignments</a>
@@ -566,6 +567,10 @@
                                 <a class="" href="{% url 'add_ra' %}">Add Residents Association</a>
                             </li>
 
+                            <li>
+                                <a class="" href="{% url 'add_bin_type' %}">Add Bin Type</a>
+                            </li>
+
                         </ul>
                     </li>
                     <li class="">
@@ -588,6 +593,10 @@
 
                             <li>
                                 <a class="" href="{% url 'view_ra' %}">View Residents Associations</a>
+                            </li>
+
+                            <li>
+                                <a class="" href="{% url 'view_bin_types' %}">View Bin Types</a>
                             </li>
 
                         </ul>

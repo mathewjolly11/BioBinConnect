@@ -266,20 +266,80 @@ def reject_user(request, user_id):
 
 def assign_collector(request):
     from MyApp.forms import CollectorAssignmentForm
+    from MyApp.models import tbl_CollectorAssignment
+    
     if request.method == 'POST':
         form = CollectorAssignmentForm(request.POST)
+        
+        # Custom validation for assign_all_week
+        assign_all_week = request.POST.get('assign_all_week') == 'on'
+        if not assign_all_week and not request.POST.get('day_of_week'):
+            form.add_error('day_of_week', 'This field is required when not assigning for all week.')
+        
         if form.is_valid():
-            form.save()
-            messages.success(request, 'Collector assigned successfully!')
+            collector = form.cleaned_data['collector']
+            route = form.cleaned_data['Route_id']
+            
+            if assign_all_week:
+                # Assign collector for all days of the week
+                days = ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday', 'Sunday']
+                created_count = 0
+                existing_count = 0
+                
+                for day in days:
+                    # Check if assignment already exists for this collector, route, and day
+                    assignment, created = tbl_CollectorAssignment.objects.get_or_create(
+                        collector=collector,
+                        Route_id=route,
+                        day_of_week=day
+                    )
+                    if created:
+                        created_count += 1
+                    else:
+                        existing_count += 1
+                
+                if created_count > 0 and existing_count > 0:
+                    messages.success(request, f'Collector assigned for {created_count} new days. {existing_count} assignments already existed.')
+                elif created_count > 0:
+                    messages.success(request, f'Collector assigned successfully for all {created_count} days of the week!')
+                else:
+                    messages.info(request, 'Collector was already assigned for all days of the week on this route.')
+            else:
+                # Single day assignment
+                day_of_week = form.cleaned_data['day_of_week']
+                assignment, created = tbl_CollectorAssignment.objects.get_or_create(
+                    collector=collector,
+                    Route_id=route,
+                    day_of_week=day_of_week
+                )
+                if created:
+                    messages.success(request, f'Collector assigned successfully for {day_of_week}!')
+                else:
+                    messages.info(request, f'Collector was already assigned for {day_of_week} on this route.')
+            
             return redirect('view_assignments')
     else:
         form = CollectorAssignmentForm()
+    
     return render(request, 'Admin/assign_collector.html', {'form': form})
 
 def view_assignments(request):
     from MyApp.models import tbl_CollectorAssignment
-    assignments = tbl_CollectorAssignment.objects.select_related('collector', 'Route_id').all()
-    return render(request, 'Admin/view_assignments.html', {'assignments': assignments})
+    from django.db.models import Q
+    from collections import defaultdict
+    
+    assignments = tbl_CollectorAssignment.objects.select_related('collector', 'Route_id').all().order_by('collector__collector_name', 'Route_id__name', 'day_of_week')
+    
+    # Group assignments by collector and route for better display
+    grouped_assignments = defaultdict(lambda: defaultdict(list))
+    for assignment in assignments:
+        key = (assignment.collector.collector_name, assignment.Route_id.name)
+        grouped_assignments[assignment.collector.collector_name][assignment.Route_id.name].append(assignment.day_of_week)
+    
+    return render(request, 'Admin/view_assignments.html', {
+        'assignments': assignments,
+        'grouped_assignments': dict(grouped_assignments)
+    })
 
 def add_route(request):
     from MyApp.forms import RouteForm
@@ -528,3 +588,45 @@ def view_aadhaar(request, user_id):
         
     except CustomUser.DoesNotExist:
         raise Http404("User not found")
+
+def add_bin_type(request):
+    """Add a new bin type"""
+    from MyApp.forms import BinTypeForm
+    if request.method == 'POST':
+        form = BinTypeForm(request.POST)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bin type added successfully!')
+            return redirect('view_bin_types')
+    else:
+        form = BinTypeForm()
+    return render(request, 'Admin/add_bin_type.html', {'form': form})
+
+def view_bin_types(request):
+    """View all bin types"""
+    from MyApp.models import tbl_BinType
+    bin_types = tbl_BinType.objects.all().order_by('capacity_kg')
+    return render(request, 'Admin/view_bin_types.html', {'bin_types': bin_types})
+
+def edit_bin_type(request, bin_type_id):
+    """Edit an existing bin type"""
+    from MyApp.models import tbl_BinType
+    from MyApp.forms import BinTypeForm
+    bin_type = tbl_BinType.objects.get(BinType_id=bin_type_id)
+    if request.method == 'POST':
+        form = BinTypeForm(request.POST, instance=bin_type)
+        if form.is_valid():
+            form.save()
+            messages.success(request, 'Bin type updated successfully!')
+            return redirect('view_bin_types')
+    else:
+        form = BinTypeForm(instance=bin_type)
+    return render(request, 'Admin/add_bin_type.html', {'form': form})
+
+def delete_bin_type(request, bin_type_id):
+    """Delete a bin type"""
+    from MyApp.models import tbl_BinType
+    bin_type = tbl_BinType.objects.get(BinType_id=bin_type_id)
+    bin_type.delete()
+    messages.success(request, 'Bin type deleted successfully!')
+    return redirect('view_bin_types')

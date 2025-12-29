@@ -1,266 +1,659 @@
-{% extends 'Admin/base.html' %}
-{% load static %}
+{% extends 'Admin/base.html' %} {% load static %} {% block content %}
+<section id="main-content" style="background-color: #f3f4f6; min-height: 100vh">
+  <section class="wrapper main-wrapper" style="padding: 20px">
+    <!-- Modern Hero Section -->
+    <div class="row mb-5">
+      <div class="col-12">
+        <div
+          class="hero-card"
+          style="
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%);
+            border-radius: 24px;
+            padding: 40px;
+            color: white;
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+          "
+        >
+          <!-- Decorative Background Elements -->
+          <div
+            style="
+              position: absolute;
+              top: -20px;
+              right: -20px;
+              width: 200px;
+              height: 200px;
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 50%;
+            "
+          ></div>
+          <div
+            style="
+              position: absolute;
+              bottom: -40px;
+              right: 80px;
+              width: 150px;
+              height: 150px;
+              background: rgba(255, 255, 255, 0.1);
+              border-radius: 50%;
+            "
+          ></div>
 
-{% block content %}
-<section id="main-content" style="background-color: #f3f4f6; min-height: 100vh;">
-    <section class="wrapper main-wrapper" style="padding: 20px;">
-
-        <!-- Modern Hero Section -->
-        <div class="row mb-5">
-            <div class="col-12">
-                <div class="hero-card" style="
-                    background: linear-gradient(135deg, #10B981 0%, #047857 100%);
-                    border-radius: 24px;
-                    padding: 40px;
+          <div class="row align-items-center position-relative">
+            <div class="col-md-8">
+              <span
+                class="badge bg-white text-success mb-3"
+                style="padding: 8px 16px; border-radius: 20px; font-weight: 600"
+                >Admin Dashboard</span
+              >
+              <h1
+                style="
+                  font-size: 2.5rem;
+                  font-weight: 800;
+                  margin-bottom: 12px;
+                  line-height: 1.2;
+                "
+              >
+                Welcome back,<br />Admin! 👋
+              </h1>
+              <p
+                style="
+                  font-size: 1.1rem;
+                  opacity: 0.9;
+                  margin-bottom: 24px;
+                  max-width: 500px;
+                "
+              >
+                Here's what's happening in your waste management system today.
+                You have {{ today_orders }} new orders requiring attention.
+              </p>
+              <div class="d-flex gap-3">
+                <a
+                  href="{% url 'admin_reports' %}"
+                  class="btn bg-white text-success"
+                  style="
+                    border-radius: 12px;
+                    font-weight: 600;
+                    border: none;
+                    padding: 12px 24px;
+                  "
+                  >View Full Reports</a
+                >
+                <a
+                  href="{% url 'view_users' %}"
+                  class="btn"
+                  style="
+                    background: rgba(255, 255, 255, 0.2);
                     color: white;
-                    position: relative;
-                    overflow: hidden;
-                    box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
-                ">
-                    <!-- Decorative Background Elements -->
-                    <div
-                        style="position: absolute; top: -20px; right: -20px; width: 200px; height: 200px; background: rgba(255,255,255,0.1); border-radius: 50%;">
-                    </div>
-                    <div
-                        style="position: absolute; bottom: -40px; right: 80px; width: 150px; height: 150px; background: rgba(255,255,255,0.1); border-radius: 50%;">
-                    </div>
-
-                    <div class="row align-items-center position-relative">
-                        <div class="col-md-8">
-                            <span class="badge bg-white text-success mb-3"
-                                style="padding: 8px 16px; border-radius: 20px; font-weight: 600;">Admin Dashboard</span>
-                            <h1 style="font-size: 2.5rem; font-weight: 800; margin-bottom: 12px; line-height: 1.2;">
-                                Welcome back,<br>Admin! 👋
-                            </h1>
-                            <p style="font-size: 1.1rem; opacity: 0.9; margin-bottom: 24px; max-width: 500px;">
-                                Here's what's happening in your waste management system today. You have {{ today_orders }} new orders requiring attention.
-                            </p>
-                            <div class="d-flex gap-3">
-                                <a href="{% url 'admin_reports' %}" class="btn bg-white text-success"
-                                    style="border-radius: 12px; font-weight: 600; border: none; padding: 12px 24px;">View
-                                    Full Reports</a>
-                                <a href="{% url 'view_users' %}" class="btn"
-                                    style="background: rgba(255,255,255,0.2); color: white; border-radius: 12px; font-weight: 600; padding: 12px 24px;">Manage
-                                    Users</a>
-                            </div>
-                        </div>
-                        <div class="col-md-4 text-center d-none d-md-block">
-                            <!-- Simple Analytics Visualization -->
-                            <div
-                                style="background: rgba(255,255,255,0.15); backdrop-filter: blur(10px); border-radius: 16px; padding: 24px; text-align: left;">
-                                <div class="mb-3">
-                                    <small
-                                        style="opacity: 0.8; text-transform: uppercase; font-weight: 600; font-size: 0.75rem;">Today's
-                                        Revenue</small>
-                                    <div style="font-size: 2rem; font-weight: 800;">&#8377;{{ today_revenue|floatformat:0 }}</div>
-                                </div>
-                                <div class="mb-0">
-                                    <small
-                                        style="opacity: 0.8; text-transform: uppercase; font-weight: 600; font-size: 0.75rem;">Total
-                                        Orders</small>
-                                    <div style="font-size: 1.5rem; font-weight: 700;">{{ total_orders }}</div>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
+                    border-radius: 12px;
+                    font-weight: 600;
+                    padding: 12px 24px;
+                  "
+                  >Manage Users</a
+                >
+              </div>
             </div>
+            <div class="col-md-4 text-center d-none d-md-block">
+              <!-- Simple Analytics Visualization -->
+              <div
+                style="
+                  background: rgba(255, 255, 255, 0.15);
+                  backdrop-filter: blur(10px);
+                  border-radius: 16px;
+                  padding: 24px;
+                  text-align: left;
+                "
+              >
+                <div class="mb-3">
+                  <small
+                    style="
+                      opacity: 0.8;
+                      text-transform: uppercase;
+                      font-weight: 600;
+                      font-size: 0.75rem;
+                    "
+                    >Today's Revenue</small
+                  >
+                  <div style="font-size: 2rem; font-weight: 800">
+                    &#8377;{{ today_revenue|floatformat:0 }}
+                  </div>
+                </div>
+                <div class="mb-0">
+                  <small
+                    style="
+                      opacity: 0.8;
+                      text-transform: uppercase;
+                      font-weight: 600;
+                      font-size: 0.75rem;
+                    "
+                    >Total Orders</small
+                  >
+                  <div style="font-size: 1.5rem; font-weight: 700">
+                    {{ total_orders }}
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
+      </div>
+    </div>
 
-        <!-- Highlights Grid -->
-        <h4 style="font-weight: 700; color: #111827; margin-bottom: 24px; padding-left: 10px;">System Overview</h4>
-        <div class="row mb-5">
-            <!-- Revenue Card -->
-            <div class="col-md-3 mb-4">
-                <div class="stat-card h-100"
-                    style="background: white; border-radius: 16px; padding: 24px; transition: transform 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #E5E7EB;">
-                    <div
-                        style="width: 48px; height: 48px; background: #ECFDF5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #10B981; font-size: 1.5rem;">
-                        💰
-                    </div>
-                    <h3 style="font-weight: 800; color: #111827; margin-bottom: 4px; font-size: 1.75rem;">&#8377;{{ total_revenue|floatformat:0 }}</h3>
-                    <p style="color: #6B7280; font-size: 0.95rem; margin: 0;">Total Revenue</p>
-                </div>
-            </div>
-
-            <!-- Waste Stock Card -->
-            <div class="col-md-3 mb-4">
-                <div class="stat-card h-100"
-                    style="background: white; border-radius: 16px; padding: 24px; transition: transform 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #E5E7EB;">
-                    <div
-                        style="width: 48px; height: 48px; background: #FFFBEB; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #F59E0B; font-size: 1.5rem;">
-                        📦
-                    </div>
-                    <h3 style="font-weight: 800; color: #111827; margin-bottom: 4px; font-size: 1.75rem;">{{ waste_stock|floatformat:0 }} <span style="font-size: 1rem; color: #9CA3AF;">kg</span></h3>
-                    <p style="color: #6B7280; font-size: 0.95rem; margin: 0;">Waste Stock</p>
-                </div>
-            </div>
-
-            <!-- Compost Stock Card -->
-            <div class="col-md-3 mb-4">
-                <div class="stat-card h-100"
-                    style="background: white; border-radius: 16px; padding: 24px; transition: transform 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #E5E7EB;">
-                    <div
-                        style="width: 48px; height: 48px; background: #ECFDF5; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #059669; font-size: 1.5rem;">
-                        🍂
-                    </div>
-                    <h3 style="font-weight: 800; color: #111827; margin-bottom: 4px; font-size: 1.75rem;">{{ compost_stock|floatformat:0 }} <span style="font-size: 1rem; color: #9CA3AF;">kg</span></h3>
-                    <p style="color: #6B7280; font-size: 0.95rem; margin: 0;">Compost Ready</p>
-                </div>
-            </div>
-
-            <!-- Users Card -->
-            <div class="col-md-3 mb-4">
-                <div class="stat-card h-100"
-                    style="background: white; border-radius: 16px; padding: 24px; transition: transform 0.3s ease; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #E5E7EB;">
-                    <div
-                        style="width: 48px; height: 48px; background: #EFF6FF; border-radius: 12px; display: flex; align-items: center; justify-content: center; margin-bottom: 16px; color: #3B82F6; font-size: 1.5rem;">
-                        👥
-                    </div>
-                    <h3 style="font-weight: 800; color: #111827; margin-bottom: 4px; font-size: 1.75rem;">{{ total_users }}</h3>
-                    <p style="color: #6B7280; font-size: 0.95rem; margin: 0;">Active Users</p>
-                </div>
-            </div>
+    <!-- Highlights Grid -->
+    <h4
+      style="
+        font-weight: 700;
+        color: #111827;
+        margin-bottom: 24px;
+        padding-left: 10px;
+      "
+    >
+      System Overview
+    </h4>
+    <div class="row mb-5">
+      <!-- Revenue Card -->
+      <div class="col-md-3 mb-4">
+        <div
+          class="stat-card h-100"
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+          "
+        >
+          <div
+            style="
+              width: 48px;
+              height: 48px;
+              background: #ecfdf5;
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 16px;
+              color: #10b981;
+              font-size: 1.5rem;
+            "
+          >
+            💰
+          </div>
+          <h3
+            style="
+              font-weight: 800;
+              color: #111827;
+              margin-bottom: 4px;
+              font-size: 1.75rem;
+            "
+          >
+            &#8377;{{ total_revenue|floatformat:0 }}
+          </h3>
+          <p style="color: #6b7280; font-size: 0.95rem; margin: 0">
+            Total Revenue
+          </p>
         </div>
+      </div>
 
-        <!-- Quick Access Section -->
-        <div class="row">
-            <!-- Recent Activity -->
-            <div class="col-lg-8 mb-4">
-                <div
-                    style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #E5E7EB; height: 100%;">
-                    <div class="d-flex justify-content-between align-items-center mb-4">
-                        <h5 style="font-weight: 700; color: #111827; margin: 0;">Recent Orders</h5>
-                        <a href="{% url 'admin_waste_sales' %}"
-                            style="color: #10B981; font-weight: 600; text-decoration: none; font-size: 0.9rem;">View
-                            All</a>
-                    </div>
-
-                    <div class="table-responsive">
-                        <table class="table table-hover align-middle"
-                            style="border-collapse: separate; border-spacing: 0 8px;">
-                            <thead style="background: transparent;">
-                                <tr>
-                                    <th
-                                        style="border: none; color: #9CA3AF; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; padding-left: 0;">
-                                        Order ID</th>
-                                    <th
-                                        style="border: none; color: #9CA3AF; font-weight: 600; text-transform: uppercase; font-size: 0.75rem;">
-                                        Status</th>
-                                    <th
-                                        style="border: none; color: #9CA3AF; font-weight: 600; text-transform: uppercase; font-size: 0.75rem;">
-                                        Amount</th>
-                                    <th
-                                        style="border: none; color: #9CA3AF; font-weight: 600; text-transform: uppercase; font-size: 0.75rem; text-align: right;">
-                                        Date</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for activity in recent_activities %}
-                                <tr style="box-shadow: 0 2px 4px rgba(0,0,0,0.02);">
-                                    <td
-                                        style="border: none; background: #F9FAFB; border-top-left-radius: 10px; border-bottom-left-radius: 10px; padding: 16px;">
-                                        <span style="font-weight: 700; color: #4B5563;">#{{ activity.Order_id }}</span>
-                                        <br>
-                                        <small style="color: #9CA3AF;">{{ activity.Buyer_id.farmer_name }}</small>
-                                    </td>
-                                    <td style="border: none; background: #F9FAFB; padding: 16px;">
-                                        <span class="badge"
-                                            style="background: #D1FAE5; color: #065F46; padding: 6px 12px; border-radius: 20px;">Completed</span>
-                                    </td>
-                                    <td style="border: none; background: #F9FAFB; padding: 16px;">
-                                        <span style="font-weight: 700; color: #111827;">&#8377;{{ activity.Total_Amount }}</span>
-                                    </td>
-                                    <td
-                                        style="border: none; background: #F9FAFB; border-top-right-radius: 10px; border-bottom-right-radius: 10px; padding: 16px; text-align: right; color: #6B7280;">
-                                        {{ activity.Order_Date|date:"d M" }}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="4" class="text-center py-5 text-muted">No recent activities found</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Quick Actions Grid -->
-            <div class="col-lg-4 mb-4">
-                <div
-                    style="background: white; border-radius: 20px; padding: 30px; box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05); border: 1px solid #E5E7EB; height: 100%;">
-                    <h5 style="font-weight: 700; color: #111827; margin-bottom: 24px;">Quick Actions</h5>
-
-                    <div class="d-grid gap-3">
-                        <a href="{% url 'manager_salaries' %}" class="action-btn" style="text-decoration: none;">
-                            <div
-                                style="background: #F3F4F6; border-radius: 16px; padding: 20px; transition: all 0.2s ease; display: flex; align-items: center; border: 1px solid transparent;">
-                                <span style="font-size: 1.5rem; margin-right: 16px;">💼</span>
-                                <div>
-                                    <h6 style="font-weight: 700; color: #1F2937; margin: 0;">Manager Salaries</h6>
-                                    <small style="color: #6B7280;">Process payments</small>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="{% url 'admin_waste_sales' %}" class="action-btn" style="text-decoration: none;">
-                            <div
-                                style="background: #F3F4F6; border-radius: 16px; padding: 20px; transition: all 0.2s ease; display: flex; align-items: center; border: 1px solid transparent;">
-                                <span style="font-size: 1.5rem; margin-right: 16px;">🛒</span>
-                                <div>
-                                    <h6 style="font-weight: 700; color: #1F2937; margin: 0;">Sales Management</h6>
-                                    <small style="color: #6B7280;">Manage orders</small>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="{% url 'admin_reports' %}" class="action-btn" style="text-decoration: none;">
-                            <div
-                                style="background: #F3F4F6; border-radius: 16px; padding: 20px; transition: all 0.2s ease; display: flex; align-items: center; border: 1px solid transparent;">
-                                <span style="font-size: 1.5rem; margin-right: 16px;">📊</span>
-                                <div>
-                                    <h6 style="font-weight: 700; color: #1F2937; margin: 0;">System Reports</h6>
-                                    <small style="color: #6B7280;">View insights</small>
-                                </div>
-                            </div>
-                        </a>
-
-                        <a href="{% url 'view_users' %}" class="action-btn" style="text-decoration: none;">
-                            <div
-                                style="background: #F3F4F6; border-radius: 16px; padding: 20px; transition: all 0.2s ease; display: flex; align-items: center; border: 1px solid transparent;">
-                                <span style="font-size: 1.5rem; margin-right: 16px;">👤</span>
-                                <div>
-                                    <h6 style="font-weight: 700; color: #1F2937; margin: 0;">User Management</h6>
-                                    {% if pending_verifications > 0 %}
-                                    <small style="color: #EF4444; font-weight: 600;">{{ pending_verifications }}
-                                        pending</small>
-                                    {% else %}
-                                    <small style="color: #6B7280;">Manage accounts</small>
-                                    {% endif %}
-                                </div>
-                            </div>
-                        </a>
-                    </div>
-                </div>
-            </div>
+      <!-- Waste Stock Card -->
+      <div class="col-md-3 mb-4">
+        <div
+          class="stat-card h-100"
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+          "
+        >
+          <div
+            style="
+              width: 48px;
+              height: 48px;
+              background: #fffbeb;
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 16px;
+              color: #f59e0b;
+              font-size: 1.5rem;
+            "
+          >
+            📦
+          </div>
+          <h3
+            style="
+              font-weight: 800;
+              color: #111827;
+              margin-bottom: 4px;
+              font-size: 1.75rem;
+            "
+          >
+            {{ waste_stock|floatformat:0 }}
+            <span style="font-size: 1rem; color: #9ca3af">kg</span>
+          </h3>
+          <p style="color: #6b7280; font-size: 0.95rem; margin: 0">
+            Waste Stock
+          </p>
         </div>
+      </div>
 
-    </section>
+      <!-- Compost Stock Card -->
+      <div class="col-md-3 mb-4">
+        <div
+          class="stat-card h-100"
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+          "
+        >
+          <div
+            style="
+              width: 48px;
+              height: 48px;
+              background: #ecfdf5;
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 16px;
+              color: #059669;
+              font-size: 1.5rem;
+            "
+          >
+            🍂
+          </div>
+          <h3
+            style="
+              font-weight: 800;
+              color: #111827;
+              margin-bottom: 4px;
+              font-size: 1.75rem;
+            "
+          >
+            {{ compost_stock|floatformat:0 }}
+            <span style="font-size: 1rem; color: #9ca3af">kg</span>
+          </h3>
+          <p style="color: #6b7280; font-size: 0.95rem; margin: 0">
+            Compost Ready
+          </p>
+        </div>
+      </div>
+
+      <!-- Users Card -->
+      <div class="col-md-3 mb-4">
+        <div
+          class="stat-card h-100"
+          style="
+            background: white;
+            border-radius: 16px;
+            padding: 24px;
+            transition: transform 0.3s ease;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+          "
+        >
+          <div
+            style="
+              width: 48px;
+              height: 48px;
+              background: #eff6ff;
+              border-radius: 12px;
+              display: flex;
+              align-items: center;
+              justify-content: center;
+              margin-bottom: 16px;
+              color: #3b82f6;
+              font-size: 1.5rem;
+            "
+          >
+            👥
+          </div>
+          <h3
+            style="
+              font-weight: 800;
+              color: #111827;
+              margin-bottom: 4px;
+              font-size: 1.75rem;
+            "
+          >
+            {{ total_users }}
+          </h3>
+          <p style="color: #6b7280; font-size: 0.95rem; margin: 0">
+            Active Users
+          </p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Quick Access Section -->
+    <div class="row">
+      <!-- Recent Activity -->
+      <div class="col-lg-8 mb-4">
+        <div
+          style="
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <div class="d-flex justify-content-between align-items-center mb-4">
+            <h5 style="font-weight: 700; color: #111827; margin: 0">
+              Recent Orders
+            </h5>
+            <a
+              href="{% url 'admin_waste_sales' %}"
+              style="
+                color: #10b981;
+                font-weight: 600;
+                text-decoration: none;
+                font-size: 0.9rem;
+              "
+              >View All</a
+            >
+          </div>
+
+          <div class="table-responsive">
+            <table
+              class="table table-hover align-middle"
+              style="border-collapse: separate; border-spacing: 0 8px"
+            >
+              <thead style="background: transparent">
+                <tr>
+                  <th
+                    style="
+                      border: none;
+                      color: #9ca3af;
+                      font-weight: 600;
+                      text-transform: uppercase;
+                      font-size: 0.75rem;
+                      padding-left: 0;
+                    "
+                  >
+                    Order ID
+                  </th>
+                  <th
+                    style="
+                      border: none;
+                      color: #9ca3af;
+                      font-weight: 600;
+                      text-transform: uppercase;
+                      font-size: 0.75rem;
+                    "
+                  >
+                    Status
+                  </th>
+                  <th
+                    style="
+                      border: none;
+                      color: #9ca3af;
+                      font-weight: 600;
+                      text-transform: uppercase;
+                      font-size: 0.75rem;
+                    "
+                  >
+                    Amount
+                  </th>
+                  <th
+                    style="
+                      border: none;
+                      color: #9ca3af;
+                      font-weight: 600;
+                      text-transform: uppercase;
+                      font-size: 0.75rem;
+                      text-align: right;
+                    "
+                  >
+                    Date
+                  </th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for activity in recent_activities %}
+                <tr style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02)">
+                  <td
+                    style="
+                      border: none;
+                      background: #f9fafb;
+                      border-top-left-radius: 10px;
+                      border-bottom-left-radius: 10px;
+                      padding: 16px;
+                    "
+                  >
+                    <span style="font-weight: 700; color: #4b5563"
+                      >#{{ activity.Order_id }}</span
+                    >
+                    <br />
+                    <small style="color: #9ca3af"
+                      >{{ activity.Buyer_id.farmer_name }}</small
+                    >
+                  </td>
+                  <td style="border: none; background: #f9fafb; padding: 16px">
+                    <span
+                      class="badge"
+                      style="
+                        background: #d1fae5;
+                        color: #065f46;
+                        padding: 6px 12px;
+                        border-radius: 20px;
+                      "
+                      >Completed</span
+                    >
+                  </td>
+                  <td style="border: none; background: #f9fafb; padding: 16px">
+                    <span style="font-weight: 700; color: #111827"
+                      >&#8377;{{ activity.Total_Amount }}</span
+                    >
+                  </td>
+                  <td
+                    style="
+                      border: none;
+                      background: #f9fafb;
+                      border-top-right-radius: 10px;
+                      border-bottom-right-radius: 10px;
+                      padding: 16px;
+                      text-align: right;
+                      color: #6b7280;
+                    "
+                  >
+                    {{ activity.Order_Date|date:"d M" }}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="4" class="text-center py-5 text-muted">
+                    No recent activities found
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+
+      <!-- Quick Actions Grid -->
+      <div class="col-lg-4 mb-4">
+        <div
+          style="
+            background: white;
+            border-radius: 20px;
+            padding: 30px;
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+            border: 1px solid #e5e7eb;
+            height: 100%;
+          "
+        >
+          <h5 style="font-weight: 700; color: #111827; margin-bottom: 24px">
+            Quick Actions
+          </h5>
+
+          <div class="d-grid gap-3">
+            <a
+              href="{% url 'manager_salaries' %}"
+              class="action-btn"
+              style="text-decoration: none"
+            >
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 16px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">💼</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    Manager Salaries
+                  </h6>
+                  <small style="color: #6b7280">Process payments</small>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="{% url 'admin_waste_sales' %}"
+              class="action-btn"
+              style="text-decoration: none"
+            >
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 16px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">🛒</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    Sales Management
+                  </h6>
+                  <small style="color: #6b7280">Manage orders</small>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="{% url 'admin_reports' %}"
+              class="action-btn"
+              style="text-decoration: none"
+            >
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 16px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">📊</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    System Reports
+                  </h6>
+                  <small style="color: #6b7280">View insights</small>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="{% url 'view_bin_types' %}"
+              class="action-btn"
+              style="text-decoration: none"
+            >
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 16px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">🗑️</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    Bin Management
+                  </h6>
+                  <small style="color: #6b7280">Manage bin types</small>
+                </div>
+              </div>
+            </a>
+
+            <a
+              href="{% url 'view_users' %}"
+              class="action-btn"
+              style="text-decoration: none"
+            >
+              <div
+                style="
+                  background: #f3f4f6;
+                  border-radius: 16px;
+                  padding: 20px;
+                  transition: all 0.2s ease;
+                  display: flex;
+                  align-items: center;
+                  border: 1px solid transparent;
+                "
+              >
+                <span style="font-size: 1.5rem; margin-right: 16px">👤</span>
+                <div>
+                  <h6 style="font-weight: 700; color: #1f2937; margin: 0">
+                    User Management
+                  </h6>
+                  {% if pending_verifications > 0 %}
+                  <small style="color: #ef4444; font-weight: 600"
+                    >{{ pending_verifications }} pending</small
+                  >
+                  {% else %}
+                  <small style="color: #6b7280">Manage accounts</small>
+                  {% endif %}
+                </div>
+              </div>
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
 </section>
 
 <style>
-    /* Hover Effects */
-    .stat-card:hover {
-        transform: translateY(-5px);
-        box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
-    }
+  /* Hover Effects */
+  .stat-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1) !important;
+  }
 
-    .action-btn div:hover {
-        background: white !important;
-        border-color: #10B981 !important;
-        box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
-    }
+  .action-btn div:hover {
+    background: white !important;
+    border-color: #10b981 !important;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  }
 </style>
 {% endblock %}

@@ -53,5 +53,11 @@ urlpatterns = [
     
     # View Aadhaar image
     path('view_aadhaar/<int:user_id>/', views.view_aadhaar, name='view_aadhaar'),
+    
+    # Bin type management
+    path('add_bin_type/', views.add_bin_type, name='add_bin_type'),
+    path('view_bin_types/', views.view_bin_types, name='view_bin_types'),
+    path('edit_bin_type/<int:bin_type_id>/', views.edit_bin_type, name='edit_bin_type'),
+    path('delete_bin_type/<int:bin_type_id>/', views.delete_bin_type, name='delete_bin_type'),
 ]
 

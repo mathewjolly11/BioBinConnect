@@ -15,64 +15,73 @@ def about(request):
 
 def login_view(request):
     if request.method == 'POST':
-        # Differentiate between login and registration forms
-        # Handle Login
-        login_form = LoginForm(request, data=request.POST)
-        if login_form.is_valid():
-            username = login_form.cleaned_data.get('username')
-            password = login_form.cleaned_data.get('password')
-            user = authenticate(request, username=username, password=password)
-            if user is not None:
-                # Check if user is verified/approved by admin (skip check for superusers)
-                if not user.is_superuser and not user.is_verified:
-                    messages.error(request, 'account_not_verified')
-                    context = {
-                        'login_form': LoginForm(),
-                        'user_form': UserRegistrationForm(),
-                        'household_form': HouseholdRegistrationForm(),
-                        'collector_form': CollectorRegistrationForm(),
-                        'compost_form': CompostManagerRegistrationForm(),
-                        'farmer_form': FarmerRegistrationForm(),
-                    }
-                    return render(request, 'Guest/login.html', context)
-                
-                login(request, user)
-                # Handle admin login with SweetAlert
-                if user.is_superuser:
-                    messages.success(request, 'admin_login_success')
-                    # Return to login page to show SweetAlert, then redirect via JavaScript
-                    context = {
-                        'login_form': LoginForm(),
-                        'user_form': UserRegistrationForm(),
-                        'household_form': HouseholdRegistrationForm(),
-                        'collector_form': CollectorRegistrationForm(),
-                        'compost_form': CompostManagerRegistrationForm(),
-                        'farmer_form': FarmerRegistrationForm(),
-                    }
-                    return render(request, 'Guest/login.html', context)
-                elif user.role == 'household':
-                    return redirect('household_dashboard')
-                elif user.role == 'collector':
-                    return redirect('collector_dashboard')
-                elif user.role == 'compost_manager':
-                    return redirect('compost_manager_dashboard')
-                elif user.role == 'farmer':
-                    return redirect('farmer_dashboard')
-                else:
-                    return redirect('guest_index') # Fallback redirect
-            else:
-                messages.error(request, 'Invalid username or password.')
+        # Check form type to differentiate between login and registration forms
+        form_type = request.POST.get('form_type')
         
-        # If login invalid, return with errors
-        context = {
-            'login_form': login_form,
-            'user_form': UserRegistrationForm(),
-            'household_form': HouseholdRegistrationForm(),
-            'collector_form': CollectorRegistrationForm(),
-            'compost_form': CompostManagerRegistrationForm(),
-            'farmer_form': FarmerRegistrationForm(),
-        }
-        return render(request, 'Guest/login.html', context)
+        # Only process if this is actually a login form submission
+        if form_type == 'login':
+            # Handle Login
+            login_form = LoginForm(request, data=request.POST)
+            login_form = LoginForm(request, data=request.POST)
+            if login_form.is_valid():
+                username = login_form.cleaned_data.get('username')
+                password = login_form.cleaned_data.get('password')
+                user = authenticate(request, username=username, password=password)
+                if user is not None:
+                    # Check if user is verified/approved by admin (skip check for superusers)
+                    if not user.is_superuser and not user.is_verified:
+                        messages.error(request, 'account_not_verified')
+                        context = {
+                            'login_form': LoginForm(),
+                            'user_form': UserRegistrationForm(),
+                            'household_form': HouseholdRegistrationForm(),
+                            'collector_form': CollectorRegistrationForm(),
+                            'compost_form': CompostManagerRegistrationForm(),
+                            'farmer_form': FarmerRegistrationForm(),
+                        }
+                        return render(request, 'Guest/login.html', context)
+                    
+                    login(request, user)
+                    # Handle admin login with SweetAlert
+                    if user.is_superuser:
+                        messages.success(request, 'admin_login_success')
+                        # Return to login page to show SweetAlert, then redirect via JavaScript
+                        context = {
+                            'login_form': LoginForm(),
+                            'user_form': UserRegistrationForm(),
+                            'household_form': HouseholdRegistrationForm(),
+                            'collector_form': CollectorRegistrationForm(),
+                            'compost_form': CompostManagerRegistrationForm(),
+                            'farmer_form': FarmerRegistrationForm(),
+                        }
+                        return render(request, 'Guest/login.html', context)
+                    elif user.role == 'household':
+                        return redirect('household_dashboard')
+                    elif user.role == 'collector':
+                        return redirect('collector_dashboard')
+                    elif user.role == 'compost_manager':
+                        return redirect('compost_manager_dashboard')
+                    elif user.role == 'farmer':
+                        return redirect('farmer_dashboard')
+                    else:
+                        return redirect('guest_index') # Fallback redirect
+                else:
+                    messages.error(request, 'Invalid username or password.')
+            
+            # If login invalid, return with errors
+            context = {
+                'login_form': login_form,
+                'user_form': UserRegistrationForm(),
+                'household_form': HouseholdRegistrationForm(),
+                'collector_form': CollectorRegistrationForm(),
+                'compost_form': CompostManagerRegistrationForm(),
+                'farmer_form': FarmerRegistrationForm(),
+            }
+            return render(request, 'Guest/login.html', context)
+        
+        # If not a login form submission, redirect to signup view for registration processing
+        else:
+            return redirect('signup')
 
 
 
