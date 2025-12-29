@@ -1,274 +1,467 @@
 .login-register-page .role-select-box label {
-    display: block;
-    margin-bottom: 6px;
-    font-size: 15px;
-    color: #333;
+  display: block;
+  margin-bottom: 6px;
+  font-size: 15px;
+  color: #333;
 }
 .login-register-page .role-select-box select {
-    width: 100%;
-    padding: 12px 20px;
-    border-radius: 8px;
-    border: 1px solid #ccc;
-    background: #eee;
-    font-size: 16px;
-    color: #333;
-    font-family: "Poppins", sans-serif;
-    margin-bottom: 0;
-    outline: none;
-    transition: border 0.2s;
+  width: 100%;
+  padding: 12px 20px;
+  border-radius: 8px;
+  border: 1px solid #ccc;
+  background: #eee;
+  font-size: 16px;
+  color: #333;
+  font-family: "Poppins", sans-serif;
+  margin-bottom: 0;
+  outline: none;
+  transition: border 0.2s;
 }
 .login-register-page .role-select-box select:focus {
-    border: 1.5px solid #7494ec;
-    background: #f5f8ff;
+  border: 1.5px solid #7494ec;
+  background: #f5f8ff;
 }
-@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap');
+@import url("https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap");
 
-*{
+* {
+  margin: 0;
+
+  .login-register-page * {
     margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: "Poppins", sans-serif;
+    text-decoration: none;
+    list-style: none;
+  }
 
-    .login-register-page *{
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-        font-family: "Poppins", sans-serif;
-        text-decoration: none;
-        list-style: none;
-    }
+  .login-register-page {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    background: linear-gradient(90deg, #67bb59, #c9d6ff);
+  }
 
-    .login-register-page{
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        min-height: 100vh;
-        background: linear-gradient(90deg, #67bb59, #c9d6ff);
-    }
+  .login-register-page .container {
+    position: relative;
+    width: 850px;
+    height: 550px;
+    background: #fff;
+    margin: 20px;
+    border-radius: 30px;
+    box-shadow: 0 0 30px rgba(0, 0, 0, 0.2);
+    overflow: hidden;
+  }
 
-    .login-register-page .container{
-        position: relative;
-        width: 850px;
-        height: 550px;
-        background: #fff;
-        margin: 20px;
-        border-radius: 30px;
-        box-shadow: 0 0 30px rgba(0, 0, 0, .2);
-        overflow: hidden;
-    }
+  .login-register-page .container h1 {
+    font-size: 32px;
+    margin: 0 0 10px 0;
+    line-height: 1.2;
+  }
 
-    .login-register-page .container h1{
-        font-size: 36px;
-        margin: -10px 0;
-    }
+  .login-register-page .container p {
+    font-size: 14.5px;
+    margin: 15px 0;
+  }
 
-    .login-register-page .container p{
-        font-size: 14.5px;
-        margin: 15px 0;
-    }
+  .login-register-page form {
+    width: 100%;
+  }
 
-    .login-register-page form{ width: 100%; }
+  .login-register-page .form-box {
+    position: absolute;
+    right: 0;
+    width: 50%;
+    height: 100%;
+    background: #fff;
+    display: flex;
+    align-items: center;
+    color: #333;
+    text-align: center;
+    padding: 30px 40px;
+    z-index: 1;
+    transition: 0.6s ease-in-out 1.2s, visibility 0s 1s;
+    overflow-y: auto;
+    overflow-x: hidden;
+  }
 
-    .login-register-page .form-box{
-        position: absolute;
-        right: 0;
-        width: 50%;
-        height: 100%;
-        background: #fff;
-        display: flex;
-        align-items: center;
-        color: #333;
-        text-align: center;
-        padding: 40px;
-        z-index: 1;
-        transition: .6s ease-in-out 1.2s, visibility 0s 1s;
-    }
+  /* Custom scrollbar for form-box */
+  .login-register-page .form-box::-webkit-scrollbar {
+    width: 6px;
+  }
 
-    .login-register-page .container.active .form-box{ right: 50%; }
-    .login-register-page .form-box.register{
-        visibility: hidden;
-    }
+  .login-register-page .form-box::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+  }
 
-    .login-register-page .register-step {
-        display: none;
-    }
-    .login-register-page .register-step.active {
-        display: block;
-    }
-    .login-register-page .register-step .btn {
-        margin-top: 10px;
-        width: auto;
-        min-width: 120px;
-        display: inline-block;
-    }
-    .login-register-page .register-step .btn + .btn {
-        margin-left: 10px;
-    }
-    .login-register-page .container.active .form-box.register{ visibility: visible; }
+  .login-register-page .form-box::-webkit-scrollbar-thumb {
+    background: #888;
+    border-radius: 10px;
+  }
 
-    .login-register-page .input-box{
-        position: relative;
-        margin: 30px 0;
-    }
+  .login-register-page .form-box::-webkit-scrollbar-thumb:hover {
+    background: #555;
+  }
 
-    .login-register-page .input-box input{
-        width: 100%;
-        padding: 13px 50px 13px 20px;
-        background: #eee;
-        border-radius: 8px;
-        border: none;
-        outline: none;
-        font-size: 16px;
-        color: #333;
-        font-weight: 500;
-    }
+  .login-register-page .container.active .form-box {
+    right: 50%;
+  }
+  .login-register-page .form-box.register {
+    visibility: hidden;
+  }
 
-    .login-register-page .input-box input::placeholder{
-        color: #888;
-        font-weight: 400;
-    }
+  .login-register-page .register-step {
+    display: none;
+    width: 100%;
+  }
+  .login-register-page .register-step.active {
+    display: block;
+  }
+  .login-register-page .register-step .btn {
+    margin-top: 10px;
+    width: auto;
+    min-width: 120px;
+    display: inline-block;
+  }
+  .login-register-page .register-step .btn + .btn {
+    margin-left: 10px;
+  }
+  .login-register-page .container.active .form-box.register {
+    visibility: visible;
+  }
 
-    .login-register-page .input-box i{
-        position: absolute;
-        right: 20px;
-        top: 50%;
-        transform: translateY(-50%);
-        font-size: 20px;
-    }
+  /* Ensure form content is properly aligned */
+  .login-register-page form {
+    width: 100%;
+    max-height: 100%;
+    display: flex;
+    flex-direction: column;
+  }
 
-    .login-register-page .forgot-link{ margin: -15px 0 15px; }
-    .login-register-page .forgot-link a{
-        font-size: 14.5px;
-        color: #333;
-    }
+  .login-register-page .input-box {
+    position: relative;
+    margin: 15px 0;
+  }
 
-    .login-register-page .btn{
-        width: 100%;
-        height: 48px;
-        background: #00be1c;
-        border-radius: 8px; 
-        box-shadow: 0 0 10px rgba(0, 0, 0, .1);
-        border: none;
-        cursor: pointer;
-        font-size: 16px;
-        color: #fff;
-        font-weight: 600;
-    }
+  .login-register-page .input-box input,
+  .login-register-page .input-box textarea,
+  .login-register-page .input-box select {
+    width: 100%;
+    padding: 13px 50px 13px 20px;
+    background: #eee;
+    border-radius: 8px;
+    border: none;
+    outline: none;
+    font-size: 16px;
+    color: #333;
+    font-weight: 500;
+  }
 
-    .login-register-page .social-icons{
-        display: flex;
-        justify-content: center;
-    }
+  /* Ensure Django-rendered inputs also get proper styling */
+  .login-register-page .input-box input[type="text"],
+  .login-register-page .input-box input[type="email"],
+  .login-register-page .input-box input[type="password"],
+  .login-register-page .input-box input[type="tel"],
+  .login-register-page .input-box input[type="number"] {
+    width: 100%;
+    padding: 13px 50px 13px 20px !important;
+  }
 
-    .login-register-page .social-icons a{
-        display: inline-flex;
-        padding: 10px;
-        border: 2px solid #ccc;
-        border-radius: 8px;
-        font-size: 24px;
-        color: #333;
-        margin: 0 8px;
-    }
+  .login-register-page .input-box textarea {
+    padding: 13px 20px;
+    resize: vertical;
+    min-height: 80px;
+  }
 
-    .login-register-page .toggle-box{
-        position: absolute;
-        width: 100%;
-        height: 100%;
-    }
+  /* Validation message styles */
+  .login-register-page .input-box .validation-message {
+    position: absolute;
+    bottom: -20px;
+    left: 5px;
+    font-size: 11px;
+    font-weight: 500;
+    margin: 0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    display: inline-block;
+    max-width: 100%;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
 
-    .login-register-page .toggle-box::before{
-        content: '';
-        position: absolute;
-        left: -250%;
-        width: 300%;
-        height: 100%;
-        background: #00be1c;
-        /* border: 2px solid red; */
-        border-radius: 150px;
-        z-index: 2;
-        transition: 1.8s ease-in-out;
-    }
+  .login-register-page .input-box .validation-message.valid {
+    color: #00be1c;
+    background: rgba(0, 190, 28, 0.1);
+  }
 
-    .login-register-page .container.active .toggle-box::before{ left: 50%; }
+  .login-register-page .input-box .validation-message.invalid {
+    color: #dc3545;
+    background: rgba(220, 53, 69, 0.1);
+  }
 
-    .login-register-page .toggle-panel{
-        position: absolute;
-        width: 50%;
-        height: 100%;
-        /* background: seagreen; */
-        color: #fff;
-        display: flex;
-        flex-direction: column;
-        justify-content: center;
-        align-items: center;
-        z-index: 2;
-        transition: .6s ease-in-out;
-    }
+  .login-register-page .input-box input::placeholder {
+    color: #888;
+    font-weight: 400;
+  }
 
-    .login-register-page .toggle-panel.toggle-left{ 
-        left: 0;
-        transition-delay: 1.2s; 
-    }
-    .login-register-page .container.active .toggle-panel.toggle-left{
-        left: -50%;
-        transition-delay: .6s;
-    }
+  .login-register-page .input-box i {
+    position: absolute;
+    right: 20px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 20px;
+    color: #888;
+    z-index: 1;
+    pointer-events: none;
+  }
 
-    .login-register-page .toggle-panel.toggle-right{ 
-        right: -50%;
-        transition-delay: .6s;
-    }
-    .login-register-page .container.active .toggle-panel.toggle-right{
-        right: 0;
-        transition-delay: 1.2s;
-    }
+  /* Specific icon positioning for select dropdowns */
+  .login-register-page .input-box select + i {
+    right: 45px; /* Move icon left to avoid overlap with dropdown arrow */
+  }
 
-    .login-register-page .toggle-panel p{ margin-bottom: 20px; }
-    .login-register-page .toggle-panel .btn{
-        width: 160px;
-        height: 46px;
-        background: transparent;
-        border: 2px solid #fff;
-        box-shadow: none;
-    }
+  /* Specific icon positioning for file inputs */
+  .login-register-page .input-box input[type="file"] {
+    padding: 13px 20px;
+  }
 
-    @media screen and (max-width: 650px){
-        .login-register-page .container{ height: calc(100vh - 40px); }
-        .login-register-page .form-box{
-            bottom: 0;
-            width: 100%;
-            height: 70%;
-        }
-        .login-register-page .container.active .form-box{
-            right: 0;
-            bottom: 30%;
-        }
-        .login-register-page .toggle-box::before{
-            left: 0;
-            top: -270%;
-            width: 100%;
-            height: 300%;
-            border-radius: 20vw;
-        }
-        .login-register-page .container.active .toggle-box::before{
-            left: 0;
-            top: 70%;
-        }
-        .login-register-page .container.active .toggle-panel.toggle-left{
-            left: 0;
-            top: -30%;
-        }
-        .login-register-page .toggle-panel{ 
-            width: 100%;
-            height: 30%;
-        }
-        .login-register-page .toggle-panel.toggle-left{ top: 0; }
-        .login-register-page .toggle-panel.toggle-right{
-            right: 0;
-            bottom: -30%;
-        }
-        .login-register-page .container.active .toggle-panel.toggle-right{ bottom: 0; }
-    }
+  .login-register-page .input-box input[type="file"] + i {
+    display: none; /* Hide icon for file inputs as they have their own button */
+  }
 
-    @media screen and (max-width: 400px){
-        .login-register-page .form-box { padding: 20px; }
-        .login-register-page .toggle-panel h1{font-size: 30px; }
+  /* Hide Django auto-generated labels to prevent overlapping */
+  .login-register-page .input-box label:not([style*="display: block"]) {
+    display: none !important;
+  }
+
+  /* Hide all labels inside input-box by default */
+  .login-register-page .input-box > label {
+    display: none !important;
+  }
+
+  /* Style for custom labels (those with explicit inline style) */
+  .login-register-page .input-box label[style*="display: block"] {
+    display: block !important;
+    margin-bottom: 8px;
+    color: #666;
+    font-weight: 500;
+    font-size: 13px;
+    text-align: left;
+    padding-left: 2px;
+  }
+
+  /* Ensure labels in role-select-box are visible */
+  .login-register-page .role-select-box label {
+    display: block !important;
+    margin-bottom: 8px;
+    color: #666;
+    font-weight: 500;
+    font-size: 14px;
+  }
+
+  /* Ensure select dropdowns don't show default labels */
+  .login-register-page .input-box select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 12 12'%3E%3Cpath fill='%23333' d='M6 9L1 4h10z'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 15px center;
+    padding-right: 40px;
+  }
+
+  /* Fix for role select box */
+  .login-register-page .role-select-box h1 {
+    margin-bottom: 15px;
+  }
+
+  .login-register-page .role-select-box .input-box {
+    margin-top: 0;
+    margin-bottom: 0;
+  }
+
+  .login-register-page .forgot-link {
+    margin: -15px 0 15px;
+  }
+  .login-register-page .forgot-link a {
+    font-size: 14.5px;
+    color: #333;
+  }
+
+  .login-register-page .btn {
+    width: 100%;
+    height: 48px;
+    background: #00be1c;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    border: none;
+    cursor: pointer;
+    font-size: 16px;
+    color: #fff;
+    font-weight: 600;
+  }
+
+  .login-register-page .social-icons {
+    display: flex;
+    justify-content: center;
+  }
+
+  .login-register-page .social-icons a {
+    display: inline-flex;
+    padding: 10px;
+    border: 2px solid #ccc;
+    border-radius: 8px;
+    font-size: 24px;
+    color: #333;
+    margin: 0 8px;
+  }
+
+  .login-register-page .toggle-box {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+  }
+
+  .login-register-page .toggle-box::before {
+    content: "";
+    position: absolute;
+    left: -250%;
+    width: 300%;
+    height: 100%;
+    background: #00be1c;
+    /* border: 2px solid red; */
+    border-radius: 150px;
+    z-index: 2;
+    transition: 1.8s ease-in-out;
+  }
+
+  .login-register-page .container.active .toggle-box::before {
+    left: 50%;
+  }
+
+  .login-register-page .toggle-panel {
+    position: absolute;
+    width: 50%;
+    height: 100%;
+    /* background: seagreen; */
+    color: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    z-index: 2;
+    transition: 0.6s ease-in-out;
+  }
+
+  .login-register-page .toggle-panel.toggle-left {
+    left: 0;
+    transition-delay: 1.2s;
+  }
+  .login-register-page .container.active .toggle-panel.toggle-left {
+    left: -50%;
+    transition-delay: 0.6s;
+  }
+
+  .login-register-page .toggle-panel.toggle-right {
+    right: -50%;
+    transition-delay: 0.6s;
+  }
+  .login-register-page .container.active .toggle-panel.toggle-right {
+    right: 0;
+    transition-delay: 1.2s;
+  }
+
+  .login-register-page .toggle-panel p {
+    margin-bottom: 20px;
+  }
+  .login-register-page .toggle-panel .btn {
+    width: 160px;
+    height: 46px;
+    background: transparent;
+    border: 2px solid #fff;
+    box-shadow: none;
+  }
+
+  @media screen and (max-width: 650px) {
+    .login-register-page .container {
+      height: calc(100vh - 40px);
     }
+    .login-register-page .form-box {
+      bottom: 0;
+      width: 100%;
+      height: 70%;
+    }
+    .login-register-page .container.active .form-box {
+      right: 0;
+      bottom: 30%;
+    }
+    .login-register-page .toggle-box::before {
+      left: 0;
+      top: -270%;
+      width: 100%;
+      height: 300%;
+      border-radius: 20vw;
+    }
+    .login-register-page .container.active .toggle-box::before {
+      left: 0;
+      top: 70%;
+    }
+    .login-register-page .container.active .toggle-panel.toggle-left {
+      left: 0;
+      top: -30%;
+    }
+    .login-register-page .toggle-panel {
+      width: 100%;
+      height: 30%;
+    }
+    .login-register-page .toggle-panel.toggle-left {
+      top: 0;
+    }
+    .login-register-page .toggle-panel.toggle-right {
+      right: 0;
+      bottom: -30%;
+    }
+    .login-register-page .container.active .toggle-panel.toggle-right {
+      bottom: 0;
+    }
+  }
+
+  @media screen and (max-width: 400px) {
+    .login-register-page .form-box {
+      padding: 20px;
+    }
+    .login-register-page .toggle-panel h1 {
+      font-size: 30px;
+    }
+  }
+}
+
+/* SweetAlert Customization for Compact Alerts */
+.swal2-popup {
+    font-size: 0.9rem !important;
+    padding: 1.5rem !important;
+}
+
+.swal2-title {
+    font-size: 1.4rem !important;
+    padding: 0.5rem 0 !important;
+}
+
+.swal2-html-container {
+    font-size: 0.85rem !important;
+    margin: 0.5rem 0 !important;
+}
+
+.swal2-icon {
+    width: 4rem !important;
+    height: 4rem !important;
+    margin: 1rem auto 0.5rem !important;
+}
+
+.swal2-confirm, .swal2-cancel {
+    font-size: 0.9rem !important;
+    padding: 0.5rem 1.5rem !important;
 }

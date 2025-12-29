@@ -1,5 +1,6 @@
 from django.urls import path
 from GuestApp import views
+from GuestApp import api_views
 
 
 from GuestApp import views
@@ -14,5 +15,12 @@ urlpatterns = [
     path('about/', views.about_us, name='guest_about'),
     path('faq/', views.faq, name='guest_faq'),
     path('how-it-works/', views.how_it_works, name='guest_how_it_works'),
+    
+    # Demo page for testing validations
+    path('validation-demo/', views.validation_demo, name='validation_demo'),
+    
+    # API endpoints
+    path('api/validate-house-number/', api_views.validate_house_number, name='validate_house_number'),
+    path('api/get-next-house-number/', api_views.get_next_house_number, name='get_next_house_number'),
 ]
 

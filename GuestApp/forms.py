@@ -43,14 +43,22 @@ class UserRegistrationForm(forms.ModelForm):
     password1 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'placeholder': 'Password',
-            'required': True
+            'required': True,
+            'minlength': '8',
+            'title': 'Password must be at least 8 characters long',
+            'pattern': '(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}',
+            'data-error': 'Password must contain at least 8 characters with uppercase, lowercase and number',
+            'class': 'password-field'
         }),
         label="Password"
     )
     password2 = forms.CharField(
         widget=forms.PasswordInput(attrs={
             'placeholder': 'Confirm Password',
-            'required': True
+            'required': True,
+            'minlength': '8',
+            'title': 'Please confirm your password',
+            'class': 'password-field'
         }),
         label="Confirm Password"
     )
@@ -61,11 +69,17 @@ class UserRegistrationForm(forms.ModelForm):
         widgets = {
             'email': forms.EmailInput(attrs={
                 'placeholder': 'Email',
-                'required': True
+                'required': True,
+                'pattern': '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
+                'title': 'Please enter a valid email address'
             }),
             'phone': forms.TextInput(attrs={
-                'placeholder': 'Phone',
-                'required': True
+                'placeholder': 'Phone (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             })
         }
 
@@ -108,29 +122,48 @@ class HouseholdRegistrationForm(forms.ModelForm):
         widgets = {
             'household_name': forms.TextInput(attrs={
                 'placeholder': 'Household Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
-                'placeholder': 'Phone',
-                'required': True
+                'placeholder': 'Phone (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
-                'placeholder': 'Address',
+                'placeholder': 'Full Address',
                 'rows': 3,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             }),
             'district': forms.Select(attrs={
-                'required': True
+                'required': True,
+                'title': 'Please select a district'
             }),
             'location': forms.Select(attrs={
-                'required': True
+                'required': True,
+                'title': 'Please select a location'
             }),
             'residents_association': forms.Select(attrs={
-                'required': True
+                'required': True,
+                'title': 'Please select a residents association'
             }),
             'house_no': forms.NumberInput(attrs={
                 'placeholder': 'House Number',
-                'required': True
+                'required': True,
+                'min': '1',
+                'max': '9999',
+                'title': 'Please enter a valid house number',
+                'class': 'house-number-input',
+                'data-validate-house': 'true'
             })
         }
 
@@ -160,16 +193,27 @@ class CollectorRegistrationForm(forms.ModelForm):
         widgets = {
             'collector_name': forms.TextInput(attrs={
                 'placeholder': 'Collector Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
-                'placeholder': 'Phone',
-                'required': True
+                'placeholder': 'Phone (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
-                'placeholder': 'Address',
+                'placeholder': 'Full Address',
                 'rows': 3,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             })
         }
 
@@ -189,20 +233,35 @@ class CompostManagerRegistrationForm(forms.ModelForm):
         widgets = {
             'compostmanager_name': forms.TextInput(attrs={
                 'placeholder': 'Compost Manager Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
-                'placeholder': 'Phone',
-                'required': True
+                'placeholder': 'Phone (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
-                'placeholder': 'Address',
+                'placeholder': 'Full Address',
                 'rows': 3,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             }),
             'license_number': forms.TextInput(attrs={
                 'placeholder': 'License Number',
-                'required': True
+                'required': True,
+                'minlength': '5',
+                'maxlength': '20',
+                'pattern': '[A-Za-z0-9]+',
+                'title': 'License number should contain alphanumeric characters only'
             })
         }
 
@@ -237,18 +296,29 @@ class FarmerRegistrationForm(forms.ModelForm):
             'farmer_name': forms.TextInput(attrs={
                 'class': 'input-box',
                 'placeholder': 'Farmer Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'input-box',
-                'placeholder': 'Phone',
-                'required': True
+                'placeholder': 'Phone (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
                 'class': 'input-box',
-                'placeholder': 'Address',
+                'placeholder': 'Full Address',
                 'rows': 3,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             })
         }
 
@@ -267,7 +337,11 @@ class SignupForm(UserRegistrationForm):
         required=True,
         widget=forms.TextInput(attrs={
             'class': 'input-box',
-            'placeholder': 'Mobile number'
+            'placeholder': 'Mobile number (10 digits)',
+            'pattern': '[0-9]{10}',
+            'maxlength': '10',
+            'minlength': '10',
+            'title': 'Please enter a valid 10-digit mobile number'
         })
     )
     dob = forms.DateField(
@@ -305,18 +379,28 @@ class ProfileEditForm(forms.ModelForm):
             'name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Full Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'email': forms.EmailInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Email',
                 'required': True,
-                'readonly': True  # Email should not be changed
+                'readonly': True,
+                'pattern': '[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}',
+                'title': 'Please enter a valid email address'
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Phone Number',
-                'required': True
+                'placeholder': 'Phone Number (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             })
         }
 
@@ -346,35 +430,53 @@ class HouseholdEditForm(forms.ModelForm):
             'household_name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Household Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Phone Number',
-                'required': True
+                'placeholder': 'Phone Number (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Full Address',
                 'rows': 4,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             }),
             'district': forms.Select(attrs={
                 'class': 'form-control',
-                'required': True
+                'required': True,
+                'title': 'Please select a district'
             }),
             'location': forms.Select(attrs={
                 'class': 'form-control',
-                'required': True
+                'required': True,
+                'title': 'Please select a location'
             }),
             'residents_association': forms.Select(attrs={
                 'class': 'form-control',
-                'required': True
+                'required': True,
+                'title': 'Please select a residents association'
             }),
             'house_no': forms.NumberInput(attrs={
-                'class': 'form-control',
+                'class': 'form-control house-number-input',
                 'placeholder': 'House Number',
-                'required': True
+                'required': True,
+                'min': '1',
+                'max': '9999',
+                'title': 'Please enter a valid house number',
+                'data-validate-house': 'true'
             })
         }
 
@@ -404,18 +506,29 @@ class CollectorEditForm(forms.ModelForm):
             'collector_name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Collector Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Phone Number',
-                'required': True
+                'placeholder': 'Phone Number (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Full Address',
                 'rows': 4,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             })
         }
 
@@ -430,23 +543,38 @@ class CompostManagerEditForm(forms.ModelForm):
             'compostmanager_name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Compost Manager Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Phone Number',
-                'required': True
+                'placeholder': 'Phone Number (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Full Address',
                 'rows': 4,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             }),
             'license_number': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'License Number',
-                'required': True
+                'required': True,
+                'minlength': '5',
+                'maxlength': '20',
+                'pattern': '[A-Za-z0-9]+',
+                'title': 'License number should contain alphanumeric characters only'
             })
         }
 
@@ -485,17 +613,28 @@ class FarmerEditForm(forms.ModelForm):
             'farmer_name': forms.TextInput(attrs={
                 'class': 'form-control',
                 'placeholder': 'Farmer Name',
-                'required': True
+                'required': True,
+                'minlength': '2',
+                'maxlength': '100',
+                'pattern': '[a-zA-Z\s]+',
+                'title': 'Name should only contain letters and spaces'
             }),
             'phone': forms.TextInput(attrs={
                 'class': 'form-control',
-                'placeholder': 'Phone Number',
-                'required': True
+                'placeholder': 'Phone Number (10 digits)',
+                'required': True,
+                'pattern': '[0-9]{10}',
+                'maxlength': '10',
+                'minlength': '10',
+                'title': 'Please enter a valid 10-digit phone number'
             }),
             'address': forms.Textarea(attrs={
                 'class': 'form-control',
                 'placeholder': 'Full Address',
                 'rows': 4,
-                'required': True
+                'required': True,
+                'minlength': '10',
+                'maxlength': '500',
+                'title': 'Please enter a complete address'
             })
         }

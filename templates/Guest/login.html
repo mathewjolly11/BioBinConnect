@@ -13,10 +13,7 @@
           {{ login_form.username }}
           <i class="bx bxs-user"></i>
         </div>
-        <div class="input-box">
-          {{ login_form.password }}
-          <i class="bx bxs-lock-alt"></i>
-        </div>
+        <div class="input-box">{{ login_form.password }}</div>
         <div class="forgot-link">
           <a href="#">Forgot Password?</a>
         </div>
@@ -42,9 +39,8 @@
         novalidate
       >
         {% csrf_token %}
-        <div class="role-select-box" style="margin-bottom: 30px">
+        <div class="role-select-box" style="margin-bottom: 15px">
           <h1>Registration</h1>
-          <br />
           <div class="input-box">
             {{ user_form.role }}
             <i class="bx bxs-user-circle"></i>
@@ -55,35 +51,35 @@
         <div class="register-step step-1 active">
           <!-- Role-specific name fields -->
           <div class="role-fields role-farmer">
-            <div class="input-box" style="margin-bottom: 15px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ farmer_form.farmer_name }}
               <i class="bx bxs-user"></i>
             </div>
           </div>
 
           <div class="role-fields role-collector" style="display: none">
-            <div class="input-box" style="margin-bottom: 15px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ collector_form.collector_name }}
               <i class="bx bxs-user"></i>
             </div>
           </div>
 
           <div class="role-fields role-compost_manager" style="display: none">
-            <div class="input-box" style="margin-bottom: 15px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ compost_form.compostmanager_name }}
               <i class="bx bxs-user"></i>
             </div>
           </div>
 
           <div class="role-fields role-household" style="display: none">
-            <div class="input-box" style="margin-bottom: 15px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ household_form.household_name }}
               <i class="bx bxs-user"></i>
             </div>
           </div>
 
           <!-- Email -->
-          <div class="input-box" style="margin-bottom: 20px">
+          <div class="input-box" style="margin-bottom: 10px">
             {{ user_form.email }}
             <i class="bx bxs-envelope"></i>
           </div>
@@ -99,18 +95,16 @@
         <!-- Step 2: Security & Contact -->
         <div class="register-step step-2">
           <!-- Password fields -->
-          <div class="input-box" style="margin-bottom: 15px">
+          <div class="input-box" style="margin-bottom: 10px">
             {{ user_form.password1 }}
-            <i class="bx bxs-lock-alt"></i>
           </div>
 
-          <div class="input-box" style="margin-bottom: 15px">
+          <div class="input-box" style="margin-bottom: 10px">
             {{ user_form.password2 }}
-            <i class="bx bxs-lock-alt"></i>
           </div>
 
           <!-- Phone field -->
-          <div class="input-box" style="margin-bottom: 20px">
+          <div class="input-box" style="margin-bottom: 10px">
             {{ user_form.phone }}
             <i class="bx bxs-phone"></i>
           </div>
@@ -128,28 +122,28 @@
         <div class="register-step step-3">
           <!-- Role-specific address fields -->
           <div class="role-fields role-farmer">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ farmer_form.address }}
               <i class="bx bxs-home"></i>
             </div>
           </div>
 
           <div class="role-fields role-collector" style="display: none">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ collector_form.address }}
               <i class="bx bxs-home"></i>
             </div>
           </div>
 
           <div class="role-fields role-compost_manager" style="display: none">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ compost_form.address }}
               <i class="bx bxs-home"></i>
             </div>
           </div>
 
           <div class="role-fields role-household" style="display: none">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ household_form.address }}
               <i class="bx bxs-home"></i>
             </div>
@@ -168,7 +162,7 @@
         <div class="register-step step-4">
           <!-- Farmer Additional Fields -->
           <div class="role-fields role-farmer">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               <label
                 style="
                   display: block;
@@ -185,7 +179,7 @@
 
           <!-- Collector Additional Fields -->
           <div class="role-fields role-collector" style="display: none">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               <label
                 style="
                   display: block;
@@ -202,7 +196,7 @@
 
           <!-- Compost Manager Additional Fields -->
           <div class="role-fields role-compost_manager" style="display: none">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               {{ compost_form.license_number }}
               <i class="bx bxs-id-card"></i>
             </div>
@@ -210,7 +204,7 @@
 
           <!-- Household Additional Fields (Split Part 1) -->
           <div class="role-fields role-household" style="display: none">
-            <div class="input-box" style="margin-bottom: 15px">
+            <div class="input-box" style="margin-bottom: 10px">
               <label
                 style="
                   display: block;
@@ -224,7 +218,7 @@
               <i class="bx bxs-map"></i>
             </div>
 
-            <div class="input-box" style="margin-bottom: 15px">
+            <div class="input-box" style="margin-bottom: 10px">
               <label
                 style="
                   display: block;
@@ -275,7 +269,7 @@
         <!-- Step 5: Household Additional Info Part 2 -->
         <div class="register-step step-5" style="display: none">
           <div class="role-fields role-household">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               <label
                 style="
                   display: block;
@@ -289,7 +283,7 @@
               <i class="bx bxs-group"></i>
             </div>
 
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               <label
                 style="
                   display: block;
@@ -318,7 +312,7 @@
         <div class="register-step step-6" style="display: none">
           <!-- Only show for household users -->
           <div class="role-fields role-household">
-            <div class="input-box" style="margin-bottom: 20px">
+            <div class="input-box" style="margin-bottom: 10px">
               <label
                 style="
                   display: block;
@@ -562,6 +556,13 @@
       {% else %}
       console.log('No messages found');
       {% endif %}
+
+      // Initialize password toggles after DOM is ready
+      setTimeout(() => {
+          if (window.bioBinValidation) {
+              window.bioBinValidation.setupPasswordToggle();
+          }
+      }, 500);
   });
 </script>
 

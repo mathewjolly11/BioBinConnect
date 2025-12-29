@@ -299,3 +299,7 @@ def faq(request):
 def how_it_works(request):
     """Display how it works page for guests"""
     return render(request, 'Guest/how_it_works.html')
+
+def validation_demo(request):
+    """Display validation demonstration page"""
+    return render(request, 'Guest/validation_demo.html')

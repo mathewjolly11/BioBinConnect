@@ -10,7 +10,9 @@ class CollectionLogForm(forms.ModelForm):
                 'class': 'form-control',
                 'placeholder': 'Enter total weight in Kg',
                 'step': '0.01',
-                'min': '0',
-                'required': True
+                'min': '0.1',
+                'max': '1000',
+                'required': True,
+                'title': 'Please enter weight between 0.1 and 1000 kg'
             })
         }

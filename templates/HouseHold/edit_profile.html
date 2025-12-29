@@ -300,6 +300,11 @@
 
                 <form method="POST" enctype="multipart/form-data">
                     {% csrf_token %}
+                    
+                    <!-- Hidden field for household ID for validation -->
+                    {% if request.user.household %}
+                    <input type="hidden" name="current_household_id" value="{{ request.user.household.id }}">
+                    {% endif %}
 
                     <!-- Basic Information Section -->
                     <div class="form-section">
