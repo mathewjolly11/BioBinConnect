@@ -260,6 +260,18 @@ class BioBinValidation {
         const emailInputs = document.querySelectorAll('input[type="email"], input[placeholder*="email"], input[placeholder*="Email"]');
         
         emailInputs.forEach(input => {
+            // Skip validation for login forms
+            const form = input.closest('form');
+            if (form && (
+                form.querySelector('button[value="login"]') || 
+                form.action.includes('/login/') ||
+                (form.querySelector('input[name="username"]') && 
+                 form.querySelector('input[name="password"]') && 
+                 form.querySelectorAll('input').length <= 4)
+            )) {
+                return;
+            }
+
             input.addEventListener('input', (e) => {
                 this.validateEmail(e.target);
             });
@@ -339,6 +351,18 @@ class BioBinValidation {
         const nameInputs = document.querySelectorAll('input[placeholder*="name"], input[placeholder*="Name"]');
         
         nameInputs.forEach(input => {
+            // Skip validation for login forms
+            const form = input.closest('form');
+            if (form && (
+                form.querySelector('button[value="login"]') || 
+                form.action.includes('/login/') ||
+                (form.querySelector('input[name="username"]') && 
+                 form.querySelector('input[name="password"]') && 
+                 form.querySelectorAll('input').length <= 4)
+            )) {
+                return;
+            }
+
             input.addEventListener('input', (e) => {
                 this.validateName(e.target);
             });
@@ -661,6 +685,19 @@ class BioBinValidation {
         const passwordInputs = document.querySelectorAll('input[type="password"]');
         
         passwordInputs.forEach(input => {
+            // Skip validation for login forms
+            const form = input.closest('form');
+            if (form && (
+                form.querySelector('button[value="login"]') || 
+                form.action.includes('/login/') ||
+                // Also check specifically for the login form structure in login.html
+                (form.querySelector('input[name="username"]') && 
+                 form.querySelector('input[name="password"]') && 
+                 form.querySelectorAll('input').length <= 4) // csrf + username + password + maybe hidden
+            )) {
+                return;
+            }
+
             if (input.name === 'password1' || input.placeholder.toLowerCase().includes('password') && !input.placeholder.toLowerCase().includes('confirm')) {
                 this.createPasswordStrengthIndicator(input);
                 
@@ -784,8 +821,10 @@ class BioBinValidation {
             }
             
             // Add Bootstrap validation classes
-            form.classList.add('needs-validation');
-            form.setAttribute('novalidate', '');
+            if (!isLoginForm) {
+                form.classList.add('needs-validation');
+                form.setAttribute('novalidate', '');
+            }
         });
     }
 

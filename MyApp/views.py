@@ -267,6 +267,7 @@ def reject_user(request, user_id):
 def assign_collector(request):
     from MyApp.forms import CollectorAssignmentForm
     from MyApp.models import tbl_CollectorAssignment
+    import json
     
     if request.method == 'POST':
         form = CollectorAssignmentForm(request.POST)
@@ -321,7 +322,27 @@ def assign_collector(request):
     else:
         form = CollectorAssignmentForm()
     
-    return render(request, 'Admin/assign_collector.html', {'form': form})
+    # Get all existing assignments grouped by route and day
+    # Structure: {route_id: {day: collector_name}}
+    assignments = tbl_CollectorAssignment.objects.select_related('collector', 'Route_id').all()
+    assignments_data = {}
+    
+    for assignment in assignments:
+        route_id = assignment.Route_id.Route_id
+        day = assignment.day_of_week
+        collector_name = assignment.collector.collector_name
+        
+        if route_id not in assignments_data:
+            assignments_data[route_id] = {}
+        assignments_data[route_id][day] = collector_name
+    
+    # Convert to JSON for JavaScript
+    assignments_json = json.dumps(assignments_data)
+    
+    return render(request, 'Admin/assign_collector.html', {
+        'form': form,
+        'assignments_json': assignments_json
+    })
 
 def view_assignments(request):
     from MyApp.models import tbl_CollectorAssignment
@@ -340,6 +361,44 @@ def view_assignments(request):
         'assignments': assignments,
         'grouped_assignments': dict(grouped_assignments)
     })
+
+def delete_assignment(request, assignment_id):
+    """Delete a collector assignment"""
+    from django.http import JsonResponse
+    from MyApp.models import tbl_CollectorAssignment
+    
+    if request.method == 'POST':
+        try:
+            assignment = tbl_CollectorAssignment.objects.get(Assign_id=assignment_id)
+            collector_name = assignment.collector.collector_name
+            route_name = assignment.Route_id.name
+            day = assignment.day_of_week
+            
+            assignment.delete()
+            
+            messages.success(request, f'Assignment deleted successfully: {collector_name} - {route_name} ({day})')
+            
+            return JsonResponse({
+                'success': True,
+                'message': 'Assignment deleted successfully'
+            })
+            
+        except tbl_CollectorAssignment.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Assignment not found'
+            }, status=404)
+            
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            }, status=500)
+    
+    return JsonResponse({
+        'success': False,
+        'error': 'Invalid request method'
+    }, status=405)
 
 def add_route(request):
     from MyApp.forms import RouteForm
@@ -630,3 +689,135 @@ def delete_bin_type(request, bin_type_id):
     bin_type.delete()
     messages.success(request, 'Bin type deleted successfully!')
     return redirect('view_bin_types')
+
+def edit_user(request, user_id):
+    """Edit user information for all roles"""
+    from GuestApp.models import CustomUser, Household, Collector, CompostManager, Farmer
+    from MyApp.models import tbl_District, tbl_location, tbl_residentsassociation
+    
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        messages.error(request, 'User not found!')
+        return redirect('view_users')
+    
+    # Get role-specific details
+    role_details = None
+    if user.role == 'household':
+        try:
+            role_details = Household.objects.get(user=user)
+        except Household.DoesNotExist:
+            pass
+    elif user.role == 'collector':
+        try:
+            role_details = Collector.objects.get(user=user)
+        except Collector.DoesNotExist:
+            pass
+    elif user.role == 'compost_manager':
+        try:
+            role_details = CompostManager.objects.get(user=user)
+        except CompostManager.DoesNotExist:
+            pass
+    elif user.role == 'farmer':
+        try:
+            role_details = Farmer.objects.get(user=user)
+        except Farmer.DoesNotExist:
+            pass
+    
+    if request.method == 'POST':
+        # Update basic user information
+        user.name = request.POST.get('name')
+        user.email = request.POST.get('email')
+        user.phone = request.POST.get('phone')
+        user.save()
+        
+        # Update role-specific information
+        if role_details:
+            if user.role == 'household':
+                role_details.household_name = request.POST.get('household_name')
+                role_details.phone = request.POST.get('role_phone')
+                role_details.address = request.POST.get('address')
+                role_details.house_no = request.POST.get('house_no')
+                
+                # Update district, location, and RA if changed
+                district_id = request.POST.get('district')
+                location_id = request.POST.get('location')
+                ra_id = request.POST.get('residents_association')
+                
+                if district_id:
+                    role_details.district = tbl_District.objects.get(District_id=district_id)
+                if location_id:
+                    role_details.location = tbl_location.objects.get(Location_id=location_id)
+                if ra_id:
+                    role_details.residents_association = tbl_residentsassociation.objects.get(RA_id=ra_id)
+                
+                role_details.save()
+                
+            elif user.role == 'collector':
+                role_details.collector_name = request.POST.get('collector_name')
+                role_details.phone = request.POST.get('role_phone')
+                role_details.address = request.POST.get('address')
+                role_details.save()
+                
+            elif user.role == 'compost_manager':
+                role_details.compostmanager_name = request.POST.get('compostmanager_name')
+                role_details.phone = request.POST.get('role_phone')
+                role_details.address = request.POST.get('address')
+                role_details.license_number = request.POST.get('license_number')
+                role_details.save()
+                
+            elif user.role == 'farmer':
+                role_details.farmer_name = request.POST.get('farmer_name')
+                role_details.phone = request.POST.get('role_phone')
+                role_details.address = request.POST.get('address')
+                role_details.save()
+        
+        messages.success(request, f'User {user.name} updated successfully!')
+        return redirect('view_users')
+    
+    # Prepare context for template
+    context = {
+        'user': user,
+        'role_details': role_details,
+    }
+    
+    # Add additional data for household users
+    if user.role == 'household':
+        context['districts'] = tbl_District.objects.all()
+        context['locations'] = tbl_location.objects.all()
+        context['residents_associations'] = tbl_residentsassociation.objects.all()
+    
+    return render(request, 'Admin/edit_user.html', context)
+
+def change_user_password(request, user_id):
+    """Change user password"""
+    from GuestApp.models import CustomUser
+    
+    try:
+        user = CustomUser.objects.get(id=user_id)
+    except CustomUser.DoesNotExist:
+        messages.error(request, 'User not found!')
+        return redirect('view_users')
+    
+    if request.method == 'POST':
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Validate passwords match
+        if new_password != confirm_password:
+            messages.error(request, 'Passwords do not match!')
+            return render(request, 'Admin/change_password.html', {'user': user})
+        
+        # Validate password length
+        if len(new_password) < 6:
+            messages.error(request, 'Password must be at least 6 characters long!')
+            return render(request, 'Admin/change_password.html', {'user': user})
+        
+        # Set new password using Django's secure method
+        user.set_password(new_password)
+        user.save()
+        
+        messages.success(request, f'Password for {user.name} changed successfully!')
+        return redirect('view_users')
+    
+    return render(request, 'Admin/change_password.html', {'user': user})

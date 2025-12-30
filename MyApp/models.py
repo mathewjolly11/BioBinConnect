@@ -45,9 +45,14 @@ class tbl_Route(models.Model):
 
 class tbl_CollectorAssignment(models.Model):
     Assign_id = models.AutoField(primary_key=True)
-    collector = models.ForeignKey('GuestApp.Collector', on_delete=models.CASCADE)
-    Route_id = models.ForeignKey(tbl_Route, on_delete=models.CASCADE)
-    day_of_week = models.CharField(max_length=50)
+    collector = models.ForeignKey('GuestApp.Collector', on_delete=models.CASCADE, verbose_name="Collector")
+    Route_id = models.ForeignKey(tbl_Route, on_delete=models.CASCADE, verbose_name="Route")
+    day_of_week = models.CharField(max_length=50, verbose_name="Day of Week")
+
+    class Meta:
+        verbose_name = "Collector Assignment"
+        verbose_name_plural = "Collector Assignments"
+        unique_together = ['collector', 'Route_id', 'day_of_week']
 
     def __str__(self):
         return f"{self.collector} - {self.Route_id} ({self.day_of_week})"

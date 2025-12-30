@@ -1,153 +1,646 @@
-{% extends "Admin/base.html" %}
-{% load static %}
-{% block content %}
+{% extends "Admin/base.html" %} {% load static %} {% block content %}
+{% csrf_token %}
+<!-- SweetAlert2 CSS -->
+<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css">
+<!-- SweetAlert2 JS -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <section id="main-content" class=" ">
-    <section class="wrapper main-wrapper">
-        <div class="col-xl-12 col-lg-12 col-md-12 col-12">
-            <div class="page-title">
-                <div class="float-left">
-                    <h1 class="title">Collector Assignments</h1>
+  <section class="wrapper main-wrapper">
+    <div class="col-xl-12 col-lg-12 col-md-12 col-12">
+      <div class="page-title">
+        <div class="float-left">
+          <h1 class="title">Collector Assignments</h1>
+        </div>
+        <div class="float-right">
+          <a href="{% url 'assign_collector' %}" class="btn btn-primary">
+            <i class="fa fa-plus"></i> Add New Assignment
+          </a>
+        </div>
+      </div>
+    </div>
+    <div class="clearfix"></div>
+    <div class="col-lg-12">
+      <section class="box">
+        <header class="panel_header">
+          <h2 class="title pull-left">All Assignments</h2>
+        </header>
+        <div class="content-body">
+          <div class="row">
+            <div class="col-md-12">
+              <!-- Assignments Table Grouped by Collectors -->
+              {% if assignments %}
+              <div class="mb-4">
+                <h4 class="section-title">
+                  <i class="fa fa-users"></i> Collector Assignments ({{ assignments|length }} Total)
+                </h4>
+                
+                {% regroup assignments by collector.collector_name as grouped_assignments %}
+                
+                {% for collector_group in grouped_assignments %}
+                <div class="collector-group mb-4">
+                  <div class="collector-group-header">
+                    <i class="fa fa-user-circle"></i>
+                    <span class="collector-name">{{ collector_group.grouper }}</span>
+                    <span class="assignment-count">{{ collector_group.list|length }} Assignment{{ collector_group.list|length|pluralize }}</span>
+                  </div>
+                  
+                  <div class="table-responsive">
+                    <table class="table table-striped">
+                      <thead>
+                        <tr>
+                          <th>Assignment ID</th>
+                          <th>Route Name</th>
+                          <th>Day of Week</th>
+                          <th>Actions</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        {% for assignment in collector_group.list %}
+                        <tr>
+                          <td>
+                            <span class="assignment-id-badge">#{{ assignment.Assign_id }}</span>
+                          </td>
+                          <td>
+                            <div class="route-cell">
+                              <i class="fa fa-map-marker-alt route-icon"></i>
+                              <span class="route-name">{{ assignment.Route_id.name }}</span>
+                            </div>
+                          </td>
+                          <td>
+                            <span class="day-badge">{{ assignment.day_of_week }}</span>
+                          </td>
+                          <td>
+                            <div class="action-buttons">
+                              <button class="btn btn-sm btn-danger" onclick="deleteAssignment({{ assignment.Assign_id }}, '{{ assignment.collector.collector_name }}', '{{ assignment.Route_id.name }}', '{{ assignment.day_of_week }}')" title="Delete Assignment">
+                                <i class="fa fa-trash"></i> Delete
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                        {% endfor %}
+                      </tbody>
+                    </table>
+                  </div>
                 </div>
-                <div class="float-right">
-                    <a href="{% url 'assign_collector' %}" class="btn btn-primary">
-                        <i class="fa fa-plus"></i> Add New Assignment
-                    </a>
-                </div>
+                {% endfor %}
+              </div>
+              {% else %}
+              <div class="alert alert-info">
+                <i class="fa fa-info-circle"></i> No collector assignments
+                found. Click "Add New Assignment" to get started.
+              </div>
+              {% endif %}
             </div>
+          </div>
         </div>
-        <div class="clearfix"></div>
-        <div class="col-lg-12">
-            <section class="box ">
-                <header class="panel_header">
-                    <h2 class="title pull-left">All Assignments</h2>
-                </header>
-                <div class="content-body">
-                    <div class="row">
-                        <div class="col-md-12">
-                            <!-- Grouped View -->
-                            {% if grouped_assignments %}
-                            <div class="mb-4">
-                                <h4>Summary View (Grouped by Collector)</h4>
-                                {% for collector_name, routes in grouped_assignments.items %}
-                                <div class="card mb-3">
-                                    <div class="card-header bg-primary text-white">
-                                        <strong>{{ collector_name }}</strong>
-                                    </div>
-                                    <div class="card-body">
-                                        {% for route_name, days in routes.items %}
-                                        <div class="mb-2">
-                                            <strong>{{ route_name }}:</strong>
-                                            {% if days|length == 7 %}
-                                                <span class="badge badge-success">All Week</span>
-                                            {% else %}
-                                                {% for day in days %}
-                                                    <span class="badge badge-info">{{ day }}</span>
-                                                {% endfor %}
-                                            {% endif %}
-                                        </div>
-                                        {% endfor %}
-                                    </div>
-                                </div>
-                                {% endfor %}
-                            </div>
-                            <hr>
-                            {% endif %}
-                            
-                            <!-- Detailed Table View -->
-                            <h4>Detailed View</h4>
-                            <div class="table-responsive">
-                                <table class="table table-striped dt-responsive display">
-                                    <thead>
-                                        <tr>
-                                            <th>ID</th>
-                                            <th>Collector</th>
-                                            <th>Route</th>
-                                            <th>Day</th>
-                                            <th>Action</th>
-                                        </tr>
-                                    </thead>
-                                    <tbody>
-                                        {% for assignment in assignments %}
-                                        <tr>
-                                            <td>{{ assignment.Assign_id }}</td>
-                                            <td>{{ assignment.collector.collector_name }}</td>
-                                            <td>{{ assignment.Route_id.name }}</td>
-                                            <td>
-                                                <span class="badge badge-secondary">{{ assignment.day_of_week }}</span>
-                                            </td>
-                                            <td>
-                                                <button class="btn btn-sm btn-danger" onclick="deleteAssignment({{ assignment.Assign_id }})">
-                                                    <i class="fa fa-trash"></i>
-                                                </button>
-                                            </td>
-                                        </tr>
-                                        {% empty %}
-                                        <tr>
-                                            <td colspan="5" class="text-center">No assignments found.</td>
-                                        </tr>
-                                        {% endfor %}
-                                    </tbody>
-                                </table>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </section>
-        </div>
-    </section>
+      </section>
+    </div>
+  </section>
 </section>
 
 <script>
-function deleteAssignment(assignmentId) {
-    if (confirm('Are you sure you want to delete this assignment?')) {
-        // You can implement delete functionality here if needed
-        alert('Delete functionality can be implemented as needed.');
+  function deleteAssignment(assignmentId, collectorName, routeName, dayOfWeek) {
+    Swal.fire({
+      title: 'Delete Assignment?',
+      html: `
+        <div style="text-align: left; padding: 20px; background: #f8f9fa; border-radius: 8px; margin: 20px 0;">
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #5b47fb;"><i class="fa fa-user-circle"></i> Collector:</strong>
+            <span style="margin-left: 10px; color: #2c3e50;">${collectorName}</span>
+          </div>
+          <div style="margin-bottom: 15px;">
+            <strong style="color: #17a2b8;"><i class="fa fa-map-marker-alt"></i> Route:</strong>
+            <span style="margin-left: 10px; color: #2c3e50;">${routeName}</span>
+          </div>
+          <div>
+            <strong style="color: #28a745;"><i class="fa fa-calendar"></i> Day:</strong>
+            <span style="margin-left: 10px; color: #2c3e50;">${dayOfWeek}</span>
+          </div>
+        </div>
+        <p style="color: #6c757d; font-size: 14px;">This action cannot be undone.</p>
+      `,
+      icon: 'warning',
+      showCancelButton: true,
+      confirmButtonColor: '#dc3545',
+      cancelButtonColor: '#6c757d',
+      confirmButtonText: '<i class="fa fa-trash"></i> Yes, Delete!',
+      cancelButtonText: '<i class="fa fa-times"></i> Cancel',
+      reverseButtons: true,
+      customClass: {
+        popup: 'swal-popup',
+        title: 'swal-title',
+        confirmButton: 'swal-confirm-btn',
+        cancelButton: 'swal-cancel-btn'
+      },
+      buttonsStyling: false
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Show loading
+        Swal.fire({
+          title: 'Deleting...',
+          text: 'Please wait while we delete the assignment.',
+          allowOutsideClick: false,
+          allowEscapeKey: false,
+          showConfirmButton: false,
+          customClass: {
+            popup: 'swal-popup'
+          },
+          didOpen: () => {
+            Swal.showLoading();
+          }
+        });
+
+        // Send AJAX request to delete the assignment
+        fetch(`/delete_assignment/${assignmentId}/`, {
+          method: 'POST',
+          headers: {
+            'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            'assignment_id': assignmentId
+          })
+        })
+        .then(response => response.json())
+        .then(data => {
+          if (data.success) {
+            // Show success message
+            Swal.fire({
+              title: 'Deleted!',
+              text: 'Assignment has been deleted successfully.',
+              icon: 'success',
+              confirmButtonColor: '#28a745',
+              confirmButtonText: 'OK',
+              customClass: {
+                popup: 'swal-popup',
+                confirmButton: 'swal-success-btn'
+              },
+              buttonsStyling: false
+            }).then(() => {
+              // Remove the row from table with animation
+              const row = document.querySelector(`button[onclick*="${assignmentId}"]`).closest('tr');
+              row.style.transition = 'all 0.3s ease';
+              row.style.opacity = '0';
+              row.style.transform = 'translateX(-100px)';
+              
+              setTimeout(() => {
+                row.remove();
+                
+                // Update the count in the title and collector group
+                const collectorGroup = row.closest('.collector-group');
+                const remainingRows = collectorGroup.querySelectorAll('tbody tr').length;
+                
+                if (remainingRows === 0) {
+                  // Remove entire collector group if no assignments left
+                  collectorGroup.remove();
+                } else {
+                  // Update assignment count in collector header
+                  const countElement = collectorGroup.querySelector('.assignment-count');
+                  countElement.textContent = `${remainingRows} Assignment${remainingRows !== 1 ? 's' : ''}`;
+                }
+                
+                // Update the main title count
+                const titleElement = document.querySelector('.section-title');
+                const totalCount = document.querySelectorAll('.collector-group tbody tr').length;
+                titleElement.innerHTML = `<i class="fa fa-users"></i> Collector Assignments (${totalCount} Total)`;
+                
+                // If no assignments left at all, reload page
+                if (totalCount === 0) {
+                  location.reload();
+                }
+              }, 300);
+            });
+          } else {
+            Swal.fire({
+              title: 'Error!',
+              text: data.error || 'Failed to delete assignment. Please try again.',
+              icon: 'error',
+              confirmButtonColor: '#dc3545',
+              confirmButtonText: 'OK',
+              customClass: {
+                popup: 'swal-popup',
+                confirmButton: 'swal-error-btn'
+              },
+              buttonsStyling: false
+            });
+          }
+        })
+        .catch(error => {
+          console.error('Error:', error);
+          Swal.fire({
+            title: 'Error!',
+            text: 'Network error. Please check your connection and try again.',
+            icon: 'error',
+            confirmButtonColor: '#dc3545',
+            confirmButtonText: 'OK',
+            customClass: {
+              popup: 'swal-popup',
+              confirmButton: 'swal-error-btn'
+            },
+            buttonsStyling: false
+          });
+        });
+      }
+    });
+  }
+
+  // Initialize DataTable for better table functionality
+  document.addEventListener('DOMContentLoaded', function() {
+    const table = document.getElementById('assignmentsTable');
+    if (table && typeof $ !== 'undefined' && $.fn.DataTable) {
+      $('#assignmentsTable').DataTable({
+        responsive: true,
+        pageLength: 25,
+        order: [[1, 'asc']], // Sort by collector name
+        columnDefs: [
+          { orderable: false, targets: [4] } // Disable ordering for Actions column
+        ]
+      });
     }
-}
+  });
 </script>
 
+
+
 <style>
-.card {
-    border: 1px solid #dee2e6;
-    border-radius: 0.25rem;
-}
+  /* Page Layout */
+  .content-body {
+    padding: 12px;
+    background-color: #f8f9fa;
+  }
 
-.card-header {
-    padding: 0.75rem 1.25rem;
+  .card {
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+    border: 1px solid #e9ecef;
+  }
+
+  .card-header {
+    background: linear-gradient(135deg, #5b47fb 0%, #7c6bff 100%);
+    color: white;
+    border-bottom: none;
+    padding: 0.8rem 1.2rem;
+  }
+
+  .card-title {
+    margin: 0;
+    font-size: 1.1rem;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+  }
+
+  .card-body {
+    padding: 1rem 1.2rem;
+  }
+
+  /* Section Styling */
+  .section-title {
+    color: #2c3e50;
+    font-weight: 600;
+    margin-bottom: 1rem;
+    padding-bottom: 0.4rem;
+    border-bottom: 2px solid #5b47fb;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    font-size: 1.1rem;
+  }
+
+  .section-title i {
+    color: #5b47fb;
+    font-size: 1rem;
+  }
+
+  /* Collector Group Styling */
+  .collector-group {
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    border: 1px solid #e9ecef;
+    margin-bottom: 1.2rem;
+  }
+
+  .collector-group-header {
+    background: linear-gradient(135deg, #5b47fb 0%, #7c6bff 100%);
+    color: white;
+    padding: 0.6rem 1rem;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+  }
+
+  .collector-group-header i {
+    font-size: 0.9rem;
+    margin-right: 0.3rem;
+  }
+
+  .collector-name {
+    font-size: 0.95rem;
+    font-weight: 600;
+    flex-grow: 1;
+  }
+
+  .assignment-count {
+    background: rgba(255, 255, 255, 0.2);
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-size: 0.75rem;
+    font-weight: 500;
+  }
+
+  .collector-group .table {
     margin-bottom: 0;
+    border: none;
+    font-size: 0.9rem;
+  }
+
+  .collector-group .table thead th {
+    background: #f8f9fa;
+    color: #495057;
+    font-weight: 600;
     border-bottom: 1px solid #dee2e6;
-}
+    padding: 0.6rem 0.7rem;
+    text-transform: uppercase;
+    font-size: 0.7rem;
+    letter-spacing: 0.3px;
+  }
 
-.card-body {
-    padding: 1.25rem;
-}
+  .collector-group .table tbody tr {
+    border-bottom: 1px solid #f1f3f4;
+  }
 
-.badge {
+  .collector-group .table tbody tr:hover {
+    background: #f8f9fa;
+  }
+
+  .collector-group .table tbody td {
+    padding: 0.6rem 0.7rem;
+    vertical-align: middle;
+    border-top: none;
+  }
+
+  /* Assignment ID Badge */
+  .assignment-id-badge {
+    background: #6c757d;
+    color: white;
+    padding: 0.2rem 0.5rem;
+    border-radius: 10px;
+    font-weight: 600;
+    font-size: 0.7rem;
+  }
+
+  /* Route Cell */
+  .route-cell {
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+  }
+
+  .route-icon {
+    color: #17a2b8;
+    font-size: 0.8rem;
+  }
+
+  .route-name {
+    color: #2c3e50;
+    font-weight: 500;
+    font-size: 0.85rem;
+  }
+
+  /* Day Badge */
+  .day-badge {
+    background: linear-gradient(135deg, #28a745 0%, #34ce57 100%);
+    color: white;
+    padding: 0.3rem 0.6rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 0.7rem;
     display: inline-block;
-    padding: 0.25em 0.4em;
-    font-size: 75%;
-    font-weight: 700;
-    line-height: 1;
-    text-align: center;
-    white-space: nowrap;
-    vertical-align: baseline;
-    border-radius: 0.25rem;
-    margin-right: 0.25rem;
-}
+    box-shadow: 0 1px 2px rgba(40, 167, 69, 0.2);
+  }
 
-.badge-success {
-    color: #fff;
-    background-color: #28a745;
-}
+  /* Action Buttons */
+  .action-buttons {
+    display: flex;
+    gap: 0.3rem;
+    justify-content: center;
+  }
 
-.badge-info {
-    color: #fff;
-    background-color: #17a2b8;
-}
+  .btn-danger {
+    background: linear-gradient(135deg, #dc3545 0%, #e85563 100%);
+    border: none;
+    transition: all 0.2s ease;
+    border-radius: 6px;
+    padding: 0.4rem 0.8rem;
+    font-size: 0.75rem;
+    font-weight: 600;
+  }
 
-.badge-secondary {
-    color: #fff;
-    background-color: #6c757d;
-}
+  .btn-danger:hover {
+    background: linear-gradient(135deg, #c82333 0%, #dc3545 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(220, 53, 69, 0.3);
+  }
+
+  .btn-primary {
+    background: linear-gradient(135deg, #5b47fb 0%, #7c6bff 100%);
+    border: none;
+    border-radius: 6px;
+    padding: 0.5rem 1rem;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    font-size: 0.85rem;
+  }
+
+  .btn-primary:hover {
+    background: linear-gradient(135deg, #4c3ddb 0%, #6b5beb 100%);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 8px rgba(91, 71, 251, 0.3);
+  }
+
+  /* Alert Styling */
+  .alert {
+    border-radius: 12px;
+    padding: 1.5rem 2rem;
+    border: none;
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    margin: 2rem 0;
+  }
+
+  .alert-info {
+    background: linear-gradient(135deg, #e3f2fd 0%, #bbdefb 100%);
+    color: #0d47a1;
+  }
+
+  .alert-info i {
+    font-size: 1.5rem;
+  }
+
+  /* DataTables Styling */
+  .dataTables_wrapper .dataTables_length,
+  .dataTables_wrapper .dataTables_filter,
+  .dataTables_wrapper .dataTables_info,
+  .dataTables_wrapper .dataTables_paginate {
+    margin-top: 1rem;
+  }
+
+  .dataTables_wrapper .dataTables_filter input {
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    padding: 0.5rem;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button {
+    border-radius: 6px !important;
+    margin: 0 2px;
+  }
+
+  .dataTables_wrapper .dataTables_paginate .paginate_button.current {
+    background: linear-gradient(135deg, #5b47fb 0%, #7c6bff 100%) !important;
+    border-color: #5b47fb !important;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .table thead th,
+    .table tbody td {
+      padding: 0.8rem 0.5rem;
+      font-size: 0.85rem;
+    }
+
+    .collector-cell,
+    .route-cell {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.25rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn-danger {
+      padding: 0.4rem 0.8rem;
+      font-size: 0.8rem;
+    }
+  }
+
+  /* SweetAlert Custom Styling */
+  .swal-popup {
+    border-radius: 15px !important;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2) !important;
+  }
+
+  .swal-title {
+    color: #2c3e50 !important;
+    font-weight: 600 !important;
+    font-size: 1.5rem !important;
+  }
+
+  .swal-confirm-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #e85563 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3) !important;
+  }
+
+  .swal-confirm-btn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #dc3545 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+  }
+
+  .swal-cancel-btn {
+    background: linear-gradient(135deg, #6c757d 0%, #868e96 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 3px 8px rgba(108, 117, 125, 0.3) !important;
+  }
+
+  .swal-cancel-btn:hover {
+    background: linear-gradient(135deg, #5a6268 0%, #6c757d 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(108, 117, 125, 0.4) !important;
+  }
+
+  .swal-success-btn {
+    background: linear-gradient(135deg, #28a745 0%, #34ce57 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 3px 8px rgba(40, 167, 69, 0.3) !important;
+  }
+
+  .swal-success-btn:hover {
+    background: linear-gradient(135deg, #218838 0%, #28a745 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(40, 167, 69, 0.4) !important;
+  }
+
+  .swal-error-btn {
+    background: linear-gradient(135deg, #dc3545 0%, #e85563 100%) !important;
+    border: none !important;
+    border-radius: 8px !important;
+    padding: 12px 24px !important;
+    font-weight: 600 !important;
+    color: white !important;
+    transition: all 0.2s ease !important;
+    box-shadow: 0 3px 8px rgba(220, 53, 69, 0.3) !important;
+  }
+
+  .swal-error-btn:hover {
+    background: linear-gradient(135deg, #c82333 0%, #dc3545 100%) !important;
+    transform: translateY(-1px) !important;
+    box-shadow: 0 4px 12px rgba(220, 53, 69, 0.4) !important;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 768px) {
+    .table thead th,
+    .table tbody td {
+      padding: 0.6rem 0.4rem;
+      font-size: 0.8rem;
+    }
+
+    .collector-cell,
+    .route-cell {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.2rem;
+    }
+
+    .action-buttons {
+      flex-direction: column;
+    }
+
+    .btn-danger {
+      padding: 0.3rem 0.6rem;
+      font-size: 0.75rem;
+    }
+
+    .collector-group-header {
+      padding: 0.5rem 0.8rem;
+      flex-direction: column;
+      align-items: flex-start;
+      gap: 0.3rem;
+    }
+  }
 </style>
 {% endblock %}

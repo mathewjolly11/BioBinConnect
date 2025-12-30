@@ -2,133 +2,184 @@
 {% load static %}
 {% block content %}
 <section id="main-content" class=" ">
-    <section class="wrapper main-wrapper">
-        <div class="col-lg-8 offset-lg-2">
-            <section class="box ">
-                <header class="panel_header">
-                    <h2 class="title text-center">Assign Collector to Route</h2>
-                </header>
-                <div class="content-body">
-                    <div class="row justify-content-center">
-                        <div class="col-md-8">
-                            <form action="" method="post" id="assignmentForm">
-                                {% csrf_token %}
+  <section class="wrapper main-wrapper">
+    <div class="col-lg-8 offset-lg-2">
+      <section class="box">
+        <header class="panel_header">
+          <h2 class="title text-center">Assign Collector to Route</h2>
+        </header>
+        <div class="content-body">
+          <div class="row justify-content-center">
+            <div class="col-md-10">
+              <div class="form-container">
+                <form action="" method="post" id="assignmentForm">
+                {% csrf_token %}
 
-                                <style>
-                                    /* Quick custom basic styling for form elements if not globally applied */
-                                    .form-group {
-                                        margin-bottom: 20px;
-                                    }
+                <style>
+                  .form-group {
+                    margin-bottom: 25px;
+                  }
 
-                                    label {
-                                        display: block;
-                                        font-weight: bold;
-                                        margin-bottom: 8px;
-                                        color: #333;
-                                    }
+                  label {
+                    display: block;
+                    font-weight: bold;
+                    margin-bottom: 8px;
+                    color: #333;
+                    font-size: 14px;
+                  }
 
-                                    input[type='text'],
-                                    select {
-                                        width: 100%;
-                                        padding: 10px;
-                                        border: 1px solid #ccc;
-                                        border-radius: 4px;
-                                        font-size: 14px;
-                                    }
+                  input[type="text"],
+                  select {
+                    width: 100%;
+                    padding: 12px;
+                    border: 1px solid #ddd;
+                    border-radius: 4px;
+                    font-size: 14px;
+                    background-color: #fff;
+                    box-sizing: border-box;
+                    min-height: 45px;
+                  }
+                  
+                  select {
+                    appearance: none;
+                    background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 4 5"><path fill="%23666" d="M2 0L0 2h4zm0 5L0 3h4z"/></svg>');
+                    background-repeat: no-repeat;
+                    background-position: right 12px center;
+                    background-size: 12px;
+                    padding-right: 35px;
+                  }
+                  
+                  select:focus,
+                  input:focus {
+                    outline: none;
+                    border-color: #007bff;
+                    box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+                  }
+                  
+                  .help-text {
+                    font-size: 12px;
+                    color: #6c757d;
+                    margin-top: 5px;
+                    font-style: italic;
+                  }
 
-                                    .checkbox-group {
-                                        background: #f8f9fa;
-                                        padding: 15px;
-                                        border-radius: 6px;
-                                        border: 2px solid #e9ecef;
-                                        margin: 15px 0;
-                                    }
+                  .checkbox-group {
+                    background: #f8f9fa;
+                    padding: 20px;
+                    border-radius: 6px;
+                    border: 2px solid #e9ecef;
+                    margin: 20px 0;
+                  }
 
-                                    .form-check {
-                                        display: flex;
-                                        align-items: center;
-                                        gap: 10px;
-                                    }
+                  .form-check {
+                    display: flex;
+                    align-items: center;
+                    gap: 12px;
+                  }
 
-                                    .form-check-input {
-                                        width: 18px;
-                                        height: 18px;
-                                        margin: 0;
-                                    }
+                  .form-check-input {
+                    width: 20px;
+                    height: 20px;
+                    margin: 0;
+                    cursor: pointer;
+                  }
 
-                                    .form-check-label {
-                                        margin: 0;
-                                        font-size: 16px;
-                                        color: #495057;
-                                    }
+                  .form-check-label {
+                    margin: 0;
+                    font-size: 16px;
+                    color: #495057;
+                    cursor: pointer;
+                  }
 
-                                    .help-text {
-                                        font-size: 12px;
-                                        color: #6c757d;
-                                        margin-top: 5px;
-                                    }
+                  .text-danger {
+                    color: #dc3545;
+                    font-size: 13px;
+                    margin-top: 5px;
+                  }
 
-                                    #day_of_week_group.disabled {
-                                        opacity: 0.6;
-                                    }
+                  #day_of_week_group.disabled {
+                    opacity: 0.6;
+                  }
 
-                                    #day_of_week_group.disabled select {
-                                        background-color: #f8f9fa;
-                                        cursor: not-allowed;
-                                    }
-                                </style>
+                  #day_of_week_group.disabled select {
+                    background-color: #f8f9fa;
+                    cursor: not-allowed;
+                    color: #6c757d;
+                  }
+                  
+                  .content-body {
+                    padding: 30px;
+                  }
+                  
+                  .form-container {
+                    max-width: 600px;
+                    margin: 0 auto;
+                  }
+                </style>
 
-                                <div class="form-group">
-                                    {{ form.collector.label_tag }}
-                                    {{ form.collector }}
-                                    {% if form.collector.errors %}
-                                        <div class="text-danger">{{ form.collector.errors }}</div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="form-group">
-                                    {{ form.Route_id.label_tag }}
-                                    {{ form.Route_id }}
-                                    {% if form.Route_id.errors %}
-                                        <div class="text-danger">{{ form.Route_id.errors }}</div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="form-group" id="day_of_week_group">
-                                    {{ form.day_of_week.label_tag }}
-                                    {{ form.day_of_week }}
-                                    {% if form.day_of_week.errors %}
-                                        <div class="text-danger">{{ form.day_of_week.errors }}</div>
-                                    {% endif %}
-                                </div>
-
-                                <div class="checkbox-group">
-                                    <div class="form-check">
-                                        {{ form.assign_all_week }}
-                                        <label class="form-check-label" for="{{ form.assign_all_week.id_for_label }}">
-                                            {{ form.assign_all_week.label }}
-                                        </label>
-                                    </div>
-                                    <div class="help-text">{{ form.assign_all_week.help_text }}</div>
-                                    {% if form.assign_all_week.errors %}
-                                        <div class="text-danger">{{ form.assign_all_week.errors }}</div>
-                                    {% endif %}
-                                </div>
-
-                                {{ form.Assign_id }}
-
-                                <div class="text-center" style="margin-top: 30px;">
-                                    <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-size: 16px;">
-                                        <i class="fa fa-user-plus"></i> Assign Collector
-                                    </button>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
+                <div class="form-group">
+                  {{ form.collector.label_tag }}
+                  {{ form.collector }}
+                  {% if form.collector.help_text %}
+                    <div class="help-text">{{ form.collector.help_text }}</div>
+                  {% endif %}
+                  {% if form.collector.errors %}
+                    <div class="text-danger">{{ form.collector.errors }}</div>
+                  {% endif %}
                 </div>
-            </section>
+
+                <div class="form-group">
+                  {{ form.Route_id.label_tag }}
+                  {{ form.Route_id }}
+                  {% if form.Route_id.help_text %}
+                    <div class="help-text">{{ form.Route_id.help_text }}</div>
+                  {% endif %}
+                  {% if form.Route_id.errors %}
+                    <div class="text-danger">{{ form.Route_id.errors }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="form-group" id="day_of_week_group">
+                  {{ form.day_of_week.label_tag }}
+                  {{ form.day_of_week }}
+                  {% if form.day_of_week.help_text %}
+                    <div class="help-text">{{ form.day_of_week.help_text }}</div>
+                  {% endif %}
+                  {% if form.day_of_week.errors %}
+                    <div class="text-danger">{{ form.day_of_week.errors }}</div>
+                  {% endif %}
+                </div>
+
+                <div class="checkbox-group">
+                  <div class="form-check">
+                    {{ form.assign_all_week }}
+                    <label class="form-check-label" for="{{ form.assign_all_week.id_for_label }}">
+                      {{ form.assign_all_week.label }}
+                    </label>
+                  </div>
+                  <div class="help-text">
+                    {{ form.assign_all_week.help_text }}
+                  </div>
+                  {% if form.assign_all_week.errors %}
+                    <div class="text-danger">
+                      {{ form.assign_all_week.errors }}
+                    </div>
+                  {% endif %}
+                </div>
+
+                {{ form.Assign_id }}
+
+                <div class="text-center" style="margin-top: 30px">
+                  <button type="submit" class="btn btn-primary" style="padding: 12px 30px; font-size: 16px">
+                    <i class="fa fa-user-plus"></i> Assign Collector
+                  </button>
+                </div>
+              </form>              </div>            </div>
+          </div>
         </div>
-    </section>
+      </section>
+    </div>
+  </section>
 </section>
 
 <script>
@@ -136,6 +187,10 @@ document.addEventListener('DOMContentLoaded', function() {
     const assignAllWeekCheckbox = document.getElementById('assign_all_week');
     const dayOfWeekGroup = document.getElementById('day_of_week_group');
     const dayOfWeekSelect = document.getElementById('day_of_week_select');
+    const routeSelect = document.querySelector('select[name="Route_id"]');
+    
+    // Parse the assignments data from Django
+    const assignments = {{ assignments_json|safe }};
     
     function toggleDaySelection() {
         if (assignAllWeekCheckbox.checked) {
@@ -160,6 +215,44 @@ document.addEventListener('DOMContentLoaded', function() {
                 errorDiv.style.display = 'block';
             }
         }
+        
+        // Update route availability (though now it's static per route based on logic)
+        updateRouteAvailability();
+    }
+    
+    function updateRouteAvailability() {
+        const isAllWeek = assignAllWeekCheckbox.checked;
+        const selectedDay = dayOfWeekSelect.value;
+        
+        // Reset all options first
+        Array.from(routeSelect.options).forEach(option => {
+            if (option.value) { // Skip the empty "Select Route" option
+                option.disabled = false;
+                // Remove any existing assignment info from the text
+                const routeId = option.value;
+                const routeName = option.getAttribute('data-original-text') || option.text;
+                option.setAttribute('data-original-text', routeName);
+                option.text = routeName;
+            }
+        });
+        
+        // Disable routes that have ANY collector assigned on ANY day
+        Array.from(routeSelect.options).forEach(option => {
+            if (option.value) {
+                const routeId = option.value;
+                const routeAssignments = assignments[routeId];
+                
+                // If this route has any assignments at all, disable it
+                if (routeAssignments && Object.keys(routeAssignments).length > 0) {
+                    const assignedDays = Object.keys(routeAssignments);
+                    const assignedCollector = routeAssignments[assignedDays[0]];
+                    
+                    option.disabled = true;
+                    const originalText = option.getAttribute('data-original-text');
+                    option.text = `${originalText} (Assigned to ${assignedCollector})`;
+                }
+            }
+        });
     }
     
     // Initial state
@@ -167,6 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
     
     // Listen for changes
     assignAllWeekCheckbox.addEventListener('change', toggleDaySelection);
+    dayOfWeekSelect.addEventListener('change', updateRouteAvailability);
     
     // Form submission handler
     const form = document.getElementById('assignmentForm');
@@ -174,6 +268,14 @@ document.addEventListener('DOMContentLoaded', function() {
         if (assignAllWeekCheckbox.checked) {
             // Remove required validation for day_of_week when all week is selected
             dayOfWeekSelect.removeAttribute('required');
+        }
+        
+        // Check if selected route is disabled (shouldn't happen with proper UI, but extra safety)
+        const selectedRoute = routeSelect.options[routeSelect.selectedIndex];
+        if (selectedRoute && selectedRoute.disabled) {
+            e.preventDefault();
+            alert('The selected route already has a collector assigned. Please choose a different route.');
+            return false;
         }
     });
 });

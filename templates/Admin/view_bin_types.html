@@ -1,22 +1,35 @@
-{% extends "Admin/base.html" %} {% load static %} {% block content %} {% if messages %}
+{% extends "Admin/base.html" %} {% load static %} {% block content %} {% if
+messages %}
+<div id="django-messages-data" style="display: none">
+  {% for message in messages %}
+  <span
+    data-icon="{{ message.tags|default:'info' }}"
+    data-title="{{ message.tags|capfirst }}"
+    data-message="{{ message }}"
+  ></span>
+  {% endfor %}
+</div>
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      {% for message in messages %}
-          Swal.fire({
-              icon: '{{ message.tags|default:'info' }}',
-              title: '{{ message.tags|capfirst }}',
-              text: '{{ message }}',
-              timer: 2000,
-              showConfirmButton: false,
-              customClass: {
-                  popup: 'swal2-bootstrap4 swal2-rounded',
-                  title: 'swal2-title-custom',
-                  confirmButton: 'btn btn-primary',
-                  cancelButton: 'btn btn-danger'
-              },
-              buttonsStyling: false
-          });
-      {% endfor %}
+  document.addEventListener("DOMContentLoaded", function () {
+    var messageElements = document.querySelectorAll(
+      "#django-messages-data span"
+    );
+    messageElements.forEach(function (el) {
+      Swal.fire({
+        icon: el.getAttribute("data-icon"),
+        title: el.getAttribute("data-title"),
+        text: el.getAttribute("data-message"),
+        timer: 2000,
+        showConfirmButton: false,
+        customClass: {
+          popup: "swal2-bootstrap4 swal2-rounded",
+          title: "swal2-title-custom",
+          confirmButton: "btn btn-primary",
+          cancelButton: "btn btn-danger",
+        },
+        buttonsStyling: false,
+      });
+    });
   });
 </script>
 <style>

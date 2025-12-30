@@ -25,6 +25,7 @@ urlpatterns = [
     path('reject_user/<int:user_id>/', views.reject_user, name='reject_user'),
     path('assign_collector/', views.assign_collector, name='assign_collector'),
     path('view_assignments/', views.view_assignments, name='view_assignments'),
+    path('delete_assignment/<int:assignment_id>/', views.delete_assignment, name='delete_assignment'),
     path('add_route/', views.add_route, name='add_route'),
     path('view_routes/', views.view_routes, name='view_routes'),
     path('payment_report/', views.payment_report, name='payment_report'),
@@ -59,5 +60,9 @@ urlpatterns = [
     path('view_bin_types/', views.view_bin_types, name='view_bin_types'),
     path('edit_bin_type/<int:bin_type_id>/', views.edit_bin_type, name='edit_bin_type'),
     path('delete_bin_type/<int:bin_type_id>/', views.delete_bin_type, name='delete_bin_type'),
+    
+    # User management
+    path('edit_user/<int:user_id>/', views.edit_user, name='edit_user'),
+    path('change_user_password/<int:user_id>/', views.change_user_password, name='change_user_password'),
 ]
 

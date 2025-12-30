@@ -127,9 +127,15 @@ class CollectorAssignmentForm(forms.ModelForm):
     class Meta:
         model = tbl_CollectorAssignment
         fields = ['Assign_id', 'collector', 'Route_id', 'day_of_week']
+        labels = {
+            'collector': 'Collector:',
+            'Route_id': 'Route id:',
+            'day_of_week': 'Day of week:',
+        }
         widgets = {
             'Assign_id': forms.HiddenInput(),
             'day_of_week': forms.Select(choices=[
+                ('', 'Select Day'),
                 ('Monday', 'Monday'),
                 ('Tuesday', 'Tuesday'),
                 ('Wednesday', 'Wednesday'),
@@ -139,22 +145,42 @@ class CollectorAssignmentForm(forms.ModelForm):
                 ('Sunday', 'Sunday'),
             ], attrs={
                 'class': 'form-control',
-                'id': 'day_of_week_select'
+                'id': 'day_of_week_select',
+                'style': 'width: 100%;'
             }),
             'collector': forms.Select(attrs={
                 'class': 'form-control',
-                'required': True
+                'required': True,
+                'style': 'width: 100%;'
             }),
             'Route_id': forms.Select(attrs={
                 'class': 'form-control',
-                'required': True
+                'required': True,
+                'style': 'width: 100%;'
             })
         }
     
     def __init__(self, *args, **kwargs):
+        from GuestApp.models import Collector
+        from MyApp.models import tbl_Route
+        
         super().__init__(*args, **kwargs)
+        
+        # Set up collector choices
+        self.fields['collector'].queryset = Collector.objects.filter(is_active=True).order_by('collector_name')
+        self.fields['collector'].empty_label = 'Select Collector'
+        
+        # Set up route choices
+        self.fields['Route_id'].queryset = tbl_Route.objects.all().order_by('name')
+        self.fields['Route_id'].empty_label = 'Select Route'
+        
         # Make day_of_week not required by default since it can be overridden by assign_all_week
         self.fields['day_of_week'].required = False
+        
+        # Add help text for better user experience
+        self.fields['collector'].help_text = 'Choose an approved collector from the list'
+        self.fields['Route_id'].help_text = 'Select the route for waste collection'
+        self.fields['day_of_week'].help_text = 'Choose a specific day or select "Assign for All Week" below'
 
 class BinTypeForm(forms.ModelForm):
     class Meta:

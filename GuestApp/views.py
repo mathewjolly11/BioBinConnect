@@ -69,6 +69,15 @@ def login_view(request):
                     messages.error(request, 'Invalid username or password.')
             
             # If login invalid, return with errors
+            if login_form.errors:
+                for field, errors in login_form.errors.items():
+                    for error in errors:
+                        # Convert standard "__all__" errors (like invalid login) to a general message
+                        if field == '__all__':
+                            messages.error(request, error)
+                        else:
+                            messages.error(request, f"{error}")
+
             context = {
                 'login_form': login_form,
                 'user_form': UserRegistrationForm(),
