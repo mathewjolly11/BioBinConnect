@@ -135,6 +135,7 @@
             <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Reports & Finance</h6>
             <a href="{% url 'admin_reports' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-bar-chart me-2"></i> Analytics</a>
             <a href="{% url 'payment_transactions' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-credit-card me-2"></i> Transactions</a>
+            <a href="{% url 'admin_salary_management' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-money me-2"></i> Salary Management</a>
             <a href="{% url 'manager_salaries' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-briefcase me-2"></i> Manager Salaries</a>
             <a href="{% url 'collector_salaries' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-hard-hat me-2"></i> Collector Salaries</a>
 
@@ -659,6 +660,9 @@
                             </li>
                             <li>
                                 <a class="" href="{% url 'collector_salaries' %}">👷 Collector Salaries</a>
+                            </li>
+                            <li>
+                                <a class="" href="{% url 'admin_salary_management' %}">💰 Salary Management</a>
                             </li>
                             <li>
                                 <a class="" href="{% url 'payment_report' %}">🏠 Household Payments</a>

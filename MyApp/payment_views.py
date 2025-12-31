@@ -311,7 +311,7 @@ def payment_revenue_analytics(request):
 @login_required(login_url='login')
 @never_cache
 def collector_salaries(request):
-    """Collector Salaries Management Page"""
+    """Collector Salaries - Shows actual payments made via Salary Management"""
     
     # Get filter parameters
     period_filter = request.GET.get('period', '30')
@@ -322,62 +322,69 @@ def collector_salaries(request):
         days = int(period_filter)
         start_date = timezone.now() - timedelta(days=days)
     
-    # Daily salary rate
-    daily_salary = 1000
+    # Get actual salary payments from transactions
+    salary_payments = tbl_PaymentTransaction.objects.filter(
+        status='Success',
+        transaction_type='CollectorSalary'
+    ).select_related('Receiver_id')
     
-    # Get all collectors
+    if start_date:
+        salary_payments = salary_payments.filter(transaction_date__gte=start_date)
+    
+    # Group payments by collector
+    from django.db.models import Sum, Count
+    collector_payment_summary = salary_payments.values(
+        'Receiver_id',
+        'Receiver_id__name',
+        'Receiver_id__email'
+    ).annotate(
+        total_paid=Sum('Amount'),
+        payment_count=Count('Transaction_id')
+    ).order_by('-total_paid')
+    
+    # Get all collectors for complete view
     try:
         from GuestApp.models import Collector
-        collectors = Collector.objects.filter(is_active=True)
-    except Exception as e:
-        print(f"Error getting collectors: {e}")  # Debug info
-        collectors = []
+        all_collectors = Collector.objects.filter(is_active=True).select_related('user')
+    except:
+        all_collectors = []
     
+    # Build collector data with payment info
     collector_salaries_data = []
-    total_salary_expense = 0
+    total_salary_paid = 0
     
-    # Calculate salaries for each collector
-    for collector in collectors:
-        try:
-            join_date = collector.user.date_joined.date() if hasattr(collector.user, 'date_joined') else timezone.now().date()
-            
-            if period_filter != 'all':
-                # Calculate working days in selected period
-                period_start = start_date.date()
-                period_end = timezone.now().date()
-                
-                work_start = max(join_date, period_start)
-                work_end = period_end
-                
-                if work_end >= work_start:
-                    days_worked = (work_end - work_start).days + 1
-                else:
-                    days_worked = 0
-            else:
-                # All time calculation
-                days_worked = (timezone.now().date() - join_date).days + 1
-            
-            total_salary = days_worked * daily_salary
-            total_salary_expense += total_salary
-            
-            collector_salaries_data.append({
-                'collector': collector,
-                'join_date': join_date,
-                'days_worked': max(days_worked, 0),
-                'daily_rate': daily_salary,
-                'total_salary': total_salary,
-                'email': collector.user.email if hasattr(collector.user, 'email') else 'N/A',
-                'phone': collector.phone if hasattr(collector, 'phone') else 'N/A',
-                'name': collector.collector_name if hasattr(collector, 'collector_name') else collector.user.username
-            })
-        except Exception as e:
-            continue
+    for collector in all_collectors:
+        # Find payment summary for this collector
+        paid_amount = 0
+        payment_count = 0
+        
+        for summary in collector_payment_summary:
+            if summary['Receiver_id'] == collector.user.id:
+                paid_amount = summary['total_paid'] or 0
+                payment_count = summary['payment_count'] or 0
+                break
+        
+        total_salary_paid += paid_amount
+        
+        collector_salaries_data.append({
+            'collector': collector,
+            'name': collector.collector_name if hasattr(collector, 'collector_name') else collector.user.username,
+            'email': collector.user.email if hasattr(collector.user, 'email') else 'N/A',
+            'phone': collector.phone if hasattr(collector, 'phone') else 'N/A',
+            'total_paid': paid_amount,
+            'payment_count': payment_count,
+            'has_payments': paid_amount > 0
+        })
+    
+    # Sort by total paid (descending)
+    collector_salaries_data.sort(key=lambda x: x['total_paid'], reverse=True)
     
     context = {
         'collector_salaries': collector_salaries_data,
-        'total_salary_expense': total_salary_expense,
+        'total_salary_paid': total_salary_paid,
         'total_collectors': len(collector_salaries_data),
-        'daily_salary': daily_salary,
+        'collectors_with_payments': sum(1 for c in collector_salaries_data if c['has_payments']),
+        'daily_rate': 1000,  # Reference rate
         'period_filter': period_filter,
         'start_date': start_date.strftime('%Y-%m-%d') if start_date else None,
     }

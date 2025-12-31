@@ -35,8 +35,8 @@
                 <div class="dashboard-stat-card text-white"
                     style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
                     <div style="font-size: 2rem; margin-bottom: 8px;">💰</div>
-                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_salary_expense|floatformat:2 }}</div>
-                    <p style="margin: 0; opacity: 0.9;">Total Salary Expense ({{ period_filter|default:"All Time" }})
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_salary_paid|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Salary Paid ({{ period_filter|default:"All Time" }})
                     </p>
                 </div>
             </div>
@@ -72,28 +72,29 @@
                             <tr>
                                 <th class="text-secondary text-uppercase small">Manager</th>
                                 <th class="text-secondary text-uppercase small">Contact</th>
-                                <th class="text-secondary text-uppercase small">Join Date</th>
-                                <th class="text-secondary text-uppercase small">Days Worked</th>
-                                <th class="text-secondary text-uppercase small">Daily Rate</th>
-                                <th class="text-secondary text-uppercase small">Total Salary</th>
+                                <th class="text-secondary text-uppercase small">Payments</th>
+                                <th class="text-secondary text-uppercase small">Total Paid</th>
                             </tr>
                         </thead>
                         <tbody>
                             {% for salary in manager_salaries %}
                             <tr>
                                 <td>
-                                    <strong>{{ salary.manager.user.name }}</strong>
+                                    <strong>{{ salary.name }}</strong>
                                 </td>
                                 <td>
-                                    <div class="small text-muted">{{ salary.manager.user.email }}</div>
-                                    <div class="small text-muted">{{ salary.manager.phone }}</div>
+                                    <div class="small text-muted">{{ salary.email }}</div>
                                 </td>
-                                <td><span class="badge bg-light text-dark">{{ salary.join_date|date:"d M Y" }}</span>
+                                <td>
+                                    {% if salary.payment_count > 0 %}
+                                    <span class="badge bg-info bg-opacity-10 text-primary" style="background-color: #dbeafe !important; color: #1e40af !important;">
+                                        {{ salary.payment_count }} payment{{ salary.payment_count|pluralize }}
+                                    </span>
+                                    {% else %}
+                                    <span class="badge bg-secondary">No payments</span>
+                                    {% endif %}
                                 </td>
-                                <td><span class="badge bg-info bg-opacity-10 text-primary"
-                                        style="background-color: #dbeafe !important; color: #1e40af !important;">{{ salary.days_worked }} days</span></td>
-                                <td>&#8377;{{ salary.daily_rate }}</td>
-                                <td><strong class="text-success" style="font-size: 1.1rem;">&#8377;{{ salary.total_salary|floatformat:2 }}</strong></td>
+                                <td><strong class="text-success" style="font-size: 1.1rem;">&#8377;{{ salary.total_paid|floatformat:2 }}</strong></td>
                             </tr>
                             {% empty %}
                             <tr>
@@ -105,9 +106,9 @@
                         </tbody>
                         <tfoot class="table-light" style="border-top: 2px solid #E5E7EB;">
                             <tr>
-                                <td colspan="5" class="text-end text-uppercase small fw-bold text-muted">Total Expense
+                                <td colspan="3" class="text-end text-uppercase small fw-bold text-muted">Total Paid
                                 </td>
-                                <td><strong class="text-success" style="font-size: 1.2rem;">&#8377;{{ total_salary_expense|floatformat:2 }}</strong></td>
+                                <td><strong class="text-success" style="font-size: 1.2rem;">&#8377;{{ total_salary_paid|floatformat:2 }}</strong></td>
                             </tr>
                         </tfoot>
                     </table>
@@ -121,12 +122,12 @@
             <div class="d-flex">
                 <div class="me-3" style="font-size: 1.5rem;">ℹ️</div>
                 <div>
-                    <h5 class="alert-heading fw-bold" style="color: #1E40AF; font-size: 1rem;">Salary Calculation Policy
+                    <h5 class="alert-heading fw-bold" style="color: #1E40AF; font-size: 1rem;">Salary Payment Policy
                     </h5>
                     <ul class="mb-0 small ps-3" style="color: #374151;">
                         <li>Each compost manager receives a fixed daily salary of <strong>&#8377;1,000</strong>.</li>
-                        <li>Salary is calculated automatically starting from their verification date (Join Date).</li>
-                        <li>Calculations are dynamic based on the selected time period above.</li>
+                        <li>Payments are processed manually by the admin based on work logs (Compost Batches created).</li>
+                        <li>This report shows actual payments made, not estimated dues.</li>
                     </ul>
                 </div>
             </div>

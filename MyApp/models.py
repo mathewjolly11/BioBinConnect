@@ -160,6 +160,7 @@ class tbl_WasteInventory(models.Model):
     collection_date = models.DateTimeField()
     is_available = models.BooleanField(default=True)
     status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Available')
+    salary_paid = models.BooleanField(default=False)  # Track if collector salary paid for this date
     
     class Meta:
         ordering = ['-collection_date']
@@ -229,6 +230,7 @@ class tbl_CompostBatch(models.Model):
     
     # NEW FIELD
     price_per_kg = models.DecimalField(max_digits=10, decimal_places=2, default=15.00)
+    salary_paid = models.BooleanField(default=False)  # Track if manager salary paid for this batch date
     
     class Meta:
         ordering = ['-Date_Created']

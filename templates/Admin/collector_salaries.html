@@ -43,8 +43,8 @@
             <div class="col-md-3 mb-3">
                 <div class="dashboard-stat-card bg-warning text-white">
                     <div style="font-size: 2.5rem; margin-bottom: 8px;">📊</div>
-                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_salary_expense|floatformat:2 }}</div>
-                    <p style="margin: 0; opacity: 0.9;">Total Expense</p>
+                    <div style="font-size: 2rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ total_salary_paid|floatformat:2 }}</div>
+                    <p style="margin: 0; opacity: 0.9;">Total Paid</p>
                 </div>
             </div>
             <div class="col-md-3 mb-3">
@@ -68,10 +68,8 @@
                             <tr>
                                 <th style="border-bottom: 2px solid #E5E7EB;">Collector Info</th>
                                 <th style="border-bottom: 2px solid #E5E7EB;">Contact</th>
-                                <th style="border-bottom: 2px solid #E5E7EB;">Join Date</th>
-                                <th style="border-bottom: 2px solid #E5E7EB;">Days Worked</th>
-                                <th style="border-bottom: 2px solid #E5E7EB;">Daily Rate</th>
-                                <th style="border-bottom: 2px solid #E5E7EB;">Total Salary</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Payments</th>
+                                <th style="border-bottom: 2px solid #E5E7EB;">Total Paid</th>
                                 <th style="border-bottom: 2px solid #E5E7EB;">Status</th>
                             </tr>
                         </thead>
@@ -91,20 +89,18 @@
                                     </div>
                                 </td>
                                 <td style="padding: 16px;">
-                                    <span style="background: #F3F4F6; padding: 4px 8px; border-radius: 6px; font-size: 0.85rem;">
-                                        {{ salary.join_date|date:"M d, Y" }}
-                                    </span>
-                                </td>
-                                <td style="padding: 16px;">
+                                    {% if salary.payment_count > 0 %}
                                     <span style="background: #DBEAFE; color: #1E40AF; padding: 6px 12px; border-radius: 20px; font-weight: 600;">
-                                        {{ salary.days_worked }} days
+                                        {{ salary.payment_count }} payment{{ salary.payment_count|pluralize }}
                                     </span>
+                                    {% else %}
+                                    <span style="background: #FEE2E2; color: #991B1B; padding: 4px 8px; border-radius: 12px; font-size: 0.8rem;">
+                                        No payments
+                                    </span>
+                                    {% endif %}
                                 </td>
                                 <td style="padding: 16px;">
-                                    <span style="font-weight: 600; color: #059669;">&#8377;{{ salary.daily_rate }}</span>
-                                </td>
-                                <td style="padding: 16px;">
-                                    <span style="font-weight: 800; font-size: 1.1rem; color: #1F2937;">&#8377;{{ salary.total_salary|floatformat:2 }}</span>
+                                    <span style="font-weight: 800; font-size: 1.1rem; color: {% if salary.total_paid > 0 %}#059669{% else %}#6B7280{% endif%};">&#8377;{{ salary.total_paid|floatformat:2 }}</span>
                                 </td>
                                 <td style="padding: 16px;">
                                     {% if salary.collector.is_active %}
@@ -120,7 +116,7 @@
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="7" class="text-center" style="padding: 40px; color: #6B7280;">
+                                <td colspan="5" class="text-center" style="padding: 40px; color: #6B7280;">
                                     <div style="font-size: 3rem; margin-bottom: 16px; opacity: 0.5;">👷</div>
                                     <h5 style="color: #9CA3AF; margin-bottom: 8px;">No collectors found</h5>
                                     <p style="margin: 0; font-size: 0.9rem;">There are no active collectors in the system.</p>
@@ -138,9 +134,8 @@
                         <div class="alert alert-info text-center">
                             <h5 class="mb-2">💼 Salary Summary</h5>
                             <p class="mb-0">
-                                <strong>{{ total_collectors }}</strong> collectors earned a total of 
-                                <strong>&#8377;{{ total_salary_expense|floatformat:2 }}</strong> 
-                                over the selected period
+                                <strong>{{ collectors_with_payments }}</strong> of <strong>{{ total_collectors }}</strong> collectors received 
+                                <strong>&#8377;{{ total_salary_paid|floatformat:2 }}</strong> in total payments
                             </p>
                         </div>
                     </div>

@@ -1,0 +1,240 @@
+{% extends 'Admin/base.html' %} {% load static %} {% block content %}
+<section id="main-content">
+  <section class="wrapper main-wrapper">
+    <div class="row">
+      <div class="col-md-12">
+        <div class="page-title">
+          <div class="pull-left">
+            <h1 class="title">Confirm Salary Payment</h1>
+          </div>
+          <div class="pull-right hidden-xs">
+            <a
+              href="{% url 'admin_salary_management' %}"
+              class="btn btn-default"
+            >
+              <i class="fa fa-arrow-left"></i> Back to Salary Management
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="clearfix"></div>
+
+    <div class="col-lg-12">
+      <section class="box">
+        <header class="panel_header">
+          <h2 class="title pull-left">Payment Details for {{ name }}</h2>
+        </header>
+        <div class="content-body">
+          <div class="row">
+            <div class="col-md-12">
+              <div class="alert alert-info">
+                <strong>User Info:</strong> {{ name }} ({{ email }})
+                <br />
+                <strong>Rate:</strong> &#8377;{{ daily_rate }}/day
+              </div>
+
+              <div class="table-responsive" style="margin-top: 20px">
+                <table class="table table-bordered table-striped">
+                  <thead>
+                    <tr>
+                      <th style="width: 50px">
+                        <div class="form-check">
+                          <input
+                            class="form-check-input"
+                            type="checkbox"
+                            id="selectAll"
+                            checked
+                          />
+                          <label
+                            class="form-check-label"
+                            for="selectAll"
+                            style="font-weight: bold; margin-left: 5px"
+                            >All</label
+                          >
+                        </div>
+                      </th>
+                      <th>Date</th>
+                      <th>Work Count</th>
+                      <th>Amount</th>
+                    </tr>
+                  </thead>
+                  <tbody id="datesTableBody">
+                    {% for item in dates %}
+                    <tr>
+                      <td>
+                        <div class="form-check">
+                          <input
+                            class="form-check-input date-checkbox"
+                            type="checkbox"
+                            value="{{ item.date }}"
+                            checked
+                          />
+                        </div>
+                      </td>
+                      <td>{{ item.date }}</td>
+                      <td>{{ item.count }} collections/batches</td>
+                      <td>&#8377;{{ daily_rate }}</td>
+                    </tr>
+                    {% empty %}
+                    <tr>
+                      <td colspan="4" class="text-center">
+                        No unpaid work found.
+                      </td>
+                    </tr>
+                    {% endfor %}
+                  </tbody>
+                </table>
+              </div>
+
+              <div
+                class="row"
+                style="
+                  margin-top: 20px;
+                  border-top: 2px solid #eee;
+                  padding-top: 20px;
+                "
+              >
+                <div class="col-md-6 col-md-offset-6 text-right">
+                  <h3 style="margin-top: 0">
+                    Total Payable:
+                    <span id="totalDisplay" class="text-success"
+                      >&#8377;{{ total_amount }}</span
+                    >
+                  </h3>
+                  <p class="text-muted">
+                    <span id="daysDisplay">{{ total_unpaid_days }}</span> days
+                    selected
+                  </p>
+
+                  <div style="margin-top: 20px">
+                    <button
+                      type="button"
+                      class="btn btn-lg btn-success"
+                      onclick="processPayment()"
+                    >
+                      <i class="fa fa-check-circle"></i> Confirm & Pay Now
+                    </button>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
+</section>
+
+<!-- SweetAlert -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+      const selectAll = document.getElementById('selectAll');
+      const checkboxes = document.querySelectorAll('.date-checkbox');
+
+      // Handle Select All
+      selectAll.addEventListener('change', function() {
+          checkboxes.forEach(cb => {
+              cb.checked = this.checked;
+          });
+          updateTotal();
+      });
+
+      // Handle Individual Checkbox
+      checkboxes.forEach(cb => {
+          cb.addEventListener('change', function() {
+              updateTotal();
+              // Update Select All state
+              const allChecked = Array.from(checkboxes).every(c => c.checked);
+              selectAll.checked = allChecked;
+          });
+      });
+  });
+
+  function updateTotal() {
+      const checkboxes = document.querySelectorAll('.date-checkbox:checked');
+      const count = checkboxes.length;
+      const total = count * {{ daily_rate }};
+
+      document.getElementById('daysDisplay').textContent = count;
+      document.getElementById('totalDisplay').textContent = '₹' + total.toLocaleString();
+  }
+
+  function processPayment() {
+      const selectedChecboxes = document.querySelectorAll('.date-checkbox:checked');
+      const selectedDates = Array.from(selectedChecboxes).map(cb => cb.value);
+
+      if (selectedDates.length === 0) {
+          Swal.fire('Error', 'Please select at least one date to pay.', 'error');
+          return;
+      }
+
+      const total = selectedDates.length * {{ daily_rate }};
+
+      Swal.fire({
+          title: 'Confirm Payment',
+          html: `Are you sure you want to pay <strong>₹${total.toLocaleString()}</strong> for <strong>${selectedDates.length} days</strong>?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#28a745',
+          confirmButtonText: 'Yes, Pay Now'
+      }).then((result) => {
+          if (result.isConfirmed) {
+
+              // Prepare form data
+              const formData = new FormData();
+              formData.append('user_type', '{{ user_type }}');
+              formData.append('user_id', '{{ user_id }}');
+
+              selectedDates.forEach(date => {
+                  formData.append('selected_dates[]', date);
+              });
+
+              // CSRF Token
+              const csrfToken = '{{ csrf_token }}';
+
+              // Show loading
+              Swal.fire({
+                  title: 'Processing...',
+                  text: 'Please wait while payment is processed',
+                  allowOutsideClick: false,
+                  didOpen: () => {
+                      Swal.showLoading();
+                  }
+              });
+
+              // Send request
+              fetch('{% url "admin_pay_salary" %}', {
+                  method: 'POST',
+                  headers: {
+                      'X-CSRFToken': csrfToken
+                  },
+                  body: formData
+              })
+              .then(response => response.json())
+              .then(data => {
+                  if (data.success) {
+                      Swal.fire({
+                          title: 'Success!',
+                          text: data.message,
+                          icon: 'success',
+                          confirmButtonColor: '#28a745'
+                      }).then(() => {
+                          window.location.href = "{% url 'admin_salary_management' %}";
+                      });
+                  } else {
+                      Swal.fire('Error', data.error || 'Payment failed', 'error');
+                  }
+              })
+              .catch(error => {
+                  console.error('Error:', error);
+                  Swal.fire('Error', 'Network error occurred', 'error');
+              });
+          }
+      });
+  }
+</script>
+{% endblock %}

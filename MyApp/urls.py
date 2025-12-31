@@ -35,6 +35,11 @@ urlpatterns = [
     path('admin/compost-sales/', sales_views.admin_compost_sales, name='admin_compost_sales'),
     path('admin/update-delivery/<int:order_id>/', sales_views.admin_update_delivery_status, name='admin_update_delivery'),
     
+    # Salary management
+    path('admin/salaries/', salary_views.admin_salary_management, name='admin_salary_management'),
+    path('admin/pay-salary/', salary_views.admin_pay_salary, name='admin_pay_salary'),
+    path('admin/pay-confirm/<str:user_type>/<int:user_id>/', salary_views.pay_salary_confirm, name='pay_salary_confirm'),
+    
     # Admin reports
     path('admin/reports/', reports_views.admin_reports, name='admin_reports'),
     

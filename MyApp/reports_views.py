@@ -66,29 +66,21 @@ def admin_reports(request):
         count=Count('Order_id')
     ).order_by('date')
     
-    # Compost Manager Salaries (₹1000/day)
-    daily_salary = 1000
-    compost_managers = CompostManager.objects.filter(user__is_verified=True).select_related('user')
+    # Salary expenses from actual payments (not auto-calculated)
+    salary_payments = tbl_PaymentTransaction.objects.filter(
+        status='Success',
+        transaction_type__in=['CollectorSalary', 'ManagerSalary']
+    )
     
-    # Calculate days worked (assuming they work every day they're verified)
-    manager_salaries = []
-    for manager in compost_managers:
-        # Calculate days since joining
-        join_date = manager.user.date_joined
-        if start_date and join_date < start_date:
-            days_worked = (timezone.now().date() - start_date.date()).days + 1
-        else:
-            days_worked = (timezone.now().date() - join_date.date()).days + 1
-        
-        total_salary = days_worked * daily_salary
-        manager_salaries.append({
-            'manager': manager,
-            'days_worked': days_worked,
-            'daily_rate': daily_salary,
-            'total_salary': total_salary
-        })
+    if start_date:
+        salary_payments = salary_payments.filter(transaction_date__gte=start_date)
     
-    total_salary_expense = sum(m['total_salary'] for m in manager_salaries)
+    # Total salary expense from actual payments
+    total_salary_expense = salary_payments.aggregate(total=Sum('Amount'))['total'] or 0
+    
+    # Breakdown by type
+    collector_salary_expense = salary_payments.filter(transaction_type='CollectorSalary').aggregate(total=Sum('Amount'))['total'] or 0
+    manager_salary_expense = salary_payments.filter(transaction_type='ManagerSalary').aggregate(total=Sum('Amount'))['total'] or 0
     
     # Net profit (Revenue - Salary Expenses)
     net_profit = total_revenue - total_salary_expense
@@ -105,8 +97,9 @@ def admin_reports(request):
         'total_farmers': total_farmers,
         'total_payment_amount': total_payment_amount,
         'daily_sales': daily_sales,
-        'manager_salaries': manager_salaries,
         'total_salary_expense': total_salary_expense,
+        'collector_salary_expense': collector_salary_expense,
+        'manager_salary_expense': manager_salary_expense,
         'net_profit': net_profit,
         'waste_orders_count': waste_orders.count(),
         'compost_orders_count': compost_orders.count(),
