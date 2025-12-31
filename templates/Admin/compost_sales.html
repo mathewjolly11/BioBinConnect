@@ -117,9 +117,7 @@
                                     <td>#{{ order.Order_id }}</td>
                                     <td>{{ order.Buyer_id.farmer_name }}</td>
                                     <td>
-                                        {% for item in order.tbl_orderitem_set.all %}
-                                        {{ item.Quantity_kg }} kg
-                                        {% endfor %}
+                                        {{ order.total_quantity }} kg
                                     </td>
                                     <td>₹{{ order.Total_Amount }}</td>
                                     <td>
@@ -129,12 +127,12 @@
                                         </span>
                                     </td>
                                     <td>
-                                        {% for item in order.tbl_orderitem_set.all %}
+                                        {% with order.tbl_orderitem_set.first as item %}
                                         <span
-                                            class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'In Transit' %}info{% else %}secondary{% endif %}">
+                                            class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'Dispatched' %}info{% else %}secondary{% endif %}">
                                             {{ item.Delivery_Status }}
                                         </span>
-                                        {% endfor %}
+                                        {% endwith %}
                                     </td>
                                     <td>{{ order.Order_Date|date:"d M Y" }}</td>
                                     <td>
@@ -142,7 +140,7 @@
                                             onchange="updateStatus({{ order.Order_id }}, this.value, this)">
                                             <option value="">Update Status</option>
                                             <option value="Pending">📦 Pending</option>
-                                            <option value="In Transit">🚚 In Transit</option>
+                                            <option value="Dispatched">🚚 Dispatched</option>
                                             <option value="Delivered">✅ Delivered</option>
                                         </select>
                                     </td>

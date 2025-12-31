@@ -252,6 +252,23 @@ class tbl_Order(models.Model):
     Delivery_Address = models.TextField()
     Payment_Status = models.CharField(max_length=20, choices=PAYMENT_STATUS_CHOICES, default='Pending')
     
+    # Manual Collector Assignment Fields
+    assigned_collector = models.ForeignKey(
+        'GuestApp.Collector',
+        on_delete=models.SET_NULL,
+        null=True,
+        blank=True,
+        related_name='assigned_waste_orders'
+    )
+    assignment_status = models.CharField(
+        max_length=20,
+        choices=[
+            ('Unassigned', 'Unassigned'),
+            ('Assigned', 'Assigned')
+        ],
+        default='Unassigned'
+    )
+    
     class Meta:
         ordering = ['-Order_Date']
     

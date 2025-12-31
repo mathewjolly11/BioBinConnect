@@ -444,12 +444,12 @@
                     <span
                       class="badge"
                       style="
-                        background: #d1fae5;
-                        color: #065f46;
+                        background: {% if activity.Payment_Status == 'Paid' %}#d1fae5{% else %}#fef3c7{% endif %};
+                        color: {% if activity.Payment_Status == 'Paid' %}#065f46{% else %}#92400e{% endif %};
                         padding: 6px 12px;
                         border-radius: 20px;
                       "
-                      >Completed</span
+                      >{{ activity.Payment_Status }}</span
                     >
                   </td>
                   <td style="border: none; background: #f9fafb; padding: 16px">

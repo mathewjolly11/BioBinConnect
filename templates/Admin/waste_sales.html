@@ -106,6 +106,7 @@
                                     <th>Quantity (kg)</th>
                                     <th>Amount</th>
                                     <th>Payment Status</th>
+                                    <th>Assignment Status</th>
                                     <th>Delivery Status</th>
                                     <th>Date</th>
                                     <th>Actions</th>
@@ -117,9 +118,7 @@
                                     <td>#{{ order.Order_id }}</td>
                                     <td>{{ order.Buyer_id.farmer_name }}</td>
                                     <td>
-                                        {% for item in order.tbl_orderitem_set.all %}
-                                        {{ item.Quantity_kg }} kg
-                                        {% endfor %}
+                                        {{ order.total_quantity }} kg
                                     </td>
                                     <td>₹{{ order.Total_Amount }}</td>
                                     <td>
@@ -129,22 +128,35 @@
                                         </span>
                                     </td>
                                     <td>
-                                        {% for item in order.tbl_orderitem_set.all %}
+                                        {% if order.assignment_status == 'Assigned' %}
+                                            <span class="badge bg-success">
+                                                Assigned
+                                            </span>
+                                        {% else %}
+                                            <span class="badge bg-warning">
+                                                Unassigned
+                                            </span>
+                                        {% endif %}
+                                    </td>
+                                    <td>
+                                        {% with order.tbl_orderitem_set.first as item %}
                                         <span
-                                            class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'In Transit' %}info{% else %}secondary{% endif %}">
+                                            class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'Dispatched' %}info{% else %}secondary{% endif %}">
                                             {{ item.Delivery_Status }}
                                         </span>
-                                        {% endfor %}
+                                        {% endwith %}
                                     </td>
                                     <td>{{ order.Order_Date|date:"d M Y" }}</td>
                                     <td>
-                                        <select class="status-select"
-                                            onchange="updateStatus({{ order.Order_id }}, this.value, this)">
-                                            <option value="">Update Status</option>
-                                            <option value="Pending">📦 Pending</option>
-                                            <option value="In Transit">🚚 In Transit</option>
-                                            <option value="Delivered">✅ Delivered</option>
-                                        </select>
+                                        {% if order.assignment_status == 'Unassigned' %}
+                                            <button class="btn btn-sm btn-primary" onclick="showAssignModal({{ order.Order_id }})">
+                                                <i class="fa fa-user-plus"></i> Assign
+                                            </button>
+                                        {% else %}
+                                            <small class="text-muted">
+                                                <i class="fa fa-truck"></i> {{ order.assigned_collector.collector_name }}
+                                            </small>
+                                        {% endif %}
                                     </td>
                                 </tr>
                                 {% empty %}
@@ -161,7 +173,48 @@
     </section>
 </section>
 
+<!-- Assign Collector Modal -->
+<div class="modal fade" id="assignCollectorModal" tabindex="-1">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-primary text-white">
+                <h5 class="modal-title"><i class="fa fa-user-plus"></i> Assign Collector</h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
+            </div>
+            <form id="assignForm" method="POST">
+                {% csrf_token %}
+                <div class="modal-body">
+                    <div class="mb-3">
+                        <label for="collectorSelect" class="form-label">Select Collector</label>
+                        <select class="form-select" id="collectorSelect" name="collector_id" required>
+                            <option value="">Choose a collector...</option>
+                            {% for collector in collectors %}
+                            <option value="{{ collector.pk }}">{{ collector.collector_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </div>
+                    <p class="text-muted small"><i class="fa fa-info-circle"></i> This collector will be responsible for delivering the order</p>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+                    <button type="submit" class="btn btn-primary">Assign Collector</button>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
 <script>
+    let currentOrderId = null;
+    
+    function showAssignModal(orderId) {
+        currentOrderId = orderId;
+        const form = document.getElementById('assignForm');
+        form.action = `/admin/assign-collector/${orderId}/`;
+        const modal = new bootstrap.Modal(document.getElementById('assignCollectorModal'));
+        modal.show();
+    }
+
     function updateStatus(orderId, newStatus, selectElement) {
         if (!newStatus) return;
 

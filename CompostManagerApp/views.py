@@ -9,6 +9,7 @@ from GuestApp.models import CompostManager
 from GuestApp.forms import CompostManagerEditForm, ProfileEditForm
 from MyApp.models import tbl_WasteInventory, tbl_CompostBatch
 from .forms import CompostBatchForm, BatchStatusUpdateForm
+from decimal import Decimal
 
 @login_required(login_url='login')
 @never_cache

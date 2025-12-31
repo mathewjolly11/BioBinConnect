@@ -1,11 +1,9 @@
 from django.urls import path
 from MyApp import views
-
-
-from MyApp import views
 from MyApp import reports_views
 from MyApp import payment_views
 from MyApp import salary_views
+from MyApp import sales_views
 urlpatterns = [
     path('admin', views.index, name='admin_index'),
     path('add_district/', views.add_district, name='add_district'),
@@ -32,9 +30,10 @@ urlpatterns = [
     path('export_payment_report/', views.export_payment_report, name='export_payment_report'),
     
     # Admin sales management
-    path('admin/waste-sales/', views.admin_waste_sales, name='admin_waste_sales'),
-    path('admin/compost-sales/', views.admin_compost_sales, name='admin_compost_sales'),
-    path('admin/update-delivery/<int:order_id>/', views.admin_update_delivery_status, name='admin_update_delivery'),
+    path('admin/waste-sales/', sales_views.admin_waste_sales, name='admin_waste_sales'),
+    path('admin/assign-collector/<int:order_id>/', sales_views.assign_waste_collector, name='assign_waste_collector'),
+    path('admin/compost-sales/', sales_views.admin_compost_sales, name='admin_compost_sales'),
+    path('admin/update-delivery/<int:order_id>/', sales_views.admin_update_delivery_status, name='admin_update_delivery'),
     
     # Admin reports
     path('admin/reports/', reports_views.admin_reports, name='admin_reports'),

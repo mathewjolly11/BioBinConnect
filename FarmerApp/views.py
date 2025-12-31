@@ -155,7 +155,8 @@ def farmer_browse_compost(request):
     )
     
     # Calculate total available stock across all batches
-    total_stock = available_batches.aggregate(total=Sum('Stock_kg'))['total'] or 0
+    total_stock_raw = available_batches.aggregate(total=Sum('Stock_kg'))['total'] or 0
+    total_stock = int(total_stock_raw)  # Round DOWN to avoid validation failures
     batch_count = available_batches.count()
     
     # Get the most recent batch for display info
@@ -179,23 +180,42 @@ def farmer_place_order(request):
     from decimal import Decimal
     
     if request.method == 'POST':
+        print(f"DEBUG: farmer_place_order POST received")  # DEBUG
         farmer = Farmer.objects.get(user=request.user)
         order_type = request.POST.get('order_type')  # 'waste' or 'compost'
         item_id = request.POST.get('item_id')
         quantity = Decimal(request.POST.get('quantity'))
         delivery_address = request.POST.get('delivery_address')
+        print(f"DEBUG: order_type={order_type}, item_id={item_id}, qty={quantity}")  # DEBUG
         
         try:
             if order_type == 'waste':
                 # Order direct waste
-                inventory = tbl_WasteInventory.objects.get(Inventory_id=item_id)
+                if item_id == 'all':
+                    # Combined waste from all collectors
+                    from django.db.models import Sum
+                    available_waste = tbl_WasteInventory.objects.filter(
+                        is_available=True,
+                        available_quantity_kg__gt=0,
+                        status='Available'
+                    )
+                    total_stock = available_waste.aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+                    
+                    # Validate quantity
+                    if quantity > total_stock:
+                        messages.error(request, f'Only {total_stock}kg available!')
+                        return redirect('farmer_browse_waste')
+                    
+                    unit_price = 10  # Fixed price for pooled waste
+                else:
+                    inventory = tbl_WasteInventory.objects.get(Inventory_id=item_id)
                 
-                # Validate quantity
-                if quantity > inventory.available_quantity_kg:
-                    messages.error(request, f'Only {inventory.available_quantity_kg}kg available!')
-                    return redirect('farmer_browse_waste')
+                    # Validate quantity
+                    if quantity > inventory.available_quantity_kg:
+                        messages.error(request, f'Only {inventory.available_quantity_kg}kg available!')
+                        return redirect('farmer_browse_waste')
                 
-                unit_price = inventory.price_per_kg
+                    unit_price = inventory.price_per_kg
                 total_amount = quantity * unit_price
                 
                 # Store order details in session for payment processing
@@ -207,11 +227,14 @@ def farmer_place_order(request):
                     'total_amount': str(total_amount),
                     'unit_price': str(unit_price)
                 }
+                request.session.modified = True  # Ensure session saves
                 return redirect('farmer_payment')
                 
             elif order_type == 'compost':
+                print(f"DEBUG: Processing compost order, item_id={item_id}")  # DEBUG
                 # Order compost - handle both single batch and combined stock
                 if item_id == 'all':
+                    print("DEBUG: Compost - Combined from all batches")  # DEBUG
                     # Combined compost from all batches
                     from django.db.models import Sum
                     available_batches = tbl_CompostBatch.objects.filter(
@@ -220,13 +243,16 @@ def farmer_place_order(request):
                     )
                     total_stock = available_batches.aggregate(total=Sum('Stock_kg'))['total'] or 0
                     
+                    print(f"DEBUG: Compost validation - quantity={quantity}, total_stock={total_stock}")  # DEBUG
                     # Validate quantity
                     if quantity > total_stock:
+                        print(f"DEBUG: VALIDATION FAILED - Not enough stock!")  # DEBUG
                         messages.error(request, f'Only {total_stock}kg available!')
                         return redirect('farmer_browse_compost')
                     
                     unit_price = 200  # Fixed price
                 else:
+                    print(f"DEBUG: Compost - Single batch {item_id}")  # DEBUG
                     # Single batch order
                     batch = tbl_CompostBatch.objects.get(Batch_id=item_id)
                     
@@ -238,6 +264,7 @@ def farmer_place_order(request):
                     unit_price = batch.price_per_kg
                 
                 total_amount = quantity * unit_price
+                print(f"DEBUG: Compost total_amount={total_amount}, storing in session")  # DEBUG
                 
                 # Store order details in session for payment processing
                 request.session['pending_order'] = {
@@ -248,15 +275,22 @@ def farmer_place_order(request):
                     'total_amount': str(total_amount),
                     'unit_price': str(unit_price)
                 }
+                request.session.modified = True  # Ensure session saves
+                print(f"DEBUG: Session saved, redirecting to payment")  # DEBUG
                 return redirect('farmer_payment')
                 
         except Exception as e:
+            print(f"ERROR IN FARMER_PLACE_ORDER: {str(e)}")  # DEBUG
+            import traceback
+            traceback.print_exc()  # Print full traceback
             messages.error(request, f'Error placing order: {str(e)}')
             return redirect('farmer_dashboard')
     
     # GET request - show order form
+    print(f"DEBUG: farmer_place_order GET request - showing form")  # DEBUG
     order_type = request.GET.get('type')
     item_id = request.GET.get('id')
+    print(f"DEBUG: GET params - type={order_type}, id={item_id}")  # DEBUG
     
     if order_type == 'waste':
         if item_id == 'all':
@@ -345,6 +379,8 @@ def farmer_payment(request):
     # Get pending order from session
     pending_order = request.session.get('pending_order')
     if not pending_order:
+        if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+             return JsonResponse({'success': False, 'error': 'No pending order found.'})
         messages.error(request, 'No pending order found.')
         return redirect('farmer_dashboard')
     
@@ -354,6 +390,176 @@ def farmer_payment(request):
             'order_details': pending_order
         }
         return render(request, 'Farmer/payment_processing.html', context)
+
+    # If POST request, process the payment and create order
+    if request.method == 'POST':
+        farmer = Farmer.objects.get(user=request.user)
+        
+        # Get payment method from POST body
+        try:
+            body = json.loads(request.body)
+            payment_method = body.get('payment_method', 'COD')
+        except:
+            payment_method = 'COD'
+        
+        order_type = pending_order['order_type']
+        item_id = pending_order['item_id']
+        quantity = Decimal(pending_order['quantity'])
+        delivery_address = pending_order['delivery_address']
+        total_amount = Decimal(pending_order['total_amount'])
+        unit_price = Decimal(pending_order['unit_price'])
+        
+        try:
+            order = None
+            if order_type == 'waste':
+                    # Create main Order (Unassigned - Admin will assign collector)
+                    order = tbl_Order.objects.create(
+                        Buyer_id=farmer,
+                        Total_Amount=total_amount,
+                        Delivery_Address=delivery_address,
+                        Payment_Status='Paid',
+                        assignment_status='Unassigned'  # NEW: Admin assigns later
+                    )
+                    
+                    # Create single Order Item (no collector assignment yet)
+                    tbl_OrderItem.objects.create(
+                        Order_id=order,
+                        Item_Type='Waste',
+                        Quantity_kg=quantity,
+                        Unit_Price=unit_price,
+                        Delivery_Status='Pending'
+                        # FarmerSupply_id will be set when Admin assigns collector
+                    )
+                    
+                    # Deduct from available inventory (FIFO) to reserve the stock
+                    # This reduces available display for other farmers
+                    remaining_qty = quantity
+                    from django.db.models import F
+                    inventories = tbl_WasteInventory.objects.filter(
+                        is_available=True,
+                        available_quantity_kg__gt=0,
+                        status='Available'
+                    ).order_by('Inventory_id')
+                    
+                    for inventory in inventories:
+                        if remaining_qty <= 0:
+                            break
+                        
+                        take_qty = min(remaining_qty, inventory.available_quantity_kg)
+                        
+                        # Deduct from available quantity
+                        inventory.available_quantity_kg -= take_qty
+                        if inventory.available_quantity_kg == 0:
+                            inventory.is_available = False
+                        inventory.save()
+                        
+                        remaining_qty -= take_qty
+                   
+            elif order_type == 'compost':
+                # Handle compost orders - both single batch and combined stock
+                if item_id == 'all':
+                    # Combined compost from multiple batches
+                    # Create Order first
+                    order = tbl_Order.objects.create(
+                        Buyer_id=farmer,
+                        Total_Amount=total_amount,
+                        Delivery_Address=delivery_address,
+                        Payment_Status='Paid'
+                    )
+                    
+                    # Deduct from batches in order (FIFO)
+                    remaining_qty = quantity
+                    batches = tbl_CompostBatch.objects.filter(
+                        Stock_kg__gt=0,
+                        Status='Ready'
+                    ).order_by('Date_Created')
+                    
+                    for batch in batches:
+                        if remaining_qty <= 0:
+                            break
+                        
+                        deduct_qty = min(remaining_qty, batch.Stock_kg)
+                        
+                        # Create OrderItem for this batch
+                        tbl_OrderItem.objects.create(
+                            Order_id=order,
+                            Item_Type='Compost',
+                            Batch_id=batch,
+                            Quantity_kg=deduct_qty,
+                            Unit_Price=unit_price,
+                            Delivery_Status='Pending'
+                        )
+                        
+                        # Update batch stock
+                        batch.Stock_kg -= deduct_qty
+                        if batch.Stock_kg == 0:
+                            batch.Status = 'Sold'
+                        batch.save()
+                        
+                        remaining_qty -= deduct_qty
+                    
+                    # Create single payment transaction for combined order
+                    tbl_PaymentTransaction.objects.create(
+                        Payer_id=request.user,
+                        Receiver_id=request.user,  # Admin handles all sales
+                        Amount=total_amount,
+                        transaction_type='CompostSale',
+                        Reference_id=order.Order_id,
+                        status='Success'
+                    )
+                else:
+                    # Single batch order
+                    batch = tbl_CompostBatch.objects.get(Batch_id=item_id)
+                    
+                    # Create Order
+                    order = tbl_Order.objects.create(
+                        Buyer_id=farmer,
+                        Total_Amount=total_amount,
+                        Delivery_Address=delivery_address,
+                        Payment_Status='Paid'
+                    )
+                    
+                    # Create OrderItem
+                    tbl_OrderItem.objects.create(
+                        Order_id=order,
+                        Item_Type='Compost',
+                        Batch_id=batch,
+                        Quantity_kg=quantity,
+                        Unit_Price=unit_price,
+                        Delivery_Status='Pending'
+                    )
+                    
+                    # Update batch stock
+                    batch.Stock_kg -= quantity
+                    if batch.Stock_kg == 0:
+                        batch.Status = 'Sold'
+                    batch.save()
+                    
+                    # Create payment transaction
+                    tbl_PaymentTransaction.objects.create(
+                        Payer_id=request.user,
+                        Receiver_id=batch.CompostManager_id.user,
+                        Amount=total_amount,
+                        transaction_type='CompostSale',
+                        Reference_id=order.Order_id,
+                        status='Success'
+                    )
+            
+            if order:
+                # Send order confirmation email
+                try:
+                    from utils.email_service import send_order_confirmation_email
+                    send_order_confirmation_email(order)
+                except Exception as e:
+                    print(f"Order confirmation email failed: {e}")
+
+            # Clear session
+            del request.session['pending_order']
+            
+            return JsonResponse({'success': True, 'order_id': order.Order_id})
+            
+        except Exception as e:
+            return JsonResponse({'success': False, 'error': str(e)})
 
 def services(request):
     """Display services page for farmers"""
@@ -369,169 +575,3 @@ def about_us(request):
     """Display about page for farmers"""
     farmer = Farmer.objects.get(user=request.user)
     return render(request, 'Farmer/about.html', {'farmer': farmer})
-    
-    # If POST request, process the payment and create order
-    farmer = Farmer.objects.get(user=request.user)
-    
-    # Get payment method from POST body
-    try:
-        body = json.loads(request.body)
-        payment_method = body.get('payment_method', 'COD')
-    except:
-        payment_method = 'COD'
-    
-    order_type = pending_order['order_type']
-    item_id = pending_order['item_id']
-    quantity = Decimal(pending_order['quantity'])
-    delivery_address = pending_order['delivery_address']
-    total_amount = Decimal(pending_order['total_amount'])
-    unit_price = Decimal(pending_order['unit_price'])
-    
-    try:
-        if order_type == 'waste':
-            inventory = tbl_WasteInventory.objects.get(Inventory_id=item_id)
-            
-            # Create FarmerSupply entry
-            farmer_supply = tbl_FarmerSupply.objects.create(
-                Farmer_id=farmer,
-                Collection_id=inventory.collection_request,
-                Quantity=quantity,
-                unit_price=unit_price,
-                total_amount=total_amount,
-                delivery_address=delivery_address,
-                payment_status='Paid',  # Payment completed
-                delivery_status='Pending'
-            )
-            
-            # Create Order
-            order = tbl_Order.objects.create(
-                Buyer_id=farmer,
-                Total_Amount=total_amount,
-                Delivery_Address=delivery_address,
-                Payment_Status='Paid'  # Payment completed
-            )
-            
-            # Create OrderItem
-            tbl_OrderItem.objects.create(
-                Order_id=order,
-                Item_Type='Waste',
-                FarmerSupply_id=farmer_supply,
-                Quantity_kg=quantity,
-                Unit_Price=unit_price,
-                Delivery_Status='Pending'
-            )
-            
-            # Update inventory
-            inventory.available_quantity_kg -= quantity
-            if inventory.available_quantity_kg == 0:
-                inventory.status = 'Sold'
-                inventory.is_available = False
-            inventory.save()
-            
-            # Create payment transaction
-            tbl_PaymentTransaction.objects.create(
-                Payer_id=request.user,
-                Receiver_id=inventory.collector.user,
-                Amount=total_amount,
-                transaction_type='WasteSale',
-                Reference_id=order.Order_id,
-                status='Success'  # Payment completed
-            )
-        
-        elif order_type == 'compost':
-            # Handle compost orders - both single batch and combined stock
-            if item_id == 'all':
-                # Combined compost from multiple batches
-                # Create Order first
-                order = tbl_Order.objects.create(
-                    Buyer_id=farmer,
-                    Total_Amount=total_amount,
-                    Delivery_Address=delivery_address,
-                    Payment_Status='Paid'
-                )
-                
-                # Deduct from batches in order (FIFO)
-                remaining_qty = quantity
-                batches = tbl_CompostBatch.objects.filter(
-                    Stock_kg__gt=0,
-                    Status='Ready'
-                ).order_by('Date_Created')
-                
-                for batch in batches:
-                    if remaining_qty <= 0:
-                        break
-                    
-                    deduct_qty = min(remaining_qty, batch.Stock_kg)
-                    
-                    # Create OrderItem for this batch
-                    tbl_OrderItem.objects.create(
-                        Order_id=order,
-                        Item_Type='Compost',
-                        Batch_id=batch,
-                        Quantity_kg=deduct_qty,
-                        Unit_Price=unit_price,
-                        Delivery_Status='Pending'
-                    )
-                    
-                    # Update batch stock
-                    batch.Stock_kg -= deduct_qty
-                    if batch.Stock_kg == 0:
-                        batch.Status = 'Sold'
-                    batch.save()
-                    
-                    remaining_qty -= deduct_qty
-                
-                # Create single payment transaction for combined order
-                tbl_PaymentTransaction.objects.create(
-                    Payer_id=request.user,
-                    Receiver_id=request.user,  # Admin handles all sales
-                    Amount=total_amount,
-                    transaction_type='CompostSale',
-                    Reference_id=order.Order_id,
-                    status='Success'
-                )
-            else:
-                # Single batch order
-                batch = tbl_CompostBatch.objects.get(Batch_id=item_id)
-                
-                # Create Order
-                order = tbl_Order.objects.create(
-                    Buyer_id=farmer,
-                    Total_Amount=total_amount,
-                    Delivery_Address=delivery_address,
-                    Payment_Status='Paid'
-                )
-                
-                # Create OrderItem
-                tbl_OrderItem.objects.create(
-                    Order_id=order,
-                    Item_Type='Compost',
-                    Batch_id=batch,
-                    Quantity_kg=quantity,
-                    Unit_Price=unit_price,
-                    Delivery_Status='Pending'
-                )
-                
-                # Update batch stock
-                batch.Stock_kg -= quantity
-                if batch.Stock_kg == 0:
-                    batch.Status = 'Sold'
-                batch.save()
-                
-                # Create payment transaction
-                tbl_PaymentTransaction.objects.create(
-                    Payer_id=request.user,
-                    Receiver_id=batch.CompostManager_id.user,
-                    Amount=total_amount,
-                    transaction_type='CompostSale',
-                    Reference_id=order.Order_id,
-                    status='Success'
-                )
-        
-        # Clear session
-        del request.session['pending_order']
-        
-        return JsonResponse({'success': True, 'order_id': order.Order_id})
-        
-    except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})

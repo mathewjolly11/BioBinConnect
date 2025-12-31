@@ -290,16 +290,18 @@ def update_delivery_status(request, supply_id):
         elif supply.delivery_status == 'Dispatched':
             supply.delivery_status = 'Delivered'
             
-            # For COD, mark payment as Paid when delivered (farmer paid cash)
-            if supply.payment_status == 'Processing':
+            # Use 'Paid' for all completed deliveries (User Requirement: Treat all as Paid)
+            if supply.payment_status != 'Paid':
                 supply.payment_status = 'Paid'
                 
                 # Also update Order payment status
                 order_item = tbl_OrderItem.objects.filter(FarmerSupply_id=supply).first()
                 if order_item:
                     order = order_item.Order_id
-                    order.Payment_Status = 'Paid'
-                    order.save()
+                    # Only update Order to Paid if not already (though likely is)
+                    if order.Payment_Status != 'Paid':
+                        order.Payment_Status = 'Paid'
+                        order.save()
                     
                     # Update PaymentTransaction status
                     from MyApp.models import tbl_PaymentTransaction
