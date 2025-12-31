@@ -131,110 +131,114 @@
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <script>
-  document.addEventListener('DOMContentLoaded', function() {
-      const selectAll = document.getElementById('selectAll');
-      const checkboxes = document.querySelectorAll('.date-checkbox');
+  document.addEventListener("DOMContentLoaded", function () {
+    const selectAll = document.getElementById("selectAll");
+    const checkboxes = document.querySelectorAll(".date-checkbox");
 
-      // Handle Select All
-      selectAll.addEventListener('change', function() {
-          checkboxes.forEach(cb => {
-              cb.checked = this.checked;
-          });
-          updateTotal();
+    // Handle Select All
+    selectAll.addEventListener("change", function () {
+      checkboxes.forEach((cb) => {
+        cb.checked = this.checked;
       });
+      updateTotal();
+    });
 
-      // Handle Individual Checkbox
-      checkboxes.forEach(cb => {
-          cb.addEventListener('change', function() {
-              updateTotal();
-              // Update Select All state
-              const allChecked = Array.from(checkboxes).every(c => c.checked);
-              selectAll.checked = allChecked;
-          });
+    // Handle Individual Checkbox
+    checkboxes.forEach((cb) => {
+      cb.addEventListener("change", function () {
+        updateTotal();
+        // Update Select All state
+        const allChecked = Array.from(checkboxes).every((c) => c.checked);
+        selectAll.checked = allChecked;
       });
+    });
   });
 
   function updateTotal() {
-      const checkboxes = document.querySelectorAll('.date-checkbox:checked');
-      const count = checkboxes.length;
-      const total = count * {{ daily_rate }};
+    const checkboxes = document.querySelectorAll(".date-checkbox:checked");
+    const count = checkboxes.length;
+    const total = count * parseFloat("{{ daily_rate }}");
 
-      document.getElementById('daysDisplay').textContent = count;
-      document.getElementById('totalDisplay').textContent = '₹' + total.toLocaleString();
+    document.getElementById("daysDisplay").textContent = count;
+    document.getElementById("totalDisplay").textContent =
+      "₹" + total.toLocaleString();
   }
 
   function processPayment() {
-      const selectedChecboxes = document.querySelectorAll('.date-checkbox:checked');
-      const selectedDates = Array.from(selectedChecboxes).map(cb => cb.value);
+    const selectedChecboxes = document.querySelectorAll(
+      ".date-checkbox:checked"
+    );
+    const selectedDates = Array.from(selectedChecboxes).map((cb) => cb.value);
 
-      if (selectedDates.length === 0) {
-          Swal.fire('Error', 'Please select at least one date to pay.', 'error');
-          return;
-      }
+    if (selectedDates.length === 0) {
+      Swal.fire("Error", "Please select at least one date to pay.", "error");
+      return;
+    }
 
-      const total = selectedDates.length * {{ daily_rate }};
+    const total = selectedDates.length * parseFloat("{{ daily_rate }}");
 
-      Swal.fire({
-          title: 'Confirm Payment',
-          html: `Are you sure you want to pay <strong>₹${total.toLocaleString()}</strong> for <strong>${selectedDates.length} days</strong>?`,
-          icon: 'question',
-          showCancelButton: true,
-          confirmButtonColor: '#28a745',
-          confirmButtonText: 'Yes, Pay Now'
-      }).then((result) => {
-          if (result.isConfirmed) {
+    Swal.fire({
+      title: "Confirm Payment",
+      html: `Are you sure you want to pay <strong>₹${total.toLocaleString()}</strong> for <strong>${
+        selectedDates.length
+      } days</strong>?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#28a745",
+      confirmButtonText: "Yes, Pay Now",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Prepare form data
+        const formData = new FormData();
+        formData.append("user_type", "{{ user_type }}");
+        formData.append("user_id", "{{ user_id }}");
 
-              // Prepare form data
-              const formData = new FormData();
-              formData.append('user_type', '{{ user_type }}');
-              formData.append('user_id', '{{ user_id }}');
+        selectedDates.forEach((date) => {
+          formData.append("selected_dates[]", date);
+        });
 
-              selectedDates.forEach(date => {
-                  formData.append('selected_dates[]', date);
-              });
+        // CSRF Token
+        const csrfToken = "{{ csrf_token }}";
 
-              // CSRF Token
-              const csrfToken = '{{ csrf_token }}';
+        // Show loading
+        Swal.fire({
+          title: "Processing...",
+          text: "Please wait while payment is processed",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
 
-              // Show loading
+        // Send request
+        fetch('{% url "admin_pay_salary" %}', {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": csrfToken,
+          },
+          body: formData,
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
               Swal.fire({
-                  title: 'Processing...',
-                  text: 'Please wait while payment is processed',
-                  allowOutsideClick: false,
-                  didOpen: () => {
-                      Swal.showLoading();
-                  }
+                title: "Success!",
+                text: data.message,
+                icon: "success",
+                confirmButtonColor: "#28a745",
+              }).then(() => {
+                window.location.href = "{% url 'admin_salary_management' %}";
               });
-
-              // Send request
-              fetch('{% url "admin_pay_salary" %}', {
-                  method: 'POST',
-                  headers: {
-                      'X-CSRFToken': csrfToken
-                  },
-                  body: formData
-              })
-              .then(response => response.json())
-              .then(data => {
-                  if (data.success) {
-                      Swal.fire({
-                          title: 'Success!',
-                          text: data.message,
-                          icon: 'success',
-                          confirmButtonColor: '#28a745'
-                      }).then(() => {
-                          window.location.href = "{% url 'admin_salary_management' %}";
-                      });
-                  } else {
-                      Swal.fire('Error', data.error || 'Payment failed', 'error');
-                  }
-              })
-              .catch(error => {
-                  console.error('Error:', error);
-                  Swal.fire('Error', 'Network error occurred', 'error');
-              });
-          }
-      });
+            } else {
+              Swal.fire("Error", data.error || "Payment failed", "error");
+            }
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            Swal.fire("Error", "Network error occurred", "error");
+          });
+      }
+    });
   }
 </script>
 {% endblock %}
