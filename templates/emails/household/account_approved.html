@@ -1,0 +1,42 @@
+{% extends "emails/base_email.html" %} {% block title %}Account Approved -
+BioBinConnect{% endblock %} {% block content %}
+<h2>Welcome to BioBinConnect! 🎉</h2>
+
+<p>Dear {{ user_name }},</p>
+
+<p>
+  Great news! Your <strong>{{ role }}</strong> account has been approved by our
+  admin team.
+</p>
+
+<div class="info-box">
+  <p><strong>✅ Your account is now active!</strong></p>
+  <p>
+    You can now log in and start using all the features available to {{ role
+    }}s.
+  </p>
+</div>
+
+<p><strong>Next Steps:</strong></p>
+<ul>
+  <li>Log in to your account using your registered email and password</li>
+  <li>Complete your profile if you haven't already</li>
+  <li>Explore the dashboard and available features</li>
+</ul>
+
+<center>
+  <a href="{{ login_url }}" class="button">Login to Your Account</a>
+</center>
+
+<p>
+  If you have any questions or need assistance, please don't hesitate to contact
+  our support team.
+</p>
+
+<p>Thank you for joining BioBinConnect!</p>
+
+<p>
+  Best regards,<br />
+  <strong>The BioBinConnect Team</strong>
+</p>
+{% endblock %}

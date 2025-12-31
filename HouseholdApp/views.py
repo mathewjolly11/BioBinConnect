@@ -203,6 +203,22 @@ def request_pickup(request):
             
             req.save()
             
+            # Send pickup confirmation email to household
+            try:
+                from utils.email_service import send_pickup_confirmation_email
+                send_pickup_confirmation_email(req)
+            except Exception as e:
+                print(f"Email notification failed: {e}")
+            
+            # If collector was assigned, send notification emails
+            if req.assigned_collector:
+                try:
+                    from utils.email_service import send_pickup_assignment_email, send_pickup_scheduled_email
+                    send_pickup_assignment_email(req)  # To collector
+                    send_pickup_scheduled_email(req)   # To household
+                except Exception as e:
+                    print(f"Email notification failed: {e}")
+            
             # Store success message in session for SweetAlert
             request.session['pickup_success'] = {
                 'amount': str(req.payment_amount),

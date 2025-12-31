@@ -1,0 +1,34 @@
+{% extends "emails/base_email.html" %} {% block title %}New Registration -
+BioBinConnect{% endblock %} {% block content %}
+<h2>New User Registration 👤</h2>
+
+<p>Hello Admin,</p>
+
+<p>A new user has registered and is awaiting verification.</p>
+
+<div class="info-box">
+  <p><strong>📋 User Details:</strong></p>
+  <p><strong>Name:</strong> {{ user_name }}</p>
+  <p><strong>Email:</strong> {{ user_email }}</p>
+  <p><strong>Phone:</strong> {{ user_phone }}</p>
+  <p><strong>Role:</strong> {{ role }}</p>
+</div>
+
+<p><strong>Action Required:</strong></p>
+<ul>
+  <li>Review the user's registration details</li>
+  <li>Verify uploaded documents (if applicable)</li>
+  <li>Approve or reject the application</li>
+</ul>
+
+<center>
+  <a href="{{ admin_url }}" class="button">Review Application</a>
+</center>
+
+<p>Please process this application at your earliest convenience.</p>
+
+<p>
+  Best regards,<br />
+  <strong>BioBinConnect System</strong>
+</p>
+{% endblock %}

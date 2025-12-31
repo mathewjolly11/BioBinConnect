@@ -1,0 +1,35 @@
+{% extends "emails/base_email.html" %} {% block title %}Account Approved -
+BioBinConnect{% endblock %} {% block content %}
+<h2>Welcome to BioBinConnect! 🎉</h2>
+
+<p>Dear {{ user_name }},</p>
+
+<p>Great news! Your <strong>{{ role }}</strong> account has been approved.</p>
+
+<div class="info-box">
+  <p><strong>✅ Your account is now active!</strong></p>
+  <p>
+    You can now browse and purchase organic waste and compost for your farming
+    needs.
+  </p>
+</div>
+
+<p><strong>As a Farmer, you can:</strong></p>
+<ul>
+  <li>Browse available organic waste for animal feed</li>
+  <li>Purchase high-quality compost</li>
+  <li>Track your orders and deliveries</li>
+  <li>View your order history</li>
+</ul>
+
+<center>
+  <a href="{{ login_url }}" class="button">Start Shopping</a>
+</center>
+
+<p>Happy farming!</p>
+
+<p>
+  Best regards,<br />
+  <strong>The BioBinConnect Team</strong>
+</p>
+{% endblock %}

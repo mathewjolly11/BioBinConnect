@@ -224,6 +224,9 @@ def signup(request):
                 }
                 return render(request, 'Guest/login.html', context)
 
+            # Get the plain text password BEFORE saving (it gets hashed on save)
+            plain_password = user_form.cleaned_data.get('password')
+
             # Save the user with the extracted name
             user = user_form.save(commit=False)
             user.name = name
@@ -260,6 +263,20 @@ def signup(request):
             
             profile.save()
             
+            # Send registration confirmation email to user with credentials
+            try:
+                from utils.email_service import send_registration_confirmation_email
+                send_registration_confirmation_email(user, plain_password)
+            except Exception as e:
+                print(f"Registration email failed: {e}")
+            
+            # Send email notification to admin about new registration
+            try:
+                from utils.email_service import send_new_registration_alert
+                send_new_registration_alert(user)
+            except Exception as e:
+                print(f"Admin notification failed: {e}")
+            
             messages.success(request, 'signup_success')
             return redirect('login')
         else:
@@ -295,7 +312,7 @@ def signup(request):
 def logout_view(request):
     """Logout the user and redirect to login page"""
     logout(request)
-    messages.success(request, 'You have been logged out successfully.')
+    messages.success(request, 'logout_success')
     return redirect('login')
 
 def services(request):

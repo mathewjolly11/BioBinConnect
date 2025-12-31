@@ -1,143 +1,179 @@
-{% extends "Admin/base.html" %}
-{% load static %}
-{% block content %}
-{% if messages %}
+{% extends "Admin/base.html" %} {% load static %} {% block content %} {% if messages %}
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    {% for message in messages %}
-    Swal.fire({
-        icon: '{% if message.tags == "success" %}success{% elif message.tags == "warning" %}warning{% elif message.tags == "error" %}error{% else %}info{% endif %}',
-        title: '{% if message.tags == "success" %}Success!{% elif message.tags == "warning" %}Warning!{% elif message.tags == "error" %}Error!{% else %}Info{% endif %}',
-        text: '{{ message }}',
-        timer: 3000,
-        showConfirmButton: true,
-        confirmButtonColor: '{% if message.tags == "success" %}#28a745{% elif message.tags == "warning" %}#ffc107{% else %}#17a2b8{% endif %}'
-    });
-    {% endfor %}
-});
+  document.addEventListener('DOMContentLoaded', function () {
+      {% for message in messages %}
+      Swal.fire({
+          icon: '{% if message.tags == "success" %}success{% elif message.tags == "warning" %}warning{% elif message.tags == "error" %}error{% else %}info{% endif %}',
+          title: '{% if message.tags == "success" %}Success!{% elif message.tags == "warning" %}Warning!{% elif message.tags == "error" %}Error!{% else %}Info{% endif %}',
+          text: '{{ message }}',
+          timer: 3000,
+          showConfirmButton: true,
+          confirmButtonColor: '{% if message.tags == "success" %}#28a745{% elif message.tags == "warning" %}#ffc107{% else %}#17a2b8{% endif %}'
+      });
+      {% endfor %}
+  });
 </script>
 {% endif %}
 <section id="main-content">
-<section class="wrapper main-wrapper">
-<div class="col-lg-12">
-<section class="box">
-<header class="panel_header">
-<h2 class="title text-center">User Verification</h2>
-</header>
-<div class="content-body">
-<div class="row">
-<div class="col-md-12">
-<table class="table table-bordered table-hover">
-<thead class="thead-dark">
-<tr>
-<th>S.No</th>
-<th>Name</th>
-<th>Email</th>
-<th>Role</th>
-<th>Status</th>
-<th>Actions</th>
-</tr>
-</thead>
-<tbody>
-{% for data in user_data %}
-<tr>
-<td>{{ forloop.counter }}</td>
-<td>{{ data.user.name }}</td>
-<td>{{ data.user.email }}</td>
-<td>{{ data.user.get_role_display }}</td>
-<td>
-{% if data.user.is_verified %}
-<span class="badge badge-success">Verified</span>
-{% else %}
-<span class="badge badge-warning">Pending</span>
-{% endif %}
-</td>
-<td>
-<a href="{% url 'edit_user' data.user.id %}" class="btn btn-sm btn-primary mb-1">
-<i class="fa fa-edit"></i> Edit
-</a>
-<a href="#" data-href="{% url 'change_user_password' data.user.id %}" class="btn btn-sm btn-warning mb-1 swal-password">
-<i class="fa fa-key"></i> Password
-</a>
-{% if data.user.is_verified %}
-<a href="#" data-href="{% url 'reject_user' data.user.id %}" class="btn btn-sm btn-danger swal-reject">
-<i class="fa fa-times"></i> Revoke
-</a>
-{% else %}
-<a href="#" data-href="{% url 'approve_user' data.user.id %}" class="btn btn-sm btn-success swal-approve">
-<i class="fa fa-check"></i> Approve
-</a>
-{% endif %}
-</td>
-</tr>
-{% endfor %}
-</tbody>
-</table>
-</div>
-</div>
-</div>
-</section>
-</div>
-</section>
+  <section class="wrapper main-wrapper">
+    <div class="col-lg-12">
+      <section class="box">
+        <header class="panel_header">
+          <h2 class="title text-center">User Verification</h2>
+        </header>
+        <div class="content-body">
+          <div class="row">
+            <div class="col-md-12">
+              <table class="table table-bordered table-hover">
+                <thead class="thead-dark">
+                  <tr>
+                    <th>S.No</th>
+                    <th>Name</th>
+                    <th>Email</th>
+                    <th>Role</th>
+                    <th>Status</th>
+                    <th>Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {% for data in user_data %}
+                  <tr>
+                    <td>{{ forloop.counter }}</td>
+                    <td>{{ data.user.name }}</td>
+                    <td>{{ data.user.email }}</td>
+                    <td>{{ data.user.get_role_display }}</td>
+                    <td>
+                      {% if data.user.is_verified %}
+                      <span class="badge badge-success">Verified</span>
+                      {% else %}
+                      <span class="badge badge-warning">Pending</span>
+                      {% endif %}
+                    </td>
+                    <td>
+                      <a
+                        href="{% url 'edit_user' data.user.id %}"
+                        class="btn btn-sm btn-primary mb-1"
+                      >
+                        <i class="fa fa-edit"></i> Edit
+                      </a>
+                      <a
+                        href="#"
+                        data-href="{% url 'change_user_password' data.user.id %}"
+                        class="btn btn-sm btn-warning mb-1 swal-password"
+                      >
+                        <i class="fa fa-key"></i> Password
+                      </a>
+                      {% if data.user.is_verified %}
+                      <a
+                        href="#"
+                        data-href="{% url 'reject_user' data.user.id %}"
+                        class="btn btn-sm btn-danger swal-reject"
+                      >
+                        <i class="fa fa-times"></i> Revoke
+                      </a>
+                      {% else %}
+                      <a
+                        href="#"
+                        data-href="{% url 'approve_user' data.user.id %}"
+                        class="btn btn-sm btn-success swal-approve"
+                      >
+                        <i class="fa fa-check"></i> Approve
+                      </a>
+                      {% endif %}
+                    </td>
+                  </tr>
+                  {% endfor %}
+                </tbody>
+              </table>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+  </section>
 </section>
 <script>
-document.addEventListener('DOMContentLoaded', function () {
-    document.querySelectorAll('.swal-approve').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
+  document.addEventListener("DOMContentLoaded", function () {
+    document.querySelectorAll(".swal-approve").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: "Approve User?",
+          text: "This user will be able to login after approval.",
+          icon: "question",
+          showCancelButton: true,
+          confirmButtonColor: "#28a745",
+          cancelButtonColor: "#6c757d",
+          confirmButtonText: "Yes, approve!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Show loading alert while processing
             Swal.fire({
-                title: 'Approve User?',
-                text: "This user will be able to login after approval.",
-                icon: 'question',
-                showCancelButton: true,
-                confirmButtonColor: '#28a745',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, approve!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = btn.getAttribute('data-href');
-                }
+              title: "Processing...",
+              html: "Approving user and sending email notification...",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
             });
+
+            // Navigate to approval URL
+            window.location.href = btn.getAttribute("data-href");
+          }
         });
+      });
     });
 
-    document.querySelectorAll('.swal-reject').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
+    document.querySelectorAll(".swal-reject").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: "Revoke Verification?",
+          text: "This user will not be able to login until re-approved.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#ffc107",
+          cancelButtonColor: "#6c757d",
+          confirmButtonText: "Yes, revoke!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            // Show loading alert while processing
             Swal.fire({
-                title: 'Revoke Verification?',
-                text: "This user will not be able to login until re-approved.",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonColor: '#ffc107',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, revoke!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = btn.getAttribute('data-href');
-                }
+              title: "Processing...",
+              html: "Revoking verification and sending email notification...",
+              allowOutsideClick: false,
+              allowEscapeKey: false,
+              didOpen: () => {
+                Swal.showLoading();
+              },
             });
+
+            // Navigate to rejection URL
+            window.location.href = btn.getAttribute("data-href");
+          }
         });
+      });
     });
 
-    document.querySelectorAll('.swal-password').forEach(function (btn) {
-        btn.addEventListener('click', function (e) {
-            e.preventDefault();
-            Swal.fire({
-                title: 'Change Password?',
-                text: "You will be redirected to the password change page.",
-                icon: 'info',
-                showCancelButton: true,
-                confirmButtonColor: '#ffc107',
-                cancelButtonColor: '#6c757d',
-                confirmButtonText: 'Yes, proceed!'
-            }).then((result) => {
-                if (result.isConfirmed) {
-                    window.location.href = btn.getAttribute('data-href');
-                }
-            });
+    document.querySelectorAll(".swal-password").forEach(function (btn) {
+      btn.addEventListener("click", function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: "Change Password?",
+          text: "You will be redirected to the password change page.",
+          icon: "info",
+          showCancelButton: true,
+          confirmButtonColor: "#ffc107",
+          cancelButtonColor: "#6c757d",
+          confirmButtonText: "Yes, proceed!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = btn.getAttribute("data-href");
+          }
         });
+      });
     });
-});
+  });
 </script>
 {% endblock %}

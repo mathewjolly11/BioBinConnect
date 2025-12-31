@@ -1,0 +1,37 @@
+{% extends "emails/base_email.html" %} {% block title %}Account Approved -
+BioBinConnect{% endblock %} {% block content %}
+<h2>Welcome to BioBinConnect! 🎉</h2>
+
+<p>Dear {{ user_name }},</p>
+
+<p>
+  Great news! Your <strong>{{ role }}</strong> account has been approved by our
+  admin team.
+</p>
+
+<div class="info-box">
+  <p><strong>✅ Your account is now active!</strong></p>
+  <p>
+    You can now log in and start managing your collection routes and pickups.
+  </p>
+</div>
+
+<p><strong>As a Collector, you can:</strong></p>
+<ul>
+  <li>View your assigned routes and schedules</li>
+  <li>Log waste collections from households</li>
+  <li>Track your collection history</li>
+  <li>Manage waste inventory for farmer sales</li>
+</ul>
+
+<center>
+  <a href="{{ login_url }}" class="button">Login to Your Dashboard</a>
+</center>
+
+<p>Welcome to the team!</p>
+
+<p>
+  Best regards,<br />
+  <strong>The BioBinConnect Team</strong>
+</p>
+{% endblock %}

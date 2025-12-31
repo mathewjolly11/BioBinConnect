@@ -185,6 +185,13 @@ def log_collection(request, pickup_id):
             pickup_request.actual_weight_kg = collection.total_quantity_kg  # Save actual weight
             pickup_request.save()
             
+            # Send collection completed email to household
+            try:
+                from utils.email_service import send_collection_completed_email
+                send_collection_completed_email(collection, pickup_request)
+            except Exception as e:
+                print(f"Email notification failed: {e}")
+            
             messages.success(request, f"Collection logged successfully! {collection.total_quantity_kg} kg now available for farmer purchase.")
             return redirect('view_assigned_pickups')
     else:

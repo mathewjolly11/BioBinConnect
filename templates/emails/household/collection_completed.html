@@ -1,0 +1,30 @@
+{% extends "emails/base_email.html" %} {% block title %}Collection Completed -
+BioBinConnect{% endblock %} {% block content %}
+<h2>Collection Completed Successfully ✅</h2>
+
+<p>Dear {{ household_name }},</p>
+
+<p>Your waste has been successfully collected!</p>
+
+<div class="info-box">
+  <p><strong>📋 Collection Receipt:</strong></p>
+  <p><strong>Pickup ID:</strong> #{{ pickup_id }}</p>
+  <p><strong>Collection Date:</strong> {{ collection_date|date:"F d, Y" }}</p>
+  <p><strong>Weight Collected:</strong> {{ weight_collected }} kg</p>
+  <p><strong>Collected By:</strong> {{ collector_name }}</p>
+</div>
+
+<p><strong>What happens to your waste?</strong></p>
+<ul>
+  <li>Your organic waste will be made available to farmers for animal feed</li>
+  <li>Any remaining waste will be sent for composting</li>
+  <li>You're contributing to a sustainable environment!</li>
+</ul>
+
+<p>Thank you for being part of our sustainable waste management community!</p>
+
+<p>
+  Best regards,<br />
+  <strong>The BioBinConnect Team</strong>
+</p>
+{% endblock %}

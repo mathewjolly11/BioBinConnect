@@ -1,0 +1,32 @@
+{% extends "emails/base_email.html" %} {% block title %}New Pickup Assigned -
+BioBinConnect{% endblock %} {% block content %}
+<h2>New Pickup Assignment 📦</h2>
+
+<p>Dear {{ collector_name }},</p>
+
+<p>A new pickup has been assigned to you!</p>
+
+<div class="info-box">
+  <p><strong>📋 Pickup Details:</strong></p>
+  <p><strong>Pickup ID:</strong> #{{ pickup_id }}</p>
+  <p><strong>Household:</strong> {{ household_name }}</p>
+  <p><strong>Address:</strong> {{ household_address }}</p>
+  <p><strong>House No:</strong> {{ house_no }}</p>
+  <p><strong>Scheduled Date:</strong> {{ scheduled_date }}</p>
+  <p><strong>Bin Type:</strong> {{ bin_type }}</p>
+</div>
+
+<p><strong>Action Required:</strong></p>
+<ul>
+  <li>Review the pickup details in your dashboard</li>
+  <li>Complete the collection on the scheduled date</li>
+  <li>Log the collection weight after pickup</li>
+</ul>
+
+<p>Thank you for your prompt service!</p>
+
+<p>
+  Best regards,<br />
+  <strong>The BioBinConnect Team</strong>
+</p>
+{% endblock %}

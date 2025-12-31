@@ -1,0 +1,30 @@
+{% extends "emails/base_email.html" %} {% block title %}Route Assigned -
+BioBinConnect{% endblock %} {% block content %}
+<h2>New Route Assigned 🗺️</h2>
+
+<p>Dear {{ collector_name }},</p>
+
+<p>You have been assigned to a new collection route!</p>
+
+<div class="info-box">
+  <p><strong>📍 Route Details:</strong></p>
+  <p><strong>Route Name:</strong> {{ route_name }}</p>
+  <p><strong>Day of Week:</strong> {{ day_of_week }}</p>
+  <p><strong>Location:</strong> {{ location }}</p>
+  <p><strong>House Range:</strong> {{ house_range }}</p>
+</div>
+
+<p><strong>Important Notes:</strong></p>
+<ul>
+  <li>Please review your route details in the dashboard</li>
+  <li>Pickups will be assigned to you for this route</li>
+  <li>Contact admin if you have any questions about the route</li>
+</ul>
+
+<p>Thank you for your service!</p>
+
+<p>
+  Best regards,<br />
+  <strong>The BioBinConnect Team</strong>
+</p>
+{% endblock %}

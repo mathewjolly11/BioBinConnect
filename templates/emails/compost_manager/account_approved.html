@@ -1,0 +1,32 @@
+{% extends "emails/base_email.html" %} {% block title %}Account Approved -
+BioBinConnect{% endblock %} {% block content %}
+<h2>Welcome to BioBinConnect! 🎉</h2>
+
+<p>Dear {{ user_name }},</p>
+
+<p>Great news! Your <strong>{{ role }}</strong> account has been approved.</p>
+
+<div class="info-box">
+  <p><strong>✅ Your account is now active!</strong></p>
+  <p>You can now manage compost batches and process organic waste.</p>
+</div>
+
+<p><strong>As a Compost Manager, you can:</strong></p>
+<ul>
+  <li>Create and manage compost batches</li>
+  <li>Track batch status and quality</li>
+  <li>Manage compost inventory</li>
+  <li>Process orders from farmers</li>
+</ul>
+
+<center>
+  <a href="{{ login_url }}" class="button">Access Your Dashboard</a>
+</center>
+
+<p>Welcome to the team!</p>
+
+<p>
+  Best regards,<br />
+  <strong>The BioBinConnect Team</strong>
+</p>
+{% endblock %}

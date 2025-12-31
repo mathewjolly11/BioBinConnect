@@ -251,6 +251,14 @@ def approve_user(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     user.is_verified = True
     user.save()
+    
+    # Send approval email to user
+    try:
+        from utils.email_service import send_account_approved_email
+        send_account_approved_email(user)
+    except Exception as e:
+        print(f"Email notification failed: {e}")
+    
     messages.success(request, f'User {user.name} has been approved successfully!')
     return redirect('view_users')
 
@@ -261,6 +269,14 @@ def reject_user(request, user_id):
     user = CustomUser.objects.get(id=user_id)
     user.is_verified = False
     user.save()
+    
+    # Send rejection email to user
+    try:
+        from utils.email_service import send_account_rejected_email
+        send_account_rejected_email(user, reason="Your application did not meet our verification requirements.")
+    except Exception as e:
+        print(f"Email notification failed: {e}")
+    
     messages.warning(request, f'User {user.name} has been rejected!')
     return redirect('view_users')
 
@@ -296,6 +312,12 @@ def assign_collector(request):
                     )
                     if created:
                         created_count += 1
+                        # Send route assignment email for each new assignment
+                        try:
+                            from utils.email_service import send_route_assignment_email
+                            send_route_assignment_email(assignment)
+                        except Exception as e:
+                            print(f"Email notification failed: {e}")
                     else:
                         existing_count += 1
                 
