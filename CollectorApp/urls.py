@@ -8,6 +8,7 @@ urlpatterns = [
     path('profile/delete/', views.delete_account, name='collector_delete_account'),
     path('assigned-pickups/', views.view_assigned_pickups, name='view_assigned_pickups'),
     path('log-collection/<int:pickup_id>/', views.log_collection, name='log_collection'),
+    path('log-collection-ajax/<int:pickup_id>/', views.log_collection_ajax, name='log_collection_ajax'),
     path('history/', views.collection_history, name='collection_history'),
     path('waste-inventory/', views.collector_waste_inventory, name='collector_waste_inventory'),
     path('sales-orders/', views.collector_sales_orders, name='collector_sales_orders'),

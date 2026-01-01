@@ -32,7 +32,7 @@
                 <ul class="mt-2">
                   {% for item in order.tbl_orderitem_set.all %}
                   <li>
-                    {% if item.Item_Type == 'Waste' %} 🌾 Direct Waste - {{ item.Quantity_kg }} kg @ ₹{{ item.Unit_Price }}/kg {% else%} 🍂 Organic Compost - {{ item.Quantity_kg }} kg @ ₹{{item.Unit_Price }}/kg {% endif %}
+                    {% if item.Item_Type == 'Waste' %} 🌾 Direct Waste - {{ item.Quantity_kg }} kg @ ₹{{ item.Unit_Price }}/kg {% else%} 🍂 Organic Compost - {{ item.Quantity_kg }} packets @ ₹{{item.Unit_Price }}/packet {% endif %}
                     <br />
                     <small class="text-muted">
                       Delivery Status: {% if item.Delivery_Status == 'Pending' %}

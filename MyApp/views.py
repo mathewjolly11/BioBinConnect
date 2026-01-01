@@ -53,11 +53,14 @@ def index(request):
     household_revenue = household_payments.aggregate(total=Sum('amount'))['total'] or 0
     
     # Inventory Statistics
-    waste_stock = tbl_WasteInventory.objects.filter(is_available=True).aggregate(
+    waste_stock = tbl_WasteInventory.objects.filter(
+        is_available=True,
+        status='Available'
+    ).aggregate(
         total=Sum('available_quantity_kg')
     )['total'] or 0
     
-    compost_stock = tbl_CompostBatch.objects.filter(Status='Available').aggregate(
+    compost_stock = tbl_CompostBatch.objects.filter(Status='Ready').aggregate(
         total=Sum('Stock_kg')
     )['total'] or 0
     

@@ -3,6 +3,9 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
 from django.contrib.auth import logout
+from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+import json
 from GuestApp.models import Collector
 from GuestApp.forms import CollectorEditForm, ProfileEditForm
 
@@ -185,12 +188,40 @@ def log_collection(request, pickup_id):
             pickup_request.actual_weight_kg = collection.total_quantity_kg  # Save actual weight
             pickup_request.save()
             
+            # Initialize email status tracking
+            email_status = {
+                'household_completion': False,
+                'admin_notification': False,
+                'farmer_notification': False,
+                'errors': []
+            }
+            
             # Send collection completed email to household
             try:
                 from utils.email_service import send_collection_completed_email
-                send_collection_completed_email(collection, pickup_request)
+                email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
+                if not email_status['household_completion']:
+                    email_status['errors'].append('Failed to send completion email to household')
             except Exception as e:
-                print(f"Email notification failed: {e}")
+                print(f"Household completion email failed: {e}")
+                email_status['errors'].append(f'Household email error: {str(e)}')
+            
+            # Check if this is an AJAX request
+            if request.headers.get('Content-Type') == 'application/json':
+                # Return JSON response for AJAX
+                response_data = {
+                    'success': True,
+                    'message': 'Collection logged successfully!',
+                    'collection_data': {
+                        'pickup_id': pickup_request.Pickup_id,
+                        'weight': str(collection.total_quantity_kg),
+                        'collection_date': str(collection.collection_date.strftime('%Y-%m-%d %H:%M')),
+                        'household_name': pickup_request.household.household_name,
+                        'inventory_id': waste_inventory.Inventory_id
+                    },
+                    'email_status': email_status
+                }
+                return JsonResponse(response_data)
             
             messages.success(request, f"Collection logged successfully! {collection.total_quantity_kg} kg now available for farmer purchase.")
             return redirect('view_assigned_pickups')
@@ -202,7 +233,116 @@ def log_collection(request, pickup_id):
         'pickup': pickup_request
     })
 
+@login_required(login_url='login')
+@never_cache
+@csrf_exempt
+def log_collection_ajax(request, pickup_id):
+    """AJAX endpoint for collection logging with email status tracking"""
+    from MyApp.models import tbl_PickupRequest, tbl_CollectionRequest, tbl_WasteInventory
+    from CollectorApp.forms import CollectionLogForm
+    from django.utils import timezone
+    
+    if request.method != 'POST':
+        return JsonResponse({'success': False, 'message': 'Invalid request method'})
+    
+    try:
+        # Parse JSON data
+        data = json.loads(request.body)
+        pickup_request = tbl_PickupRequest.objects.get(Pickup_id=pickup_id)
+        collector = Collector.objects.get(user=request.user)
+        
+        # Security check: Ensure this pickup is assigned to the current collector
+        if pickup_request.assigned_collector != collector:
+            return JsonResponse({
+                'success': False,
+                'message': 'You are not authorized to log this collection.'
+            })
 
+        # Create form instance with the data
+        form = CollectionLogForm(data)
+        
+        if form.is_valid():
+            collection = form.save(commit=False)
+            collection.household = pickup_request.household
+            collection.collector = collector
+            collection.collection_date = timezone.now()
+            collection.status = 'Collected'
+            
+            # Keep as 0 initially - will be updated when farmers purchase or compost manager collects
+            collection.farmer_supply_kg = 0
+            collection.leftover_compost_kg = 0
+            
+            collection.save()
+            
+            # Create waste inventory for farmer purchasing
+            waste_inventory = tbl_WasteInventory.objects.create(
+                collection_request=collection,
+                collector=collector,
+                available_quantity_kg=collection.total_quantity_kg,
+                price_per_kg=10.00,  # Default price ₹10/kg
+                collection_date=timezone.now(),
+                is_available=True,
+                status='Available'
+            )
+            
+            # Update Pickup Request status AND actual weight
+            pickup_request.status = 'Completed'
+            pickup_request.actual_weight_kg = collection.total_quantity_kg  # Save actual weight
+            pickup_request.save()
+            
+            # Initialize email status tracking
+            email_status = {
+                'household_completion': False,
+                'admin_notification': False,
+                'farmer_notification': False,
+                'errors': []
+            }
+            
+            # Send collection completed email to household
+            try:
+                from utils.email_service import send_collection_completed_email
+                email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
+                if not email_status['household_completion']:
+                    email_status['errors'].append('Failed to send completion email to household')
+            except Exception as e:
+                print(f"Household completion email failed: {e}")
+                email_status['errors'].append(f'Household email error: {str(e)}')
+            
+            # Return JSON response
+            response_data = {
+                'success': True,
+                'message': 'Collection logged successfully!',
+                'collection_data': {
+                    'pickup_id': pickup_request.Pickup_id,
+                    'weight': str(collection.total_quantity_kg),
+                    'collection_date': str(collection.collection_date.strftime('%Y-%m-%d %H:%M')),
+                    'household_name': pickup_request.household.household_name,
+                    'inventory_id': waste_inventory.Inventory_id,
+                    'collection_id': collection.Request_id
+                },
+                'email_status': email_status
+            }
+            return JsonResponse(response_data)
+            
+        else:
+            # Form is not valid
+            error_list = []
+            for field, errors in form.errors.items():
+                for error in errors:
+                    error_list.append(f'{field}: {error}')
+            
+            return JsonResponse({
+                'success': False,
+                'message': 'Form validation failed',
+                'errors': error_list
+            })
+            
+    except Exception as e:
+        return JsonResponse({
+            'success': False,
+            'message': f'Server error: {str(e)}',
+            'errors': [str(e)]
+        })
 @login_required(login_url='login')
 @never_cache
 def collection_history(request):

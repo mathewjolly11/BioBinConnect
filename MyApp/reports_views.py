@@ -40,8 +40,11 @@ def admin_reports(request):
     total_revenue = waste_revenue + compost_revenue
     
     # Inventory Stats
-    total_waste_stock = tbl_WasteInventory.objects.aggregate(total=Sum('available_quantity_kg'))['total'] or 0
-    total_compost_stock = tbl_CompostBatch.objects.filter(Status='Available').aggregate(total=Sum('Stock_kg'))['total'] or 0
+    total_waste_stock = tbl_WasteInventory.objects.filter(
+        is_available=True,
+        status='Available'
+    ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+    total_compost_stock = tbl_CompostBatch.objects.filter(Status='Ready').aggregate(total=Sum('Stock_kg'))['total'] or 0
     
     # User Stats
     total_collectors = Collector.objects.filter(user__is_verified=True).count()
