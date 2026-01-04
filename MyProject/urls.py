@@ -24,7 +24,7 @@ from django.conf import settings
 
 urlpatterns = [
     path('', include('GuestApp.urls')),
-    path('', include('MyApp.urls')),  # MyApp URLs first to catch /admin/waste-sales/ etc
+    path('admin/', include('MyApp.urls')),  # Admin panel URLs with admin/ prefix
     path('admin/', admin.site.urls),  # Django admin comes after
     path('farmer/', include('FarmerApp.urls')),
     path('household/', include('HouseholdApp.urls')),
@@ -32,6 +32,10 @@ urlpatterns = [
     path('compost-manager/', include('CompostManagerApp.urls')),
 ]
 
+
 if settings.DEBUG:
     urlpatterns+=static(settings.STATIC_URL,document_root=settings.STATIC_ROOT)
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# Custom error handlers
+handler404 = 'MyApp.views.custom_404'

@@ -45,32 +45,36 @@
                     <div class="row mb-4">
                         <div class="col-md-3">
                             <div class="card bg-primary text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Total Orders</h5>
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">📦</h1>
+                                    <h5 class="mt-2">Total Orders</h5>
                                     <h2>{{ total_orders }}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-success text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Total Revenue</h5>
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">💰</h1>
+                                    <h5 class="mt-2">Total Revenue</h5>
                                     <h2>₹{{ total_revenue }}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-warning text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Pending</h5>
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">⏳</h1>
+                                    <h5 class="mt-2">Pending</h5>
                                     <h2>{{ pending_orders }}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
                             <div class="card bg-info text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Completed</h5>
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">✅</h1>
+                                    <h5 class="mt-2">Completed</h5>
                                     <h2>{{ completed_orders }}</h2>
                                 </div>
                             </div>
@@ -80,19 +84,65 @@
                     <!-- Filters -->
                     <div class="card mb-4">
                         <div class="card-body">
-                            <form method="get" class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Filter by Status</label>
-                                    <select name="status" class="form-select" onchange="this.form.submit()">
-                                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Orders
-                                        </option>
-                                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>
-                                            Pending</option>
-                                        <option value="Paid" {% if status_filter == 'Paid' %}selected{% endif %}>Paid
-                                        </option>
+                            <form method="get" class="row g-3" id="filterForm">
+                                <div class="col-md-3">
+                                    <label class="form-label">Period</label>
+                                    <select name="period" class="form-select" id="periodSelect" onchange="toggleCustomDate()">
+                                        <option value="7" {% if request.GET.period == '7' %}selected{% endif %}>Last 7 Days</option>
+                                        <option value="30" {% if request.GET.period == '30' %}selected{% endif %}>Last 30 Days</option>
+                                        <option value="90" {% if request.GET.period == '90' %}selected{% endif %}>Last 90 Days</option>
+                                        <option value="all" {% if request.GET.period == 'all' %}selected{% endif %}>All Time</option>
+                                        <option value="custom" {% if request.GET.period == 'custom' %}selected{% endif %}>Custom Range</option>
                                     </select>
                                 </div>
+                                
+                                <div class="col-md-4 d-none" id="customDateRange">
+                                    <label class="form-label">Custom Range</label>
+                                    <div class="input-group">
+                                        <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control">
+                                        <span class="input-group-text">-</span>
+                                        <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control">
+                                    </div>
+                                </div>
+
+                                <div class="col-md-3">
+                                    <label class="form-label">Status</label>
+                                    <select name="status" class="form-select" onchange="document.getElementById('filterForm').submit()">
+                                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Orders</option>
+                                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
+                                        <option value="Paid" {% if status_filter == 'Paid' %}selected{% endif %}>Paid</option>
+                                    </select>
+                                </div>
+                                
+                                <div class="col-md-2 d-flex align-items-end">
+                                    <button type="submit" class="btn btn-primary w-100">Filter</button>
+                                </div>
+                                
+                                <div class="col-12 text-end mt-3">
+                                    <button type="submit" name="export" value="excel" class="btn btn-success text-white">
+                                        <i class="fa fa-file-excel-o"></i> Export to Excel
+                                    </button>
+                                </div>
                             </form>
+                            
+                            <script>
+                                function toggleCustomDate(shouldSubmit) {
+                                    var select = document.getElementById('periodSelect');
+                                    var customRange = document.getElementById('customDateRange');
+                                    if (select.value === 'custom') {
+                                        customRange.classList.remove('d-none');
+                                    } else {
+                                        customRange.classList.add('d-none');
+                                        if (shouldSubmit) {
+                                            document.getElementById('filterForm').submit();
+                                        }
+                                    }
+                                }
+                                // Run on load to set initial state WITHOUT submitting
+                                document.addEventListener('DOMContentLoaded', function() {
+                                    toggleCustomDate(false);
+                                });
+                            </script>
                         </div>
                     </div>
 
@@ -149,7 +199,7 @@
                                     <td>{{ order.Order_Date|date:"d M Y" }}</td>
                                     <td>
                                         {% if order.assignment_status == 'Unassigned' %}
-                                            <button class="btn btn-sm btn-primary" onclick="showAssignModal({{ order.Order_id }})">
+                                            <button class="btn btn-sm btn-primary" onclick="showAssignModal('{{ order.Order_id }}')">
                                                 <i class="fa fa-user-plus"></i> Assign
                                             </button>
                                         {% else %}
@@ -204,6 +254,18 @@
     </div>
 </div>
 
+<!-- Output Django Messages as JSON -->
+<script id="django-messages" type="application/json">
+[
+    {% for message in messages %}
+    {
+        "tags": "{{ message.tags }}",
+        "text": "{{ message }}"
+    }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+]
+</script>
+
 <script>
     let currentOrderId = null;
     
@@ -256,18 +318,25 @@
         });
     }
 
-    // Show success message if redirected after update
-    {% if messages %}
-    {% for message in messages %}
-    Swal.fire({
-        icon: '{% if message.tags == "success" %}success{% else %}info{% endif %}',
-        title: '{{ message.tags|title }}',
-        text: '{{ message }}',
-        timer: 2000,
-        showConfirmButton: false
+    // Process Django Messages
+    document.addEventListener('DOMContentLoaded', function() {
+        try {
+            const messages = JSON.parse(document.getElementById('django-messages').textContent);
+            if (messages && messages.length > 0) {
+                messages.forEach(msg => {
+                    Swal.fire({
+                        icon: msg.tags.includes('success') ? 'success' : 'info',
+                        title: msg.tags.charAt(0).toUpperCase() + msg.tags.slice(1),
+                        text: msg.text,
+                        timer: 2000,
+                        showConfirmButton: false
+                    });
+                });
+            }
+        } catch (e) {
+            console.error('Error parsing messages:', e);
+        }
     });
-    {% endfor %}
-    {% endif %}
 </script>
 
 {% endblock %}

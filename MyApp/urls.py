@@ -5,7 +5,7 @@ from MyApp import payment_views
 from MyApp import salary_views
 from MyApp import sales_views
 urlpatterns = [
-    path('admin', views.index, name='admin_index'),
+    path('', views.index, name='admin_index'),  # Changed from 'admin' to '' since admin/ is already in main urls
     path('add_district/', views.add_district, name='add_district'),
     path('view_districts/', views.view_districts, name='view_districts'),
     path('edit_district/<int:district_id>/', views.edit_district, name='edit_district'),
@@ -21,6 +21,8 @@ urlpatterns = [
     path('view_users/', views.view_users, name='view_users'),
     path('approve_user/<int:user_id>/', views.approve_user, name='approve_user'),
     path('reject_user/<int:user_id>/', views.reject_user, name='reject_user'),
+    path('approve_all_users/', views.approve_all_users, name='approve_all_users'),
+    path('reject_all_users/', views.reject_all_users, name='reject_all_users'),
     path('assign_collector/', views.assign_collector, name='assign_collector'),
     path('view_assignments/', views.view_assignments, name='view_assignments'),
     path('delete_assignment/<int:assignment_id>/', views.delete_assignment, name='delete_assignment'),
@@ -30,31 +32,31 @@ urlpatterns = [
     path('export_payment_report/', views.export_payment_report, name='export_payment_report'),
     
     # Admin sales management
-    path('admin/waste-sales/', sales_views.admin_waste_sales, name='admin_waste_sales'),
-    path('admin/assign-collector/<int:order_id>/', sales_views.assign_waste_collector, name='assign_waste_collector'),
-    path('admin/compost-sales/', sales_views.admin_compost_sales, name='admin_compost_sales'),
-    path('admin/update-delivery/<int:order_id>/', sales_views.admin_update_delivery_status, name='admin_update_delivery'),
+    path('waste-sales/', sales_views.admin_waste_sales, name='admin_waste_sales'),
+    path('assign-collector/<int:order_id>/', sales_views.assign_waste_collector, name='assign_waste_collector'),
+    path('compost-sales/', sales_views.admin_compost_sales, name='admin_compost_sales'),
+    path('update-delivery/<int:order_id>/', sales_views.admin_update_delivery_status, name='admin_update_delivery'),
     
     # Salary management
-    path('admin/salaries/', salary_views.admin_salary_management, name='admin_salary_management'),
-    path('admin/pay-salary/', salary_views.admin_pay_salary, name='admin_pay_salary'),
-    path('admin/pay-confirm/<str:user_type>/<int:user_id>/', salary_views.pay_salary_confirm, name='pay_salary_confirm'),
+    path('salaries/', salary_views.admin_salary_management, name='admin_salary_management'),
+    path('pay-salary/', salary_views.admin_pay_salary, name='admin_pay_salary'),
+    path('pay-confirm/<str:user_type>/<int:user_id>/', salary_views.pay_salary_confirm, name='pay_salary_confirm'),
     
     # Admin reports
-    path('admin/reports/', reports_views.admin_reports, name='admin_reports'),
+    path('reports/', reports_views.admin_reports, name='admin_reports'),
     
     # Payment transactions
-    path('admin/payment-transactions/', payment_views.payment_transactions, name='payment_transactions'),
-    path('admin/payment-revenue-analytics/', payment_views.payment_revenue_analytics, name='payment_revenue_analytics'),
+    path('payment-transactions/', payment_views.payment_transactions, name='payment_transactions'),
+    path('payment-revenue-analytics/', payment_views.payment_revenue_analytics, name='payment_revenue_analytics'),
     
     # Manager salaries
-    path('admin/manager-salaries/', salary_views.manager_salaries, name='manager_salaries'),
+    path('manager-salaries/', salary_views.manager_salaries, name='manager_salaries'),
     
     # Collector salaries
-    path('admin/collector-salaries/', payment_views.collector_salaries, name='collector_salaries'),
+    path('collector-salaries/', payment_views.collector_salaries, name='collector_salaries'),
     
     # Admin profile
-    path('admin/profile/', views.admin_profile, name='admin_profile'),
+    path('profile/', views.admin_profile, name='admin_profile'),
     
     # View Aadhaar image
     path('view_aadhaar/<int:user_id>/', views.view_aadhaar, name='view_aadhaar'),
@@ -68,5 +70,8 @@ urlpatterns = [
     # User management
     path('edit_user/<int:user_id>/', views.edit_user, name='edit_user'),
     path('change_user_password/<int:user_id>/', views.change_user_password, name='change_user_password'),
+    
+    # System settings
+    path('settings/', views.admin_settings, name='admin_settings'),
 ]
 

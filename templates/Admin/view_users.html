@@ -1,16 +1,39 @@
 {% extends "Admin/base.html" %} {% load static %} {% block content %} {% if messages %}
-<script>
-  document.addEventListener('DOMContentLoaded', function () {
+<script id="django-messages" type="application/json">
+  [
       {% for message in messages %}
-      Swal.fire({
-          icon: '{% if message.tags == "success" %}success{% elif message.tags == "warning" %}warning{% elif message.tags == "error" %}error{% else %}info{% endif %}',
-          title: '{% if message.tags == "success" %}Success!{% elif message.tags == "warning" %}Warning!{% elif message.tags == "error" %}Error!{% else %}Info{% endif %}',
-          text: '{{ message }}',
-          timer: 3000,
-          showConfirmButton: true,
-          confirmButtonColor: '{% if message.tags == "success" %}#28a745{% elif message.tags == "warning" %}#ffc107{% else %}#17a2b8{% endif %}'
-      });
+      {
+          "tags": "{{ message.tags }}",
+          "text": "{{ message }}",
+          "icon": "{% if message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
+          "title": "{% if message.tags == 'success' %}Success!{% elif message.tags == 'warning' %}Warning!{% elif message.tags == 'error' %}Error!{% else %}Info{% endif %}",
+          "confirmButtonColor": "{% if message.tags == 'success' %}#28a745{% elif message.tags == 'warning' %}#ffc107{% else %}#17a2b8{% endif %}"
+      }{% if not forloop.last %},{% endif %}
       {% endfor %}
+  ]
+</script>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    try {
+      const messages = JSON.parse(
+        document.getElementById("django-messages").textContent
+      );
+      if (messages && messages.length > 0) {
+        messages.forEach((msg) => {
+          Swal.fire({
+            icon: msg.icon,
+            title: msg.title,
+            text: msg.text,
+            timer: 3000,
+            showConfirmButton: true,
+            confirmButtonColor: msg.confirmButtonColor,
+          });
+        });
+      }
+    } catch (e) {
+      console.error("Error parsing messages:", e);
+    }
   });
 </script>
 {% endif %}
@@ -20,6 +43,25 @@
       <section class="box">
         <header class="panel_header">
           <h2 class="title text-center">User Verification</h2>
+          <div class="text-center mb-3">
+            <div class="col-md-6 text-end">
+              <a href="?export=excel" class="btn btn-success text-white me-2">
+                <i class="fa fa-file-excel-o"></i> Export List
+              </a>
+              <button
+                onclick="confirmBulkAction('approve')"
+                class="btn btn-success text-white me-2"
+              >
+                <i class="fa fa-check-circle"></i> Approve All
+              </button>
+              <button
+                onclick="confirmBulkAction('reject')"
+                class="btn btn-danger text-white"
+              >
+                <i class="fa fa-times-circle"></i> Reject All
+              </button>
+            </div>
+          </div>
         </header>
         <div class="content-body">
           <div class="row">
@@ -43,8 +85,10 @@
                     <td>{{ data.user.email }}</td>
                     <td>{{ data.user.get_role_display }}</td>
                     <td>
-                      {% if data.user.is_verified %}
-                      <span class="badge badge-success">Verified</span>
+                      {% if data.user.account_status == 'Approved' %}
+                      <span class="badge badge-success">Approved</span>
+                      {% elif data.user.account_status == 'Rejected' %}
+                      <span class="badge badge-danger">Rejected</span>
                       {% else %}
                       <span class="badge badge-warning">Pending</span>
                       {% endif %}
@@ -63,7 +107,7 @@
                       >
                         <i class="fa fa-key"></i> Password
                       </a>
-                      {% if data.user.is_verified %}
+                      {% if data.user.account_status == 'Approved' %}
                       <a
                         href="#"
                         data-href="{% url 'reject_user' data.user.id %}"
@@ -71,13 +115,28 @@
                       >
                         <i class="fa fa-times"></i> Revoke
                       </a>
-                      {% else %}
+                      {% elif data.user.account_status == 'Rejected' %}
                       <a
                         href="#"
                         data-href="{% url 'approve_user' data.user.id %}"
                         class="btn btn-sm btn-success swal-approve"
                       >
                         <i class="fa fa-check"></i> Approve
+                      </a>
+                      {% else %}
+                      <a
+                        href="#"
+                        data-href="{% url 'approve_user' data.user.id %}"
+                        class="btn btn-sm btn-success swal-approve mb-1"
+                      >
+                        <i class="fa fa-check"></i> Approve
+                      </a>
+                      <a
+                        href="#"
+                        data-href="{% url 'reject_user' data.user.id %}"
+                        class="btn btn-sm btn-danger swal-reject mb-1"
+                      >
+                        <i class="fa fa-times"></i> Reject
                       </a>
                       {% endif %}
                     </td>
@@ -174,6 +233,43 @@
         });
       });
     });
+
+    // Batch Actions
+    document
+      .querySelector(".swal-approve-all")
+      .addEventListener("click", function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: "Approve ALL Pending?",
+          text: "This will approve ALL pending users immediately.",
+          icon: "warning",
+          showCancelButton: true,
+          confirmButtonColor: "#28a745",
+          confirmButtonText: "Yes, Approve All!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = this.getAttribute("data-href");
+          }
+        });
+      });
+
+    document
+      .querySelector(".swal-reject-all")
+      .addEventListener("click", function (e) {
+        e.preventDefault();
+        Swal.fire({
+          title: "Reject ALL Pending?",
+          text: "This will reject ALL pending users immediately.",
+          icon: "error",
+          showCancelButton: true,
+          confirmButtonColor: "#dc3545",
+          confirmButtonText: "Yes, Reject All!",
+        }).then((result) => {
+          if (result.isConfirmed) {
+            window.location.href = this.getAttribute("data-href");
+          }
+        });
+      });
   });
 </script>
 {% endblock %}

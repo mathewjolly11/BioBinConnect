@@ -2,12 +2,142 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.db.models import Sum, Count
 from django.utils import timezone
-from datetime import timedelta
+from datetime import timedelta, datetime
+from MyApp.decorators import admin_required
 
 from MyApp.forms import DistrictForm,LocationForm,RAForm
 from MyApp.models import tbl_residentsassociation
 
-# Create your views here.
+# Helper function for system alerts
+def get_system_alerts():
+    """Check for system alerts based on configured thresholds"""
+    from MyApp.models import SystemSettings, tbl_CompostBatch, tbl_WasteInventory
+    from GuestApp.models import CustomUser
+    
+    alerts = []
+    
+    # Get settings
+    low_stock_threshold = int(SystemSettings.get_setting('low_stock_threshold', '50'))
+    expiry_warning_days = int(SystemSettings.get_setting('expiry_warning_days', '7'))
+    
+    # Check compost stock
+    total_compost_stock = tbl_CompostBatch.objects.filter(
+        Status__in=['Processing', 'Ready']
+    ).aggregate(total=Sum('Stock_kg'))['total'] or 0
+    
+    if total_compost_stock < low_stock_threshold:
+        alerts.append({
+            'type': 'danger',
+            'icon': 'fa-exclamation-triangle',
+            'title': 'Low Compost Stock',
+            'message': f'Only {int(total_compost_stock)} packets available (threshold: {low_stock_threshold} packets)',
+            'priority': 1
+        })
+    
+    # Check waste stock
+    total_waste_stock = tbl_WasteInventory.objects.filter(
+        is_available=True,
+        status='Available'
+    ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+    
+    if total_waste_stock < low_stock_threshold:
+        alerts.append({
+            'type': 'warning',
+            'icon': 'fa-recycle',
+            'title': 'Low Waste Stock',
+            'message': f'Only {total_waste_stock}kg waste available (threshold: {low_stock_threshold}kg)',
+            'priority': 2
+        })
+    
+    # Check pending user approvals (exclude admins)
+    pending_users = CustomUser.objects.filter(is_verified=False, is_active=True).exclude(role='admin').count()
+    if pending_users > 0:
+        alerts.append({
+            'type': 'warning',
+            'icon': 'fa-user-plus',
+            'title': 'Pending User Verifications',
+            'message': f'{pending_users} user(s) waiting for approval',
+            'priority': 2
+        })
+    
+    # Sort by priority
+    alerts.sort(key=lambda x: x['priority'])
+    
+    return alerts
+
+def get_recent_activities():
+    """Fetch and normalize recent system activities"""
+    from GuestApp.models import CustomUser
+    from MyApp.models import (
+        tbl_PickupRequest, tbl_Order, 
+        tbl_HouseholdPayment, tbl_CompostBatch
+    )
+    activities = []
+    
+    # 1. New User Registrations
+    users = CustomUser.objects.order_by('-date_joined')[:5]
+    for u in users:
+        activities.append({
+            'type': 'User',
+            'icon': 'fa-user-plus',
+            'color': 'primary',
+            'time': u.date_joined,
+            'description': f"New user registered: {u.name} ({u.role})"
+        })
+        
+    # 2. Pickup Requests
+    pickups = tbl_PickupRequest.objects.order_by('-scheduled_date')[:5]
+    for p in pickups:
+        # Convert date to datetime for sorting compatibility
+        dt = datetime.combine(p.scheduled_date, datetime.min.time())
+        activities.append({
+            'type': 'Pickup',
+            'icon': 'fa-truck',
+            'color': 'info',
+            'time': timezone.make_aware(dt) if timezone.is_naive(dt) else dt,
+            'description': f"Pickup requested by {p.household.household_name}"
+        })
+
+    # 3. Orders
+    orders = tbl_Order.objects.order_by('-Order_Date')[:5]
+    for o in orders:
+        activities.append({
+            'type': 'Order',
+            'icon': 'fa-shopping-cart',
+            'color': 'success',
+            'time': o.Order_Date,
+            'description': f"New order #{o.Order_id} from {o.Buyer_id.farmer_name} (₹{o.Total_Amount})"
+        })
+        
+    # 4. Payments
+    payments = tbl_HouseholdPayment.objects.order_by('-payment_date')[:5]
+    for pay in payments:
+        activities.append({
+            'type': 'Payment',
+            'icon': 'fa-credit-card',
+            'color': 'warning',
+            'time': pay.payment_date,
+            'description': f"Payment received from {pay.household.household_name} (₹{pay.amount})"
+        })
+        
+    # 5. Compost Batches (using Date_Created)
+    batches = tbl_CompostBatch.objects.order_by('-Date_Created')[:5]
+    for b in batches:
+        dt = datetime.combine(b.Date_Created, datetime.min.time())
+        activities.append({
+            'type': 'Batch',
+            'icon': 'fa-flask',
+            'color': 'purple', # Will use custom css or mapped class
+            'time': timezone.make_aware(dt) if timezone.is_naive(dt) else dt,
+            'description': f"New compost batch created: {b.Batch_name}"
+        })
+    
+    # Sort by time desc
+    activities.sort(key=lambda x: x['time'], reverse=True)
+    return activities[:10]
+
+
+@admin_required
 def index(request):
     """Enhanced admin dashboard with real-time statistics"""
     from MyApp.models import (
@@ -71,8 +201,11 @@ def index(request):
         total=Sum('Total_Amount')
     )['total'] or 0
     
-    # Recent activities (last 5 orders)
-    recent_activities = tbl_Order.objects.select_related('Buyer_id').order_by('-Order_Date')[:5]
+    # Recent activities (timeline)
+    recent_activities = get_recent_activities()
+    
+    # Get system alerts
+    system_alerts = get_system_alerts()
     
     context = {
         # User stats
@@ -98,9 +231,13 @@ def index(request):
         
         # Recent activities
         'recent_activities': recent_activities,
+        
+        # System alerts
+        'system_alerts': system_alerts,
     }
     
     return render(request, 'Admin/index.html', context)
+@admin_required
 def add_district(request):
     if request.method == 'POST':
         form = DistrictForm(request.POST)
@@ -112,11 +249,13 @@ def add_district(request):
         form = DistrictForm()
     return render(request, 'Admin/add_district.html', {'form': form})
 
+@admin_required
 def view_districts(request):
     from MyApp.models import tbl_District
     districts = tbl_District.objects.all()
     return render(request, 'Admin/view_districts.html' , {'districts': districts}) 
 
+@admin_required
 def edit_district(request, district_id):
     from MyApp.models import tbl_District
     district= tbl_District.objects.get(District_id=district_id)
@@ -130,6 +269,7 @@ def edit_district(request, district_id):
         form=DistrictForm(instance=district)
     return render(request, 'Admin/add_district.html', {'form': form})
 
+@admin_required
 def delete_district(request, district_id):
     from MyApp.models import tbl_District
     district = tbl_District.objects.get(District_id=district_id)
@@ -137,6 +277,7 @@ def delete_district(request, district_id):
     messages.success(request, 'District deleted successfully!')
     return redirect('view_districts')
 
+@admin_required
 def add_location(request):
     if request.method == 'POST':
         form = LocationForm(request.POST)
@@ -148,11 +289,13 @@ def add_location(request):
         form = LocationForm()
     return render(request, 'Admin/add_location.html', {'form': form})
 
+@admin_required
 def view_locations(request):
     from MyApp.models import tbl_location
     locations = tbl_location.objects.all()
     return render(request, 'Admin/view_locations.html' , {'locations': locations})
 
+@admin_required
 def edit_location(request, location_id):
     from MyApp.models import tbl_location
     location= tbl_location.objects.get(Location_id=location_id)
@@ -166,6 +309,7 @@ def edit_location(request, location_id):
         form=LocationForm(instance=location)
     return render(request, 'Admin/add_location.html', {'form': form})
 
+@admin_required
 def delete_location(request, location_id):
     from MyApp.models import tbl_location
     location = tbl_location.objects.get(Location_id=location_id)
@@ -173,6 +317,7 @@ def delete_location(request, location_id):
     messages.success(request, 'Location deleted successfully!')
     return redirect('view_locations')   
 
+@admin_required
 def add_ra(request):
     from MyApp.forms import RAForm
     if request.method == 'POST':
@@ -185,10 +330,12 @@ def add_ra(request):
         form = RAForm()
     return render(request, 'Admin/add_ra.html', {'form': form})
 
+@admin_required
 def view_ra(request):
     ra_list = tbl_residentsassociation.objects.all()
     return render(request, 'Admin/view_ra.html' , {'ra_list': ra_list})
 
+@admin_required
 def edit_ra(request, ra_id):
     ra= tbl_residentsassociation.objects.get(RA_id=ra_id)
     if request.method == 'POST':
@@ -201,6 +348,7 @@ def edit_ra(request, ra_id):
         form=RAForm(instance=ra)
     return render(request, 'Admin/add_ra.html', {'form': form})
 
+@admin_required
 def delete_ra(request, ra_id):
     from MyApp.models import tbl_residentsassociation
     ra = tbl_residentsassociation.objects.get(RA_id=ra_id)
@@ -208,11 +356,36 @@ def delete_ra(request, ra_id):
     messages.success(request, 'Residents Association deleted successfully!')
     return redirect('view_ra')
 
+@admin_required
 def view_users(request):
     """View all users for admin verification"""
     from GuestApp.models import CustomUser, Household, Collector, CompostManager, Farmer
     
     users = CustomUser.objects.exclude(is_superuser=True).select_related().order_by('-date_joined')
+    
+    # Handle Export
+    if request.GET.get('export') == 'excel':
+        from MyApp.utils import generate_excel_report
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="User_List_{timezone.now().strftime("%Y-%m-%d")}.xlsx"'
+        
+        headers = ["Name", "Role", "Email", "Date Joined", "Status", "Verified"]
+        data = []
+        
+        for user in users:
+            data.append([
+                user.name,
+                user.role.capitalize(),
+                user.email,
+                user.date_joined.strftime('%Y-%m-%d %H:%M'),
+                user.account_status,
+                "Yes" if user.is_verified else "No"
+            ])
+            
+        generate_excel_report(response, "User List Report", headers, data)
+        return response
     
     # Get role-specific details for each user
     user_data = []
@@ -247,12 +420,14 @@ def view_users(request):
     
     return render(request, 'Admin/view_users.html', {'user_data': user_data})
 
+@admin_required
 def approve_user(request, user_id):
     """Approve/verify a user"""
     from GuestApp.models import CustomUser
     
     user = CustomUser.objects.get(id=user_id)
     user.is_verified = True
+    user.account_status = 'Approved'
     user.save()
     
     # Send approval email to user
@@ -265,12 +440,14 @@ def approve_user(request, user_id):
     messages.success(request, f'User {user.name} has been approved successfully!')
     return redirect('view_users')
 
+@admin_required
 def reject_user(request, user_id):
     """Reject/unverify a user"""
     from GuestApp.models import CustomUser
     
     user = CustomUser.objects.get(id=user_id)
     user.is_verified = False
+    user.account_status = 'Rejected'
     user.save()
     
     # Send rejection email to user
@@ -283,6 +460,37 @@ def reject_user(request, user_id):
     messages.warning(request, f'User {user.name} has been rejected!')
     return redirect('view_users')
 
+@admin_required
+def approve_all_users(request):
+    """Approve all pending users"""
+    from GuestApp.models import CustomUser
+    
+    # Bulk update for efficiency
+    updated_count = CustomUser.objects.filter(account_status='Pending').exclude(role='admin').update(is_verified=True, account_status='Approved')
+    
+    if updated_count > 0:
+        messages.success(request, f'Successfully approved {updated_count} pending users!')
+    else:
+        messages.info(request, 'No pending users found to approve.')
+        
+    return redirect('view_users')
+
+@admin_required
+def reject_all_users(request):
+    """Reject all pending users"""
+    from GuestApp.models import CustomUser
+    
+    # Bulk update for efficiency
+    updated_count = CustomUser.objects.filter(account_status='Pending').exclude(role='admin').update(is_verified=False, account_status='Rejected')
+    
+    if updated_count > 0:
+        messages.warning(request, f'Rejected {updated_count} pending users.')
+    else:
+        messages.info(request, 'No pending users found to reject.')
+        
+    return redirect('view_users')
+
+@admin_required
 def assign_collector(request):
     from MyApp.forms import CollectorAssignmentForm
     from MyApp.models import tbl_CollectorAssignment
@@ -369,6 +577,7 @@ def assign_collector(request):
         'assignments_json': assignments_json
     })
 
+@admin_required
 def view_assignments(request):
     from MyApp.models import tbl_CollectorAssignment
     from django.db.models import Q
@@ -387,6 +596,7 @@ def view_assignments(request):
         'grouped_assignments': dict(grouped_assignments)
     })
 
+@admin_required
 def delete_assignment(request, assignment_id):
     """Delete a collector assignment"""
     from django.http import JsonResponse
@@ -425,6 +635,7 @@ def delete_assignment(request, assignment_id):
         'error': 'Invalid request method'
     }, status=405)
 
+@admin_required
 def add_route(request):
     from MyApp.forms import RouteForm
     if request.method == 'POST':
@@ -437,11 +648,13 @@ def add_route(request):
         form = RouteForm()
     return render(request, 'Admin/add_route.html', {'form': form})
 
+@admin_required
 def view_routes(request):
     from MyApp.models import tbl_Route
     routes = tbl_Route.objects.select_related('location').all()
     return render(request, 'Admin/view_routes.html', {'routes': routes})
 
+@admin_required
 def payment_report(request):
     """View payment reports with summary and filters"""
     from MyApp.models import tbl_HouseholdPayment
@@ -495,17 +708,16 @@ def payment_report(request):
     
     return render(request, 'Admin/payment_report_v3.html', context)
 
+@admin_required
 def export_payment_report(request):
-    """Export payment report to CSV"""
-    import csv
+    """Export payment report to Excel"""
+    from MyApp.utils import generate_excel_report
     from django.http import HttpResponse
+    from django.utils import timezone
     from MyApp.models import tbl_HouseholdPayment
     
-    response = HttpResponse(content_type='text/csv')
-    response['Content-Disposition'] = 'attachment; filename="payment_report.csv"'
-    
-    writer = csv.writer(response)
-    writer.writerow(['ID', 'Date', 'Household', 'House No', 'Bin Type', 'Amount', 'Transaction ID', 'Status'])
+    response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+    response['Content-Disposition'] = f'attachment; filename="Household_Payments_{timezone.now().strftime("%Y-%m-%d")}.xlsx"'
     
     # Re-apply filters
     payments = tbl_HouseholdPayment.objects.select_related('household', 'bin_type').order_by('-payment_date')
@@ -520,19 +732,23 @@ def export_payment_report(request):
         payments = payments.filter(payment_date__date__lte=to_date)
     if status:
         payments = payments.filter(status=status)
+        
+    headers = ['ID', 'Date', 'Household', 'House No', 'Bin Type', 'Amount', 'Transaction ID', 'Status']
+    data = []
     
     for payment in payments:
-        writer.writerow([
+        data.append([
             payment.Payment_id,
-            payment.payment_date.strftime('%Y-%m-%d %H:%M') if payment.payment_date else '',
-            payment.household.household_name if payment.household else 'N/A',
-            payment.household.house_no if payment.household else 'N/A',
-            payment.bin_type.name if payment.bin_type else 'N/A',
+            payment.payment_date.strftime('%Y-%m-%d %H:%M'),
+            payment.household.household_name,
+            payment.household.house_no,
+            payment.bin_type.name,
             payment.amount,
             payment.transaction_id,
             payment.status
         ])
-        
+    
+    generate_excel_report(response, "Household Payments Report", headers, data)
     return response
 
 from django.shortcuts import render, redirect
@@ -628,6 +844,7 @@ def admin_update_delivery_status(request, order_id):
     referer = request.META.get('HTTP_REFERER', '/')
     return redirect(referer)
 
+@admin_required
 def admin_profile(request):
     """View for admin profile page"""
     context = {
@@ -635,6 +852,7 @@ def admin_profile(request):
     }
     return render(request, 'Admin/admin_profile.html', context)
 
+@admin_required
 def view_aadhaar(request, user_id):
     """View to display user's Aadhaar image"""
     from GuestApp.models import CustomUser, Household, Farmer
@@ -673,6 +891,7 @@ def view_aadhaar(request, user_id):
     except CustomUser.DoesNotExist:
         raise Http404("User not found")
 
+@admin_required
 def add_bin_type(request):
     """Add a new bin type"""
     from MyApp.forms import BinTypeForm
@@ -686,12 +905,14 @@ def add_bin_type(request):
         form = BinTypeForm()
     return render(request, 'Admin/add_bin_type.html', {'form': form})
 
+@admin_required
 def view_bin_types(request):
     """View all bin types"""
     from MyApp.models import tbl_BinType
     bin_types = tbl_BinType.objects.all().order_by('capacity_kg')
     return render(request, 'Admin/view_bin_types.html', {'bin_types': bin_types})
 
+@admin_required
 def edit_bin_type(request, bin_type_id):
     """Edit an existing bin type"""
     from MyApp.models import tbl_BinType
@@ -707,6 +928,7 @@ def edit_bin_type(request, bin_type_id):
         form = BinTypeForm(instance=bin_type)
     return render(request, 'Admin/add_bin_type.html', {'form': form})
 
+@admin_required
 def delete_bin_type(request, bin_type_id):
     """Delete a bin type"""
     from MyApp.models import tbl_BinType
@@ -715,6 +937,7 @@ def delete_bin_type(request, bin_type_id):
     messages.success(request, 'Bin type deleted successfully!')
     return redirect('view_bin_types')
 
+@admin_required
 def edit_user(request, user_id):
     """Edit user information for all roles"""
     from GuestApp.models import CustomUser, Household, Collector, CompostManager, Farmer
@@ -846,3 +1069,69 @@ def change_user_password(request, user_id):
         return redirect('view_users')
     
     return render(request, 'Admin/change_password.html', {'user': user})
+
+
+# Admin system settings
+@admin_required
+def admin_settings(request):
+    """Manage system-wide settings"""
+    from MyApp.forms import SystemSettingsForm
+    from MyApp.models import SystemSettings
+    
+    if request.method == 'POST':
+        form = SystemSettingsForm(request.POST)
+        if form.is_valid():
+            # Save compost conversion ratio
+            ratio = str(form.cleaned_data['compost_conversion_ratio'])
+            SystemSettings.set_setting(
+                'compost_conversion_ratio', 
+                ratio,
+                'Waste to compost conversion ratio (kg waste per 1kg compost)'
+            )
+            
+            # Save inventory alert settings
+            low_stock = str(form.cleaned_data['low_stock_threshold'])
+            SystemSettings.set_setting(
+                'low_stock_threshold',
+                low_stock,
+                'Low stock warning threshold in kg'
+            )
+            
+            expiry_days = str(form.cleaned_data['expiry_warning_days'])
+            SystemSettings.set_setting(
+                'expiry_warning_days',
+                expiry_days,
+                'Days before expiry to show warning'
+            )
+            
+            unavailable_days = str(form.cleaned_data['auto_unavailable_days'])
+            SystemSettings.set_setting(
+                'auto_unavailable_days',
+                unavailable_days,
+                'Days after which waste is automatically marked unavailable'
+            )
+            
+            messages.success(request, 'System settings updated successfully!')
+            return redirect('admin_settings')
+    else:
+        form = SystemSettingsForm()
+    
+    # Get current settings for display
+    current_ratio = SystemSettings.get_setting('compost_conversion_ratio', '4.0')
+    current_low_stock = SystemSettings.get_setting('low_stock_threshold', '50')
+    current_expiry_days = SystemSettings.get_setting('expiry_warning_days', '7')
+    current_unavailable_days = SystemSettings.get_setting('auto_unavailable_days', '30')
+    
+    context = {
+        'form': form,
+        'current_ratio': current_ratio,
+        'current_low_stock': current_low_stock,
+        'current_expiry_days': current_expiry_days,
+        'current_unavailable_days': current_unavailable_days,
+    }
+    return render(request, 'Admin/settings.html', context)
+
+
+def custom_404(request, exception):
+    """Custom 404 error page handler"""
+    return render(request, 'errors/404.html', status=404)

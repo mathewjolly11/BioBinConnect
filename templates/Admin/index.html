@@ -1,6 +1,65 @@
 {% extends 'Admin/base.html' %} {% load static %} {% block content %}
 <section id="main-content" style="background-color: #f3f4f6; min-height: 100vh">
   <section class="wrapper main-wrapper" style="padding: 20px">
+    <!-- Critical Alerts Section -->
+    {% if system_alerts %}
+    <div class="mb-4">
+      <h5
+        class="mb-3"
+        style="font-weight: 700; color: #111827; padding-left: 10px"
+      >
+        <i class="fa fa-bell text-danger me-2"></i>Attention Needed
+      </h5>
+      <div class="row">
+        {% for alert in system_alerts %}
+        <div class="col-md-6 col-lg-4 mb-3">
+          <div
+            class="card border-0 shadow-sm h-100"
+            style="border-left: 4px solid {% if alert.type == 'danger' %}#dc3545{% elif alert.type == 'warning' %}#ffc107{% else %}#17a2b8{% endif %} !important; border-radius: 8px;"
+          >
+            <div class="card-body d-flex align-items-center p-3">
+              <div class="flex-shrink-0 me-3">
+                <div
+                  class="icon-circle"
+                  style="
+                  width: 48px; 
+                  height: 48px; 
+                  border-radius: 12px; 
+                  display: flex; 
+                  align-items: center; 
+                  justify-content: center;
+                  background-color: {% if alert.type == 'danger' %}rgba(220, 53, 69, 0.1){% elif alert.type == 'warning' %}rgba(255, 193, 7, 0.1){% else %}rgba(23, 162, 184, 0.1){% endif %};
+                  color: {% if alert.type == 'danger' %}#dc3545{% elif alert.type == 'warning' %}#d39e00{% else %}#17a2b8{% endif %};
+                "
+                >
+                  <i
+                    class="fa {{ alert.icon }}"
+                    style="font-size: 1.2rem; line-height: 1"
+                  ></i>
+                </div>
+              </div>
+              <div style="flex-grow: 1">
+                <h6
+                  class="mb-1"
+                  style="font-weight: 700; color: #1f2937; line-height: 1.2"
+                >
+                  {{ alert.title }}
+                </h6>
+                <p
+                  class="mb-0 small"
+                  style="color: #4b5563; font-weight: 500; line-height: 1.4"
+                >
+                  {{ alert.message }}
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+    </div>
+    {% endif %}
+
     <!-- Modern Hero Section -->
     <div class="row mb-5">
       <div class="col-12">
@@ -157,11 +216,10 @@
         <div
           class="stat-card h-100"
           style="
-            background: white;
+            background: transparent;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
           "
         >
@@ -169,13 +227,12 @@
             style="
               width: 48px;
               height: 48px;
-              background: #ecfdf5;
+              background: white;
               border-radius: 12px;
               display: flex;
               align-items: center;
               justify-content: center;
               margin-bottom: 16px;
-              color: #10b981;
               font-size: 1.5rem;
             "
           >
@@ -202,11 +259,10 @@
         <div
           class="stat-card h-100"
           style="
-            background: white;
+            background: transparent;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
           "
         >
@@ -214,13 +270,12 @@
             style="
               width: 48px;
               height: 48px;
-              background: #fffbeb;
+              background: white;
               border-radius: 12px;
               display: flex;
               align-items: center;
               justify-content: center;
               margin-bottom: 16px;
-              color: #f59e0b;
               font-size: 1.5rem;
             "
           >
@@ -248,11 +303,10 @@
         <div
           class="stat-card h-100"
           style="
-            background: white;
+            background: transparent;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
           "
         >
@@ -260,13 +314,12 @@
             style="
               width: 48px;
               height: 48px;
-              background: #ecfdf5;
+              background: white;
               border-radius: 12px;
               display: flex;
               align-items: center;
               justify-content: center;
               margin-bottom: 16px;
-              color: #059669;
               font-size: 1.5rem;
             "
           >
@@ -294,11 +347,10 @@
         <div
           class="stat-card h-100"
           style="
-            background: white;
+            background: transparent;
             border-radius: 16px;
             padding: 24px;
             transition: transform 0.3s ease;
-            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
             border: 1px solid #e5e7eb;
           "
         >
@@ -306,13 +358,12 @@
             style="
               width: 48px;
               height: 48px;
-              background: #eff6ff;
+              background: white;
               border-radius: 12px;
               display: flex;
               align-items: center;
               justify-content: center;
               margin-bottom: 16px;
-              color: #3b82f6;
               font-size: 1.5rem;
             "
           >
@@ -328,8 +379,12 @@
           >
             {{ total_users }}
           </h3>
-          <p style="color: #6b7280; font-size: 0.95rem; margin: 0">
             Active Users
+            {% if pending_verifications > 0 %}
+            <span class="badge bg-warning text-dark ms-2" style="font-size: 0.75rem; vertical-align: middle;">
+              {{ pending_verifications }} pending
+            </span>
+            {% endif %}
           </p>
         </div>
       </div>
@@ -351,7 +406,7 @@
         >
           <div class="d-flex justify-content-between align-items-center mb-4">
             <h5 style="font-weight: 700; color: #111827; margin: 0">
-              Recent Orders
+              Recent Activity Timeline
             </h5>
             <a
               href="{% url 'admin_waste_sales' %}"
@@ -365,121 +420,49 @@
             >
           </div>
 
-          <div class="table-responsive">
-            <table
-              class="table table-hover align-middle"
-              style="border-collapse: separate; border-spacing: 0 8px"
-            >
-              <thead style="background: transparent">
-                <tr>
-                  <th
-                    style="
-                      border: none;
-                      color: #9ca3af;
-                      font-weight: 600;
-                      text-transform: uppercase;
-                      font-size: 0.75rem;
-                      padding-left: 0;
+          <!-- Activity Timeline -->
+          <div class="activity-timeline">
+            {% for activity in recent_activities %}
+            <div class="d-flex align-items-start mb-4">
+              <div class="flex-shrink-0 me-3">
+                <div
+                  style="
+                      width: 40px;
+                      height: 40px;
+                      background-color: rgba(var(--bs-{{ activity.color }}-rgb), 0.1);
+                      color: var(--bs-{{ activity.color }});
+                      border-radius: 50%;
+                      display: flex;
+                      align-items: center;
+                      justify-content: center;
                     "
+                  class="bg-light-{{ activity.color }} text-{{ activity.color }}"
+                >
+                  <i class="fa {{ activity.icon }}"></i>
+                </div>
+              </div>
+              <div class="flex-grow-1">
+                <div class="d-flex justify-content-between align-items-center">
+                  <h6
+                    class="mb-1"
+                    style="font-weight: 600; font-size: 0.95rem; color: #1f2937"
                   >
-                    Order ID
-                  </th>
-                  <th
-                    style="
-                      border: none;
-                      color: #9ca3af;
-                      font-weight: 600;
-                      text-transform: uppercase;
-                      font-size: 0.75rem;
-                    "
+                    {% if activity.type == 'User' %}New Registration {% elif activity.type == 'Pickup' %}Pickup Request {% elif activity.type == 'Order' %}New Order {% elif activity.type == 'Payment' %}Payment Received {% elif activity.type == 'Batch' %}Compost Batch {% endif %}
+                  </h6>
+                  <small class="text-muted" style="font-size: 0.75rem"
+                    >{{ activity.time|timesince }} ago</small
                   >
-                    Status
-                  </th>
-                  <th
-                    style="
-                      border: none;
-                      color: #9ca3af;
-                      font-weight: 600;
-                      text-transform: uppercase;
-                      font-size: 0.75rem;
-                    "
-                  >
-                    Amount
-                  </th>
-                  <th
-                    style="
-                      border: none;
-                      color: #9ca3af;
-                      font-weight: 600;
-                      text-transform: uppercase;
-                      font-size: 0.75rem;
-                      text-align: right;
-                    "
-                  >
-                    Date
-                  </th>
-                </tr>
-              </thead>
-              <tbody>
-                {% for activity in recent_activities %}
-                <tr style="box-shadow: 0 2px 4px rgba(0, 0, 0, 0.02)">
-                  <td
-                    style="
-                      border: none;
-                      background: #f9fafb;
-                      border-top-left-radius: 10px;
-                      border-bottom-left-radius: 10px;
-                      padding: 16px;
-                    "
-                  >
-                    <span style="font-weight: 700; color: #4b5563"
-                      >#{{ activity.Order_id }}</span
-                    >
-                    <br />
-                    <small style="color: #9ca3af"
-                      >{{ activity.Buyer_id.farmer_name }}</small
-                    >
-                  </td>
-                  <td style="border: none; background: #f9fafb; padding: 16px">
-                    <span
-                      class="badge"
-                      style="
-                        background: {% if activity.Payment_Status == 'Paid' %}#d1fae5{% else %}#fef3c7{% endif %};
-                        color: {% if activity.Payment_Status == 'Paid' %}#065f46{% else %}#92400e{% endif %};
-                        padding: 6px 12px;
-                        border-radius: 20px;
-                      "
-                      >{{ activity.Payment_Status }}</span
-                    >
-                  </td>
-                  <td style="border: none; background: #f9fafb; padding: 16px">
-                    <span style="font-weight: 700; color: #111827"
-                      >&#8377;{{ activity.Total_Amount }}</span
-                    >
-                  </td>
-                  <td
-                    style="
-                      border: none;
-                      background: #f9fafb;
-                      border-top-right-radius: 10px;
-                      border-bottom-right-radius: 10px;
-                      padding: 16px;
-                      text-align: right;
-                      color: #6b7280;
-                    "
-                  >
-                    {{ activity.Order_Date|date:"d M" }}
-                  </td>
-                </tr>
-                {% empty %}
-                <tr>
-                  <td colspan="4" class="text-center py-5 text-muted">
-                    No recent activities found
-                  </td>
-                </tr>
-                {% endfor %}
-              </tbody>
-            </table>
+                </div>
+                <p class="mb-0 text-muted small" style="line-height: 1.4">
+                  {{ activity.description }}
+                </p>
+              </div>
+            </div>
+            {% empty %}
+            <div class="text-center py-4">
+              <p class="text-muted mb-0">No recent activity found</p>
+            </div>
+            {% endfor %}
           </div>
         </div>
       </div>

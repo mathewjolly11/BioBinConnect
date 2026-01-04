@@ -1,6 +1,6 @@
 from django import forms
 
-from MyApp.models import  tbl_District, tbl_location, tbl_residentsassociation, tbl_Route, tbl_CollectorAssignment, tbl_BinType
+from MyApp.models import  tbl_District, tbl_location, tbl_residentsassociation, tbl_Route, tbl_CollectorAssignment, tbl_BinType, SystemSettings
 
 class DistrictForm(forms.ModelForm):
     class Meta:
@@ -216,3 +216,61 @@ class BinTypeForm(forms.ModelForm):
                 'title': 'Please enter a valid price'
             })
         }
+
+class SystemSettingsForm(forms.Form):
+    """Form for managing system-wide settings"""
+    compost_conversion_ratio = forms.DecimalField(
+        label='Compost Conversion Ratio',
+        help_text='How many kg of waste produces 1 kg of compost (e.g., 4 means 4kg waste = 1kg compost)',
+        min_value=2.0,
+        max_value=10.0,
+        decimal_places=1,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': 'e.g., 4.0',
+            'step': '0.5',
+            'title': 'Recommended range: 3-5'
+        })
+    )
+    
+    low_stock_threshold = forms.IntegerField(
+        label='Low Stock Warning Threshold (packets)',
+        help_text='Alert when compost or waste stock falls below this amount',
+        min_value=0,
+        max_value=1000,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '50'
+        })
+    )
+    
+    expiry_warning_days = forms.IntegerField(
+        label='Expiry Warning Days',
+        help_text='Alert when compost batch will expire within this many days',
+        min_value=1,
+        max_value=90,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '7'
+        })
+    )
+    
+    auto_unavailable_days = forms.IntegerField(
+        label='Auto-mark Waste Unavailable (days)',
+        help_text='Automatically mark waste as unavailable after this many days',
+        min_value=1,
+        max_value=365,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '30'
+        })
+    )
+    
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
+        # Load current values from database
+        self.fields['compost_conversion_ratio'].initial = SystemSettings.get_setting('compost_conversion_ratio', '4.0')
+        self.fields['low_stock_threshold'].initial = SystemSettings.get_setting('low_stock_threshold', '50')
+        self.fields['expiry_warning_days'].initial = SystemSettings.get_setting('expiry_warning_days', '7')
+        self.fields['auto_unavailable_days'].initial = SystemSettings.get_setting('auto_unavailable_days', '30')
+

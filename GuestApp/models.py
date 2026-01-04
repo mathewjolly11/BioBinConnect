@@ -32,10 +32,17 @@ class CustomUser(AbstractBaseUser, PermissionsMixin):
         ('farmer', 'Farmer'),
     ]
 
+    STATUS_CHOICES = [
+        ('Pending', 'Pending'),
+        ('Approved', 'Approved'),
+        ('Rejected', 'Rejected'),
+    ]
+
     name = models.CharField(max_length=100)
     email = models.EmailField(max_length=191, unique=True)
     phone = models.CharField(max_length=15, blank=True, null=True)
     role = models.CharField(max_length=20, choices=ROLE_CHOICES, default='household')
+    account_status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Pending')
     is_verified = models.BooleanField(default=False)
     is_active = models.BooleanField(default=True)
     is_staff = models.BooleanField(default=False)

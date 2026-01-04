@@ -49,7 +49,7 @@
                 </div>
             </div>
             <div class="col-md-3 mb-3">
-                <div class="dashboard-stat-card text-white {% if gross_profit >= 0 %}bg-primary{% else %}bg-warning{% endif %}" style="border-radius: 16px;">
+                <div class="dashboard-stat-card text-white {% if gross_profit >= 0 %}bg-primary{% else %}bg-danger{% endif %}" style="border-radius: 16px;">
                     <div style="font-size: 2rem; margin-bottom: 8px;">{% if gross_profit >= 0 %}📈{% else %}📉{% endif %}</div>
                     <div style="font-size: 1.8rem; font-weight: 800; margin-bottom: 4px;">&#8377;{{ gross_profit|floatformat:2 }}</div>
                     <p style="margin: 0; opacity: 0.9;">Net Profit</p>
@@ -80,7 +80,7 @@
             <div class="col-md-4 mb-3">
                 <div class="card h-100" style="border-left: 5px solid #F59E0B; border-radius: 12px;">
                     <div class="card-body text-center">
-                        <div style="font-size: 2.5rem; margin-bottom: 12px; color: #F59E0B;">�️</div>
+                        <div style="font-size: 2.5rem; margin-bottom: 12px; color: #F59E0B;">🗑️</div>
                         <h5 style="color: #6B7280; margin: 0;">Waste Orders</h5>
                         <h3 style="font-weight: 800; color: #1F2937; margin: 8px 0;">{{ waste_order_count }}</h3>
                         <small style="color: #F59E0B; font-weight: 600;">&#8377;{{ waste_order_revenue|floatformat:2 }}</small>
@@ -121,7 +121,7 @@
                         <h6 class="text-success fw-bold mb-3">📊 Revenue Sources</h6>
                         <table class="table table-sm">
                             <tr>
-                                <td>�️ Waste Order Sales</td>
+                                <td>🗑️ Waste Order Sales</td>
                                 <td class="text-end fw-bold">&#8377;{{ waste_order_revenue|floatformat:2 }}</td>
                             </tr>
                             <tr>
@@ -162,13 +162,13 @@
                 <!-- Net Profit Summary -->
                 <div class="row mt-4">
                     <div class="col-12">
-                        <div class="alert {% if gross_profit >= 0 %}alert-success{% else %}alert-danger{% endif %} text-center">
-                            <h4 class="mb-2">
+                        <div class="alert {% if gross_profit >= 0 %}bg-success{% else %}bg-danger{% endif %} text-white text-center shadow-sm" style="border: none; border-radius: 12px;">
+                            <h4 class="mb-2 text-white">
                                 {% if gross_profit >= 0 %}💰{% else %}⚠️{% endif %}
                                 Net {% if gross_profit >= 0 %}Profit{% else %}Loss{% endif %}
                             </h4>
-                            <h2 class="fw-bold">&#8377;{{ gross_profit|floatformat:2 }}</h2>
-                            <p class="mb-0">Profit Margin: <strong>{{ profit_margin|floatformat:1 }}%</strong></p>
+                            <h2 class="fw-bold text-white">&#8377;{{ gross_profit|floatformat:2 }}</h2>
+                            <p class="mb-0 text-white-50">Profit Margin: <strong class="text-white">{{ profit_margin|floatformat:1 }}%</strong></p>
                         </div>
                     </div>
                 </div>

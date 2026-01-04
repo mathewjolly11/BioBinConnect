@@ -22,6 +22,68 @@ def admin_waste_sales(request):
     status_filter = request.GET.get('status', 'all')
     if status_filter != 'all':
         waste_orders = waste_orders.filter(Payment_Status=status_filter)
+        
+    # Date Filtering
+    date_filter = request.GET.get('period', '30')
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    
+    start_date = None
+    end_date = None
+    
+    from django.utils import timezone
+    from datetime import datetime, timedelta
+    
+    if date_filter == 'custom' and start_date_str and end_date_str:
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
+            waste_orders = waste_orders.filter(Order_Date__gte=start_date, Order_Date__lt=end_date)
+        except ValueError:
+            pass
+    elif date_filter != 'all':
+        try:
+            days = int(date_filter)
+            start_date = timezone.now() - timedelta(days=days)
+            waste_orders = waste_orders.filter(Order_Date__gte=start_date)
+        except (ValueError, TypeError):
+             pass
+             
+    # Handle Export
+    if request.GET.get('export') == 'excel':
+        from MyApp.utils import generate_excel_report
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="Waste_Sales_{timezone.now().strftime("%Y-%m-%d")}.xlsx"'
+        
+        headers = ["Order ID", "Farmer", "Quantity (kg)", "Amount", "Payment Status", "Assignment", "Delivery", "Date"]
+        data = []
+        
+        for order in waste_orders:
+            # Calculate total qty manually since we can't always rely on annotations in all contexts
+            total_qty = sum(item.Quantity_kg for item in order.tbl_orderitem_set.all())
+            
+            # Get delivery status
+            item = order.tbl_orderitem_set.first()
+            delivery_status = item.Delivery_Status if item else 'Pending'
+            
+            # Get collector name
+            collector = order.assigned_collector.collector_name if order.assigned_collector else 'Unassigned'
+            
+            data.append([
+                order.Order_id,
+                order.Buyer_id.farmer_name,
+                total_qty,
+                order.Total_Amount,
+                order.Payment_Status,
+                collector,
+                delivery_status,
+                order.Order_Date.strftime('%Y-%m-%d')
+            ])
+            
+        generate_excel_report(response, "Waste Sales Report", headers, data)
+        return response
     
     # Calculate statistics
     total_orders = waste_orders.count()
@@ -66,6 +128,59 @@ def admin_compost_sales(request):
     status_filter = request.GET.get('status', 'all')
     if status_filter != 'all':
         compost_orders = compost_orders.filter(Payment_Status=status_filter)
+        
+    # Date Filtering
+    date_filter = request.GET.get('period', '30')
+    start_date_str = request.GET.get('start_date')
+    end_date_str = request.GET.get('end_date')
+    
+    start_date = None
+    end_date = None
+    
+    from django.utils import timezone
+    from datetime import datetime, timedelta
+    
+    if date_filter == 'custom' and start_date_str and end_date_str:
+        try:
+            start_date = datetime.strptime(start_date_str, '%Y-%m-%d')
+            end_date = datetime.strptime(end_date_str, '%Y-%m-%d') + timedelta(days=1)
+            compost_orders = compost_orders.filter(Order_Date__gte=start_date, Order_Date__lt=end_date)
+        except ValueError:
+            pass
+    elif date_filter != 'all':
+        try:
+            days = int(date_filter)
+            start_date = timezone.now() - timedelta(days=days)
+            compost_orders = compost_orders.filter(Order_Date__gte=start_date)
+        except (ValueError, TypeError):
+             pass
+             
+    # Handle Export
+    if request.GET.get('export') == 'excel':
+        from MyApp.utils import generate_excel_report
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="Compost_Sales_{timezone.now().strftime("%Y-%m-%d")}.xlsx"'
+        
+        headers = ["Order ID", "Buyer", "Quantity (packets)", "Amount", "Payment Status", "Date"]
+        data = []
+        
+        for order in compost_orders:
+            # Calculate total qty manually
+            total_qty = sum(item.Quantity_kg for item in order.tbl_orderitem_set.all())
+            
+            data.append([
+                order.Order_id,
+                order.Buyer_id.user.name, # Buyer is CustomUser for compost
+                int(total_qty), # Display as whole packets
+                order.Total_Amount,
+                order.Payment_Status,
+                order.Order_Date.strftime('%Y-%m-%d')
+            ])
+            
+        generate_excel_report(response, "Compost Sales Report", headers, data)
+        return response
     
     # Calculate statistics
     total_orders = compost_orders.count()

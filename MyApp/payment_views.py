@@ -37,6 +37,32 @@ def payment_transactions(request):
     # Order by latest first
     transactions = transactions.order_by('-transaction_date')
     
+    # Handle Export
+    if request.GET.get('export') == 'excel':
+        from MyApp.utils import generate_excel_report
+        from django.http import HttpResponse
+        
+        response = HttpResponse(content_type='application/vnd.openxmlformats-officedocument.spreadsheetml.sheet')
+        response['Content-Disposition'] = f'attachment; filename="Payment_Transactions_{timezone.now().strftime("%Y-%m-%d")}.xlsx"'
+        
+        headers = ["Txn ID", "Date", "Payer", "Receiver", "Amount", "Type", "Status", "Reference"]
+        data = []
+        
+        for txn in transactions:
+            data.append([
+                txn.Transaction_id,
+                txn.transaction_date.strftime('%Y-%m-%d %H:%M'),
+                txn.Payer_id.name,
+                txn.Receiver_id.name,
+                txn.Amount,
+                txn.transaction_type,
+                txn.status,
+                txn.Reference_id or "-"
+            ])
+            
+        generate_excel_report(response, "Payment Transactions Report", headers, data)
+        return response
+    
     # Calculate statistics
     total_transactions = transactions.count()
     total_amount = transactions.aggregate(total=Sum('Amount'))['total'] or 0

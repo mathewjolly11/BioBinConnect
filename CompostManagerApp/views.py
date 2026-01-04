@@ -87,8 +87,12 @@ def create_compost_batch(request):
             selected_waste = tbl_WasteInventory.objects.filter(Inventory_id__in=waste_ids)
             total_waste = selected_waste.aggregate(total=Sum('available_quantity_kg'))['total'] or 0
             
-            # Conversion ratio: 3.5 kg waste = 1 kg compost (average of 3-4 kg)
-            compost_stock = total_waste / Decimal('3.5')
+            # Get conversion ratio from settings (with fallback to 4.0)
+            from MyApp.models import SystemSettings
+            conversion_ratio = Decimal(SystemSettings.get_setting('compost_conversion_ratio', '4.0'))
+            
+            # Conversion ratio: X kg waste = 1 kg compost
+            compost_stock = total_waste / conversion_ratio
             
             # Create compost batch
             batch = form.save(commit=False)

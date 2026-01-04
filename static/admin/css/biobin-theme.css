@@ -1,0 +1,492 @@
+/* 
+ * BioBinConnect Admin Theme
+ * Primary Color: Emerald Green (#10b981)
+ * Secondary Color: Dark Green (#047857)
+ * This file ensures consistent branding across all admin pages
+ */
+
+:root {
+  /* BioBin Brand Colors */
+  --biobin-primary: #10b981;
+  --biobin-primary-dark: #047857;
+  --biobin-primary-light: #34d399;
+  --biobin-primary-lighter: #6ee7b7;
+  --biobin-primary-lightest: #d1fae5;
+
+  /* Accent Colors */
+  --biobin-success: #10b981;
+  --biobin-warning: #f59e0b;
+  --biobin-danger: #ef4444;
+  --biobin-info: #3b82f6;
+
+  /* Neutral Colors */
+  --biobin-gray-50: #f9fafb;
+  --biobin-gray-100: #f3f4f6;
+  --biobin-gray-200: #e5e7eb;
+  --biobin-gray-300: #d1d5db;
+  --biobin-gray-400: #9ca3af;
+  --biobin-gray-500: #6b7280;
+  --biobin-gray-600: #4b5563;
+  --biobin-gray-700: #374151;
+  --biobin-gray-800: #1f2937;
+  --biobin-gray-900: #111827;
+}
+
+/* ==================== PRIMARY BUTTONS ==================== */
+.btn-primary,
+.btn-success {
+  background: linear-gradient(
+    135deg,
+    var(--biobin-primary) 0%,
+    var(--biobin-primary-dark) 100%
+  ) !important;
+  border: none !important;
+  color: white !important;
+  font-weight: 600;
+  transition: all 0.3s ease;
+  box-shadow: 0 4px 6px -1px rgba(16, 185, 129, 0.3);
+}
+
+.btn-primary:hover,
+.btn-success:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 15px -3px rgba(16, 185, 129, 0.4) !important;
+  background: linear-gradient(
+    135deg,
+    var(--biobin-primary-light) 0%,
+    var(--biobin-primary) 100%
+  ) !important;
+}
+
+.btn-primary:active,
+.btn-success:active {
+  transform: translateY(0px);
+}
+
+/* ==================== SECONDARY BUTTONS ==================== */
+.btn-outline-primary,
+.btn-outline-success {
+  border: 2px solid var(--biobin-primary) !important;
+  color: var(--biobin-primary) !important;
+  background: transparent;
+  font-weight: 600;
+  transition: all 0.3s ease;
+}
+
+.btn-outline-primary:hover,
+.btn-outline-success:hover {
+  background: var(--biobin-primary) !important;
+  color: white !important;
+  transform: translateY(-2px);
+}
+
+/* ==================== BADGES ==================== */
+.badge.bg-success,
+.badge-success {
+  background: var(--biobin-primary) !important;
+  color: white !important;
+}
+
+.badge.bg-primary {
+  background: var(--biobin-info) !important;
+}
+
+.badge.bg-warning,
+.badge-warning {
+  background: var(--biobin-warning) !important;
+  color: white !important;
+}
+
+.badge.bg-danger,
+.badge-danger {
+  background: var(--biobin-danger) !important;
+  color: white !important;
+}
+
+/* ==================== CARDS & PANELS ==================== */
+.card {
+  border: 1px solid var(--biobin-gray-200);
+  border-radius: 16px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  transition: all 0.3s ease;
+}
+
+.card:hover {
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.card-header {
+  background: linear-gradient(
+    135deg,
+    var(--biobin-primary) 0%,
+    var(--biobin-primary-dark) 100%
+  );
+  color: white;
+  border-bottom: none;
+  font-weight: 700;
+  border-radius: 16px 16px 0 0 !important;
+}
+
+/* Dashboard Statistics Cards */
+.dashboard-stat-card {
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+  text-align: center;
+  transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.dashboard-stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 20px -5px rgba(0, 0, 0, 0.15);
+}
+
+.dashboard-stat-card.bg-success {
+  background: linear-gradient(
+    135deg,
+    var(--biobin-primary) 0%,
+    var(--biobin-primary-dark) 100%
+  ) !important;
+}
+
+.dashboard-stat-card.bg-primary {
+  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%) !important;
+}
+
+.dashboard-stat-card.bg-warning {
+  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%) !important;
+}
+
+.dashboard-stat-card.bg-danger {
+  background: linear-gradient(135deg, #ef4444 0%, #dc2626 100%) !important;
+}
+
+/* ==================== TABLES ==================== */
+.table thead th {
+  background: var(--biobin-gray-100);
+  color: var(--biobin-gray-700);
+  font-weight: 700;
+  text-transform: uppercase;
+  font-size: 0.75rem;
+  letter-spacing: 0.05em;
+  border-bottom: 2px solid var(--biobin-primary);
+}
+
+.table-hover tbody tr:hover {
+  background-color: var(--biobin-primary-lightest);
+  cursor: pointer;
+}
+
+.table-striped tbody tr:nth-of-type(odd) {
+  background-color: var(--biobin-gray-50);
+}
+
+/* ==================== FORMS ==================== */
+.form-control:focus,
+.form-select:focus {
+  border-color: var(--biobin-primary) !important;
+  box-shadow: 0 0 0 0.2rem rgba(16, 185, 129, 0.25) !important;
+}
+
+.form-label {
+  font-weight: 600;
+  color: var(--biobin-gray-700);
+  margin-bottom: 8px;
+}
+
+.input-group-text {
+  background: var(--biobin-primary);
+  color: white;
+  border: none;
+  font-weight: 600;
+}
+
+/* ==================== ALERTS ==================== */
+.alert-success {
+  background-color: var(--biobin-primary-lightest) !important;
+  border-color: var(--biobin-primary-light) !important;
+  color: var(--biobin-primary-dark) !important;
+}
+
+.alert-warning {
+  background-color: #fef3c7 !important;
+  border-color: #fbbf24 !important;
+  color: #92400e !important;
+}
+
+.alert-danger {
+  background-color: #fee2e2 !important;
+  border-color: #fca5a5 !important;
+  color: #991b1b !important;
+}
+
+.alert-info {
+  background-color: #dbeafe !important;
+  border-color: #93c5fd !important;
+  color: #1e40af !important;
+}
+
+/* ==================== PROGRESS BARS ==================== */
+.progress {
+  background-color: var(--biobin-gray-200);
+  border-radius: 10px;
+  height: 10px;
+}
+
+.progress-bar {
+  background: linear-gradient(
+    90deg,
+    var(--biobin-primary) 0%,
+    var(--biobin-primary-light) 100%
+  );
+}
+
+/* ==================== PAGINATION ==================== */
+.pagination .page-link {
+  color: var(--biobin-primary);
+  border: 1px solid var(--biobin-gray-300);
+}
+
+.pagination .page-item.active .page-link {
+  background-color: var(--biobin-primary);
+  border-color: var(--biobin-primary);
+}
+
+.pagination .page-link:hover {
+  background-color: var(--biobin-primary-lightest);
+  border-color: var(--biobin-primary);
+  color: var(--biobin-primary-dark);
+}
+
+/* ==================== LINKS ==================== */
+a {
+  color: var(--biobin-primary);
+  text-decoration: none;
+  transition: color 0.2s ease;
+}
+
+a:hover {
+  color: var(--biobin-primary-dark);
+  text-decoration: underline;
+}
+
+/* ==================== TEXT COLORS ==================== */
+.text-primary {
+  color: var(--biobin-primary) !important;
+}
+
+.text-success {
+  color: var(--biobin-primary) !important;
+}
+
+.bg-primary {
+  background-color: var(--biobin-primary) !important;
+}
+
+.bg-success {
+  background-color: var(--biobin-primary) !important;
+}
+
+.bg-light {
+  background-color: var(--biobin-gray-50) !important;
+}
+
+/* ==================== CUSTOM COMPONENTS ==================== */
+
+/* Status Badges */
+.status-badge {
+  padding: 6px 14px;
+  border-radius: 20px;
+  font-size: 0.875rem;
+  font-weight: 600;
+  display: inline-block;
+}
+
+.status-badge.status-success {
+  background: var(--biobin-primary-lightest);
+  color: var(--biobin-primary-dark);
+}
+
+.status-badge.status-pending {
+  background: #fef3c7;
+  color: #92400e;
+}
+
+.status-badge.status-danger {
+  background: #fee2e2;
+  color: #991b1b;
+}
+
+/* Icon Boxes */
+.icon-box {
+  width: 48px;
+  height: 48px;
+  background: var(--biobin-primary-lightest);
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--biobin-primary);
+  font-size: 1.5rem;
+  margin-bottom: 16px;
+}
+
+/* Stat Cards */
+.stat-card {
+  background: white;
+  border-radius: 16px;
+  padding: 24px;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05);
+  border: 1px solid var(--biobin-gray-200);
+  transition: all 0.3s ease;
+}
+
+.stat-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+/* Hero Section */
+.hero-card {
+  background: linear-gradient(
+    135deg,
+    var(--biobin-primary) 0%,
+    var(--biobin-primary-dark) 100%
+  );
+  border-radius: 24px;
+  padding: 40px;
+  color: white;
+  position: relative;
+  overflow: hidden;
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.4);
+}
+
+/* ==================== DROPDOWN MENUS ==================== */
+.dropdown-menu {
+  border-radius: 12px;
+  border: 1px solid var(--biobin-gray-200);
+  box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+}
+
+.dropdown-item:hover {
+  background-color: var(--biobin-primary-lightest);
+  color: var(--biobin-primary-dark);
+}
+
+.dropdown-item.active {
+  background-color: var(--biobin-primary);
+  color: white;
+}
+
+/* ==================== MODALS ==================== */
+.modal-header {
+  background: linear-gradient(
+    135deg,
+    var(--biobin-primary) 0%,
+    var(--biobin-primary-dark) 100%
+  );
+  color: white;
+  border-bottom: none;
+  border-radius: 12px 12px 0 0;
+}
+
+.modal-content {
+  border-radius: 12px;
+  border: none;
+  box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.2);
+}
+
+.modal-footer {
+  border-top: 1px solid var(--biobin-gray-200);
+}
+
+/* ==================== BREADCRUMBS ==================== */
+.breadcrumb {
+  background: transparent;
+  padding: 0;
+  margin: 0;
+}
+
+.breadcrumb-item.active {
+  color: var(--biobin-primary);
+  font-weight: 600;
+}
+
+.breadcrumb-item a {
+  color: var(--biobin-gray-500);
+}
+
+.breadcrumb-item a:hover {
+  color: var(--biobin-primary);
+}
+
+/* ==================== CUSTOM SCROLLBAR ==================== */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: var(--biobin-gray-100);
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--biobin-primary);
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: var(--biobin-primary-dark);
+}
+
+/* ==================== TRANSITIONS ==================== */
+.smooth-transition {
+  transition: all 0.3s ease;
+}
+
+/* ==================== RESPONSIVE UTILITIES ==================== */
+@media (max-width: 768px) {
+  .dashboard-stat-card {
+    padding: 20px;
+  }
+
+  .hero-card {
+    padding: 24px;
+  }
+
+  .stat-card {
+    padding: 16px;
+  }
+}
+
+/* ==================== LOADING SPINNER ==================== */
+.spinner-border-biobin {
+  border-color: var(--biobin-primary-lightest);
+  border-right-color: var(--biobin-primary);
+}
+
+/* ==================== UTILITY CLASSES ==================== */
+.biobin-gradient {
+  background: linear-gradient(
+    135deg,
+    var(--biobin-primary) 0%,
+    var(--biobin-primary-dark) 100%
+  );
+}
+
+.biobin-text {
+  color: var(--biobin-primary);
+}
+
+.biobin-border {
+  border-color: var(--biobin-primary) !important;
+}
+
+.biobin-shadow {
+  box-shadow: 0 10px 25px -5px rgba(16, 185, 129, 0.3);
+}
+
+.biobin-hover:hover {
+  background-color: var(--biobin-primary-lightest);
+  transition: background-color 0.2s ease;
+}

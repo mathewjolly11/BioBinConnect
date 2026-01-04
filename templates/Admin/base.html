@@ -63,6 +63,7 @@
     <!-- MODERN ADMIN STYLES -->
     <link href="{% static 'admin/css/modern-admin.css' %}" rel="stylesheet" type="text/css" />
     <link href="{% static 'admin/css/visibility-fixes.css' %}" rel="stylesheet" type="text/css" />
+    <link href="{% static 'admin/css/biobin-theme.css' %}" rel="stylesheet" type="text/css" />
     <style>
         /* Mobile Layout Fixes */
         @media (max-width: 768px) {
@@ -88,6 +89,80 @@
         /* Desktop Overflow Fix for Dropdowns */
         .page-topbar, .quick-area {
             overflow: visible !important;
+        }
+
+        /* Active Menu Item Styles for Sidebar */
+        .page-sidebar .wraplist > li.active > a {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
+            color: white !important;
+            border-left: 4px solid #059669;
+            padding-left: 16px;
+        }
+
+        .page-sidebar .wraplist > li.active > a i,
+        .page-sidebar .wraplist > li.active > a .title {
+            color: white !important;
+        }
+
+        .page-sidebar .sub-menu li.active > a {
+            background: #ecfdf5 !important;
+            color: #047857 !important;
+            font-weight: 600;
+            border-left: 3px solid #10b981;
+            padding-left: 20px;
+        }
+
+        /* Mobile Navigation Active Styles */
+        #mobile-nav-dropdown a.active {
+            background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
+            color: white !important;
+            font-weight: 700;
+            border-radius: 8px;
+            padding: 10px 16px !important;
+            border: none !important;
+        }
+
+        #mobile-nav-dropdown a.active i {
+            color: white !important;
+        }
+
+        /* Hover effects for sidebar menu items */
+        .page-sidebar .wraplist > li > a:hover {
+            background: #f3f4f6;
+            transition: all 0.3s ease;
+        }
+
+        .page-sidebar .sub-menu li > a:hover {
+            background: #f9fafb;
+            padding-left: 25px;
+            transition: all 0.3s ease;
+        }
+
+        /* Fix profile image - prevent fading */
+        .profile-image img,
+        .profile-info img,
+        .page-topbar img,
+        .rounded-circle {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* Ensure profile section is always visible */
+        .profile-info,
+        .profile-image,
+        .profile-details {
+            opacity: 1 !important;
+            visibility: visible !important;
+        }
+
+        /* Remove any fade animations from images */
+        img {
+            animation: none !important;
+        }
+
+        /* Ensure status indicator is visible */
+        .profile-status {
+            opacity: 1 !important;
         }
     </style>
 
@@ -138,6 +213,9 @@
             <a href="{% url 'admin_salary_management' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-money me-2"></i> Salary Management</a>
             <a href="{% url 'manager_salaries' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-briefcase me-2"></i> Manager Salaries</a>
             <a href="{% url 'collector_salaries' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-hard-hat me-2"></i> Collector Salaries</a>
+
+            <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Settings</h6>
+            <a href="{% url 'admin_settings' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-cog me-2"></i> System Settings</a>
 
             <div class="mt-4 mb-3">
                 <a href="#" id="mobile-logout-btn-dropdown" class="btn btn-danger w-100">
@@ -541,7 +619,7 @@
                 <ul class='wraplist'>
 
 
-                    <li class="open">
+                    <li class="">
                         <a href="{% url 'admin_index' %}">
                             <i class="fa fa-dashboard"></i>
                             <span class="title">Dashboard</span>
@@ -684,6 +762,15 @@
                             </li>
                         </ul>
                     </li>
+                    
+                    <!-- System Settings -->
+                    <li class="">
+                        <a href="{% url 'admin_settings' %}">
+                            <i class="fa fa-cog"></i>
+                            <span class="title">System Settings</span>
+                        </a>
+                    </li>
+                    
                     <!-- Reports & Analytics moved to Reports submenu above -->
                     <!-- <li class="">
                         <a href="javascript:;">
@@ -1326,6 +1413,116 @@
                     });
                 });
             }
+
+            // Mobile logout button
+            const mobileLogoutBtn = document.getElementById('mobile-logout-btn-dropdown');
+            if (mobileLogoutBtn) {
+                mobileLogoutBtn.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    Swal.fire({
+                        title: 'Logout Confirmation',
+                        text: 'Are you sure you want to logout?',
+                        icon: 'warning',
+                        showCancelButton: true,
+                        confirmButtonColor: '#d33',
+                        cancelButtonColor: '#3085d6',
+                        confirmButtonText: 'Yes, logout!',
+                        cancelButtonText: 'Cancel'
+                    }).then((result) => {
+                        if (result.isConfirmed) {
+                            window.location.href = '{% url "logout" %}';
+                        }
+                    });
+                });
+            }
+
+            // Highlight active menu items based on current URL
+            const currentPath = window.location.pathname;
+
+            // First, remove all existing active and open classes
+            const allSidebarLis = document.querySelectorAll('.page-sidebar li');
+            allSidebarLis.forEach(li => {
+                li.classList.remove('active', 'open');
+            });
+
+            const allMobileLinks = document.querySelectorAll('#mobile-nav-dropdown a');
+            allMobileLinks.forEach(link => {
+                link.classList.remove('active');
+            });
+
+            // URL to menu item mapping
+            const menuMapping = {
+                // Dashboard
+                '/admin/': 'admin_index',
+                
+                // Add Details submenu
+                '/admin/add_district/': 'add_district',
+                '/admin/add_location/': 'add_location',
+                '/admin/add_ra/': 'add_ra',
+                '/admin/add_bin_type/': 'add_bin_type',
+                
+                // View Details submenu
+                '/admin/view_districts/': 'view_districts',
+                '/admin/view_locations/': 'view_locations',
+                '/admin/view_ra/': 'view_ra',
+                '/admin/view_bin_types/': 'view_bin_types',
+                
+                // Verification submenu
+                '/admin/view_users/': 'view_users',
+                
+                // Assignments submenu
+                '/admin/assign_collector/': 'assign_collector',
+                '/admin/view_assignments/': 'view_assignments',
+                '/admin/add_route/': 'add_route',
+                '/admin/view_routes/': 'view_routes',
+                
+                // Reports submenu
+                '/admin/reports/': 'admin_reports',
+                '/admin/payment-revenue-analytics/': 'payment_revenue_analytics',
+                '/admin/payment-transactions/': 'payment_transactions',
+                '/admin/manager-salaries/': 'manager_salaries',
+                '/admin/collector-salaries/': 'collector_salaries',
+                '/admin/salaries/': 'admin_salary_management',
+                '/admin/payment_report/': 'payment_report',
+                
+                // Sales Management submenu
+                '/admin/waste-sales/': 'admin_waste_sales',
+                '/admin/compost-sales/': 'admin_compost_sales'
+            };
+
+            // Get the menu identifier for current path
+            const currentMenuItem = menuMapping[currentPath];
+
+            // Now apply active states to the correct menu items
+            // Highlight sidebar menu items
+            const sidebarLinks = document.querySelectorAll('.page-sidebar a');
+            sidebarLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    // Add active class to the link's parent li
+                    const parentLi = link.closest('li');
+                    if (parentLi) {
+                        parentLi.classList.add('active');
+                        
+                        // If it's in a submenu, also activate the parent menu
+                        const parentSubMenu = parentLi.closest('.sub-menu');
+                        if (parentSubMenu) {
+                            const parentMenuLi = parentSubMenu.closest('li');
+                            if (parentMenuLi) {
+                                parentMenuLi.classList.add('active');
+                                parentMenuLi.classList.add('open');
+                            }
+                        }
+                    }
+                }
+            });
+
+            // Highlight mobile navigation items
+            const mobileLinks = document.querySelectorAll('#mobile-nav-dropdown a');
+            mobileLinks.forEach(link => {
+                if (link.getAttribute('href') === currentPath) {
+                    link.classList.add('active');
+                }
+            });
         });
     </script>
 </body>

@@ -1,6 +1,39 @@
 from django.db import models
 
 
+# System Settings Model
+class SystemSettings(models.Model):
+    """Store configurable system settings"""
+    setting_key = models.CharField(max_length=100, unique=True, primary_key=True)
+    setting_value = models.CharField(max_length=255)
+    description = models.TextField(blank=True)
+    last_updated = models.DateTimeField(auto_now=True)
+    
+    class Meta:
+        verbose_name = "System Setting"
+        verbose_name_plural = "System Settings"
+    
+    def __str__(self):
+        return f"{self.setting_key}: {self.setting_value}"
+    
+    @classmethod
+    def get_setting(cls, key, default=None):
+        """Get a setting value by key"""
+        try:
+            return cls.objects.get(setting_key=key).setting_value
+        except cls.DoesNotExist:
+            return default
+    
+    @classmethod
+    def set_setting(cls, key, value, description=""):
+        """Set a setting value"""
+        obj, created = cls.objects.update_or_create(
+            setting_key=key,
+            defaults={'setting_value': value, 'description': description}
+        )
+        return obj
+
+
 # Create your models here.
 class tbl_District(models.Model):
     District_id = models.AutoField(primary_key=True)
