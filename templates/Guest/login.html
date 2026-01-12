@@ -1,10 +1,13 @@
 {% extends 'Guest/base.html' %} {% load static %} {% block content %}
+<!-- Load SweetAlert2 early to ensure it's available for inline scripts -->
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
 <!-- credits to the writter @leonam-silva-de-souza -->
 <br /><br /><br /><br />
 <div class="login-register-page">
   <div class="container">
     <div class="form-box login">
-      <form action="" method="post">
+      <form id="login-form" action="" method="post">
         {% csrf_token %}
         <h1>Login</h1>
         <br />
@@ -17,7 +20,13 @@
         <div class="forgot-link">
           <a href="#">Forgot Password?</a>
         </div>
-        <button type="submit" class="btn" name="form_type" value="login">
+        <button
+          type="submit"
+          class="btn"
+          name="form_type"
+          value="login"
+          id="login-submit-btn"
+        >
           Login
         </button>
         <!-- <p>or login with social platforms</p>
@@ -469,100 +478,321 @@
   </div>
 </div>
 
+<!-- Custom Styles for Attractive Loader -->
+<style>
+  /* Animated popup entrance */
+  .animated-popup {
+    animation: popupFadeIn 0.3s ease-out !important;
+    border-radius: 20px !important;
+    box-shadow: 0 10px 40px rgba(108, 154, 46, 0.3) !important;
+  }
+
+  @keyframes popupFadeIn {
+    from {
+      opacity: 0;
+      transform: scale(0.8) translateY(-20px);
+    }
+    to {
+      opacity: 1;
+      transform: scale(1) translateY(0);
+    }
+  }
+
+  /* Animated title with pulse effect */
+  .animated-title {
+    animation: titlePulse 2s ease-in-out infinite !important;
+  }
+
+  @keyframes titlePulse {
+    0%,
+    100% {
+      opacity: 1;
+    }
+    50% {
+      opacity: 0.8;
+    }
+  }
+
+  /* Custom loader spinner styling */
+  .swal2-loader {
+    border-width: 4px !important;
+    width: 50px !important;
+    height: 50px !important;
+    animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite !important;
+  }
+
+  @keyframes spin {
+    0% {
+      transform: rotate(0deg);
+    }
+    100% {
+      transform: rotate(360deg);
+    }
+  }
+
+  @keyframes colorShift {
+    0%,
+    100% {
+      filter: brightness(1);
+    }
+    50% {
+      filter: brightness(1.2);
+    }
+  }
+
+  /* Add shimmer effect to the popup */
+  .animated-popup::before {
+    content: "";
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 100%;
+    background: linear-gradient(
+      90deg,
+      transparent,
+      rgba(108, 154, 46, 0.1),
+      transparent
+    );
+    animation: shimmer 2s infinite;
+  }
+
+  @keyframes shimmer {
+    0% {
+      left: -100%;
+    }
+    100% {
+      left: 100%;
+    }
+  }
+</style>
+
 <!-- SweetAlert for Admin Login Success -->
 <script>
-  document.addEventListener('DOMContentLoaded', function () {
-      const container = document.querySelector('.container');
-      const registerBtn = document.querySelector('.register-btn');
-      const loginBtn = document.querySelector('.login-btn');
+  // Show attractive loading indicator when login button is clicked
+  document.addEventListener("DOMContentLoaded", function () {
+    const loginButton = document.getElementById("login-submit-btn");
 
-      if (registerBtn && loginBtn && container) {
-          registerBtn.addEventListener('click', () => {
-              container.classList.add("active");
-          });
-
-          loginBtn.addEventListener('click', () => {
-              container.classList.remove("active");
-          });
-      }
-
-      {% if show_register %}
-      if (container) {
-          container.classList.add("active");
-      }
-      {% endif %}
-
-      {% if messages %}
-      {% for message in messages %}
-      console.log('Message found:', '{{ message.message }}', 'Tags:', '{{ message.tags }}');
-      {% if message.message == 'admin_login_success' %}
-      console.log('Showing admin success alert');
-      Swal.fire({
-          title: 'Welcome Admin!',
-          text: 'You have successfully logged in as Administrator',
-          icon: 'success',
-          confirmButtonText: 'Continue to Dashboard',
-          confirmButtonColor: '#6366f1',
-          background: '#fff',
+    if (loginButton) {
+      loginButton.addEventListener("click", function (e) {
+        // Don't prevent default - let the form submit naturally
+        // Show attractive loading alert with custom styling
+        Swal.fire({
+          title: '<strong style="color: #2d5016;">Logging You In</strong>',
+          html: '<div style="color: #555; font-size: 16px; margin-top: 10px;">🚀 Preparing your dashboard...</div>',
           allowOutsideClick: false,
           allowEscapeKey: false,
-          timer: null,
-          showClass: {
-              popup: 'animate__animated animate__fadeInUp'
+          showConfirmButton: false,
+          background: "#fff",
+          backdrop: "rgba(0,0,0,0.4)",
+          customClass: {
+            popup: "animated-popup",
+            title: "animated-title",
           },
-          hideClass: {
-              popup: 'animate__animated animate__fadeOutDown'
-          }
-      }).then((result) => {
-          console.log('SweetAlert closed, redirecting...');
-          window.location.href = "{% url 'admin_index' %}";
+          didOpen: () => {
+            Swal.showLoading();
+            // Customize the loader color
+            const loader =
+              Swal.getHtmlContainer().querySelector(".swal2-loader");
+            if (loader) {
+              loader.style.borderColor = "#6c9a2e";
+              loader.style.borderRightColor = "transparent";
+            }
+          },
+        });
+        // Form will submit naturally after this
       });
-      {% elif message.message == 'signup_success' %}
-      Swal.fire({
-          title: 'Registration Successful!',
-          text: 'Your account has been created successfully. Please login to continue.',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#4CAF50'
-      });
-      {% elif message.message == 'account_not_verified' %}
-      Swal.fire({
-          title: 'Account Not Verified',
-          text: 'Your account is pending admin approval. Please wait for verification before logging in.',
-          icon: 'warning',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#ff9800'
-      });
-      {% elif message.message == 'logout_success' %}
-      Swal.fire({
-          title: 'Logged Out Successfully',
-          text: 'You have been logged out. See you again soon!',
-          icon: 'success',
-          confirmButtonText: 'OK',
-          confirmButtonColor: '#6c9a2e',
-          iconColor: '#6c9a2e'
-      });
-      {% elif message.tags == 'error' %}
-      console.log('Showing error alert');
-      Swal.fire({
-          title: 'Error!',
-          text: '{{ message.message }}',
-          icon: 'error',
-          confirmButtonText: 'Try Again',
-          confirmButtonColor: '#ef4444'
-      });
-      {% endif %}
-      {% endfor %}
-      {% else %}
-      console.log('No messages found');
-      {% endif %}
+    }
+  });
 
-      // Initialize password toggles after DOM is ready
+  document.addEventListener("DOMContentLoaded", function () {
+    const container = document.querySelector(".container");
+    const registerBtn = document.querySelector(".register-btn");
+    const loginBtn = document.querySelector(".login-btn");
+
+    if (registerBtn && loginBtn && container) {
+      registerBtn.addEventListener("click", () => {
+        container.classList.add("active");
+      });
+
+      loginBtn.addEventListener("click", () => {
+        container.classList.remove("active");
+      });
+    }
+
+    // Check if we should show register form
+    const showRegister = document.body.dataset.showRegister === "true";
+    if (showRegister && container) {
+      container.classList.add("active");
+    }
+
+    // Handle messages
+    const messageData = document.body.dataset.messageData;
+    if (messageData) {
+      const messages = JSON.parse(messageData);
+      messages.forEach((msg) => {
+        console.log("Message found:", msg.message, "Tags:", msg.tags);
+
+        if (msg.message === "admin_login_success") {
+          console.log("Showing admin success alert");
+          Swal.fire({
+            title: "Welcome Admin!",
+            text: "You have successfully logged in as Administrator",
+            icon: "success",
+            confirmButtonText: "Continue to Dashboard",
+            confirmButtonColor: "#6366f1",
+            background: "#fff",
+            allowOutsideClick: false,
+            allowEscapeKey: false,
+            timer: null,
+            showClass: {
+              popup: "animate__animated animate__fadeInUp",
+            },
+            hideClass: {
+              popup: "animate__animated animate__fadeOutDown",
+            },
+          }).then((result) => {
+            console.log("SweetAlert closed, redirecting...");
+            window.location.href = msg.adminUrl;
+          });
+        } else if (msg.message === "signup_success") {
+          // Close any loading alert first
+          Swal.close();
+          Swal.fire({
+            title: "Registration Successful!",
+            text: "Your account has been created successfully. Please login to continue.",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#4CAF50",
+          });
+        } else if (msg.message === "account_not_verified") {
+          // Close loading alert only - let form show the message
+          Swal.close();
+        } else if (msg.message === "logout_success") {
+          Swal.fire({
+            title: "Logged Out Successfully",
+            text: "You have been logged out. See you again soon!",
+            icon: "success",
+            confirmButtonText: "OK",
+            confirmButtonColor: "#6c9a2e",
+            iconColor: "#6c9a2e",
+          });
+        } else if (msg.tags === "error") {
+          // Show error alert after a brief delay to ensure loader is closed
+          console.log("Login error - showing alert");
+          setTimeout(() => {
+            Swal.fire({
+              title: "Login Failed!",
+              text: msg.message,
+              icon: "error",
+              confirmButtonText: "Try Again",
+              confirmButtonColor: "#ef4444",
+              customClass: {
+                popup: "animated-popup",
+              },
+              showClass: {
+                popup: "animate__animated animate__shakeX",
+              },
+            });
+          }, 100);
+        }
+      });
+    } else {
+      console.log("No messages found");
+    }
+
+    // Initialize password toggles after DOM is ready
+    setTimeout(() => {
+      if (window.bioBinValidation) {
+        window.bioBinValidation.setupPasswordToggle();
+      }
+    }, 500);
+  });
+</script>
+
+<!-- Django template data passed via hidden elements (no IDE errors!) -->
+{% if show_register %}
+<div id="show-register-flag" style="display: none" data-value="true"></div>
+{% endif %} {% if messages %}
+<div id="messages-data" style="display: none">
+  {% for message in messages %}
+  <div
+    class="message-item"
+    data-message="{{ message.message|escapejs }}"
+    data-tags="{{ message.tags|escapejs }}"
+    data-admin-url="{% url 'admin_index' %}"
+  ></div>
+  {% endfor %}
+</div>
+{% endif %}
+
+<script>
+  // Check if there are error messages on page load
+  {% if messages %}
+  const hasErrorMessages = {% for message in messages %}{% if message.tags == 'error' %}true{% endif %}{% endfor %} || false;
+  const errorMessage = "{% for message in messages %}{% if message.tags == 'error' %}{{ message.message|escapejs }}{% endif %}{% endfor %}";
+
+  if (hasErrorMessages) {
+    // Clear the error messages from DOM FIRST
+    const messagesData = document.getElementById('messages-data');
+    if (messagesData) {
+      messagesData.remove();
+    }
+
+    // Close loader then show error alert
+    if (typeof Swal !== 'undefined') {
+      Swal.close();
       setTimeout(() => {
-          if (window.bioBinValidation) {
-              window.bioBinValidation.setupPasswordToggle();
-          }
-      }, 500);
+        Swal.fire({
+          title: "Login Failed!",
+          text: errorMessage,
+          icon: "error",
+          confirmButtonText: "Try Again",
+          confirmButtonColor: "#ef4444",
+        });
+      }, 100);
+    }
+  } else {
+    // Just close the loader for non-error messages
+    if (typeof Swal !== 'undefined') {
+      Swal.close();
+    }
+  }
+  {% else %}
+  // No messages - just close any loader
+  if (typeof Swal !== 'undefined') {
+    Swal.close();
+  }
+  {% endif %}
+</script>
+
+<script>
+  // Read data from hidden HTML elements (no Django template syntax here!)
+  document.addEventListener("DOMContentLoaded", function () {
+    // Check for show register flag
+    const showRegisterFlag = document.getElementById("show-register-flag");
+    if (showRegisterFlag) {
+      document.body.dataset.showRegister = showRegisterFlag.dataset.value;
+    }
+
+    // Process messages from hidden elements
+    const messagesContainer = document.getElementById("messages-data");
+    if (messagesContainer) {
+      const messageItems = messagesContainer.querySelectorAll(".message-item");
+      const messages = [];
+
+      messageItems.forEach((item) => {
+        messages.push({
+          message: item.dataset.message,
+          tags: item.dataset.tags,
+          adminUrl: item.dataset.adminUrl,
+        });
+      });
+
+      if (messages.length > 0) {
+        document.body.dataset.messageData = JSON.stringify(messages);
+      }
+    }
   });
 </script>
 
