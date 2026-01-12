@@ -8,6 +8,7 @@ from django.views.decorators.csrf import csrf_exempt
 import json
 from GuestApp.models import Collector
 from GuestApp.forms import CollectorEditForm, ProfileEditForm
+from django.db.models import Q
 
 @login_required(login_url='login')
 @never_cache
@@ -52,10 +53,12 @@ def collector_dashboard(request):
     ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
     
     # Pending deliveries
+    # Pending deliveries - check both direct collection and order assignment
     pending_deliveries = tbl_FarmerSupply.objects.filter(
-        Collection_id__collector=collector,
+        Q(Collection_id__collector=collector) | 
+        Q(tbl_orderitem__Order_id__assigned_collector=collector),
         delivery_status='Pending'
-    ).count()
+    ).distinct().count()
     
     # Recent collections
     recent_collections = tbl_CollectionRequest.objects.filter(
@@ -389,10 +392,11 @@ def collector_sales_orders(request):
     from MyApp.models import tbl_FarmerSupply, tbl_PaymentTransaction
     collector = Collector.objects.get(user=request.user)
     
-    # Get all farmer supplies from this collector's waste
+    # Get all farmer supplies from this collector's waste (direct or assigned)
     sales = tbl_FarmerSupply.objects.filter(
-        Collection_id__collector=collector
-    ).select_related('Farmer_id', 'Collection_id').order_by('-Supply_Date')
+        Q(Collection_id__collector=collector) | 
+        Q(tbl_orderitem__Order_id__assigned_collector=collector)
+    ).select_related('Farmer_id', 'Collection_id').distinct().order_by('-Supply_Date')
     
     context = {
         'sales': sales,
@@ -411,8 +415,8 @@ def update_delivery_status(request, supply_id):
     
     try:
         supply = tbl_FarmerSupply.objects.get(
-            Supply_id=supply_id,
-            Collection_id__collector=collector
+            Q(Supply_id=supply_id) & 
+            (Q(Collection_id__collector=collector) | Q(tbl_orderitem__Order_id__assigned_collector=collector))
         )
         
         # Update delivery status based on current status

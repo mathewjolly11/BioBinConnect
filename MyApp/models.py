@@ -218,7 +218,7 @@ class tbl_FarmerSupply(models.Model):
     
     Supply_id = models.AutoField(primary_key=True)
     Farmer_id = models.ForeignKey('GuestApp.Farmer', on_delete=models.CASCADE)
-    Collection_id = models.ForeignKey(tbl_CollectionRequest, on_delete=models.CASCADE)
+    Collection_id = models.ForeignKey(tbl_CollectionRequest, on_delete=models.CASCADE, null=True, blank=True)
     Quantity = models.DecimalField(max_digits=10, decimal_places=2)
     Supply_Date = models.DateTimeField(auto_now_add=True)
     

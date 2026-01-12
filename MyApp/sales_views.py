@@ -228,14 +228,13 @@ def assign_waste_collector(request, order_id):
                 is_available=True
             ).first()
             
-            if not inventory:
-                messages.error(request, f'{collector.collector_name} has no available inventory')
-                return redirect('admin_waste_sales')
+            # Allow assignment even without inventory
+            collection_request = inventory.collection_request if inventory else None
             
             # Create FarmerSupply (links farmer to collector)
             supply = tbl_FarmerSupply.objects.create(
                 Farmer_id=order.Buyer_id,
-                Collection_id=inventory.collection_request,
+                Collection_id=collection_request,
                 Quantity=quantity,
                 unit_price=unit_price,
                 total_amount=order.Total_Amount,
