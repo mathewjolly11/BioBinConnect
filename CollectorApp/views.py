@@ -202,12 +202,31 @@ def log_collection(request, pickup_id):
             # Send collection completed email to household
             try:
                 from utils.email_service import send_collection_completed_email
-                email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
-                if not email_status['household_completion']:
-                    email_status['errors'].append('Failed to send completion email to household')
+                from django.conf import settings
+                
+                # Check if household has a valid email
+                household_email = pickup_request.household.user.email
+                if not household_email or '@' not in household_email:
+                    email_status['errors'].append(f'Household has invalid email address: {household_email}')
+                    print(f"❌ Invalid household email: {household_email}")
+                else:
+                    email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
+                    if not email_status['household_completion']:
+                        if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+                            email_status['errors'].append('Email configuration not set up (using console backend)')
+                        else:
+                            email_status['errors'].append('Failed to send completion email (Gmail sending limit may be exceeded)')
+                            
             except Exception as e:
-                print(f"Household completion email failed: {e}")
-                email_status['errors'].append(f'Household email error: {str(e)}')
+                error_msg = str(e)
+                print(f"❌ Household completion email failed: {e}")
+                
+                if "Daily user sending limit exceeded" in error_msg:
+                    email_status['errors'].append('Gmail daily sending limit exceeded - emails will resume tomorrow')
+                elif "Authentication failed" in error_msg:
+                    email_status['errors'].append('Email authentication failed - check Gmail credentials')
+                else:
+                    email_status['errors'].append(f'Email system error: {str(e)}')
             
             # Check if this is an AJAX request
             if request.headers.get('Content-Type') == 'application/json':
@@ -304,12 +323,31 @@ def log_collection_ajax(request, pickup_id):
             # Send collection completed email to household
             try:
                 from utils.email_service import send_collection_completed_email
-                email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
-                if not email_status['household_completion']:
-                    email_status['errors'].append('Failed to send completion email to household')
+                from django.conf import settings
+                
+                # Check if household has a valid email
+                household_email = pickup_request.household.user.email
+                if not household_email or '@' not in household_email:
+                    email_status['errors'].append(f'Household has invalid email address: {household_email}')
+                    print(f"❌ Invalid household email: {household_email}")
+                else:
+                    email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
+                    if not email_status['household_completion']:
+                        if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+                            email_status['errors'].append('Email configuration not set up (using console backend)')
+                        else:
+                            email_status['errors'].append('Failed to send completion email (Gmail sending limit may be exceeded)')
+                            
             except Exception as e:
-                print(f"Household completion email failed: {e}")
-                email_status['errors'].append(f'Household email error: {str(e)}')
+                error_msg = str(e)
+                print(f"❌ Household completion email failed: {e}")
+                
+                if "Daily user sending limit exceeded" in error_msg:
+                    email_status['errors'].append('Gmail daily sending limit exceeded - emails will resume tomorrow')
+                elif "Authentication failed" in error_msg:
+                    email_status['errors'].append('Email authentication failed - check Gmail credentials')
+                else:
+                    email_status['errors'].append(f'Email system error: {str(e)}')
             
             # Return JSON response
             response_data = {

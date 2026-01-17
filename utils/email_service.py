@@ -19,6 +19,11 @@ def send_email(subject, template_name, context, recipient_email):
         Boolean indicating success
     """
     try:
+        # Validate email address
+        if not recipient_email or '@' not in recipient_email:
+            print(f"❌ Invalid recipient email: {recipient_email}")
+            return False
+            
         # Render HTML content
         html_content = render_to_string(template_name, context)
         text_content = strip_tags(html_content)
@@ -34,9 +39,28 @@ def send_email(subject, template_name, context, recipient_email):
         
         # Send email
         email.send()
+        
+        # Log success based on backend type
+        if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+            print(f"✅ Email logged to console: {subject} -> {recipient_email}")
+        else:
+            print(f"✅ Email sent successfully: {subject} -> {recipient_email}")
+            
         return True
+        
     except Exception as e:
-        print(f"Error sending email: {e}")
+        error_msg = str(e)
+        print(f"❌ Error sending email to {recipient_email}: {e}")
+        print(f"   Subject: {subject}")
+        print(f"   Template: {template_name}")
+        print(f"   Backend: {settings.EMAIL_BACKEND}")
+        
+        # Handle specific Gmail errors
+        if "Daily user sending limit exceeded" in error_msg:
+            print("   ⚠️ Gmail daily sending limit reached. Email will retry later.")
+        elif "Authentication failed" in error_msg or "Username and Password not accepted" in error_msg:
+            print("   ⚠️ Gmail authentication failed. Check EMAIL_HOST_USER and EMAIL_HOST_PASSWORD.")
+        
         return False
 
 

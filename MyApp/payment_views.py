@@ -73,25 +73,34 @@ def payment_transactions(request):
     
     success_amount = transactions.filter(status='Success').aggregate(total=Sum('Amount'))['total'] or 0
     
-    # Payment method breakdown
-    upi_count = transactions.filter(transaction_type='UPI').count()
-    cod_count = transactions.filter(transaction_type='COD').count()
+    # Payment type breakdown (actual transaction types)
+    household_count = transactions.filter(transaction_type='HouseholdDaily').count()
+    compost_count = transactions.filter(transaction_type='CompostSale').count()
+    waste_count = transactions.filter(transaction_type='WasteSale').count()
+    salary_count = transactions.filter(transaction_type='CollectorSalary').count()
     
-    upi_amount = transactions.filter(transaction_type='UPI', status='Success').aggregate(total=Sum('Amount'))['total'] or 0
-    cod_amount = transactions.filter(transaction_type='COD', status='Success').aggregate(total=Sum('Amount'))['total'] or 0
+    household_amount = transactions.filter(transaction_type='HouseholdDaily', status='Success').aggregate(total=Sum('Amount'))['total'] or 0
+    compost_amount = transactions.filter(transaction_type='CompostSale', status='Success').aggregate(total=Sum('Amount'))['total'] or 0
+    waste_amount = transactions.filter(transaction_type='WasteSale', status='Success').aggregate(total=Sum('Amount'))['total'] or 0
+    salary_amount = transactions.filter(transaction_type='CollectorSalary', status='Success').aggregate(total=Sum('Amount'))['total'] or 0
     
     context = {
-        'transactions': transactions[:100],  # Limit to 100 for performance
+        'transactions': transactions,  # Show all transactions (removed limit)
         'total_transactions': total_transactions,
         'total_amount': total_amount,
         'success_count': success_count,
         'pending_count': pending_count,
         'failed_count': failed_count,
         'success_amount': success_amount,
-        'upi_count': upi_count,
-        'cod_count': cod_count,
-        'upi_amount': upi_amount,
-        'cod_amount': cod_amount,
+        # Actual transaction types
+        'household_count': household_count,
+        'compost_count': compost_count,
+        'waste_count': waste_count,
+        'salary_count': salary_count,
+        'household_amount': household_amount,
+        'compost_amount': compost_amount,
+        'waste_amount': waste_amount,
+        'salary_amount': salary_amount,
         'status_filter': status_filter,
         'type_filter': type_filter,
         'period_filter': period_filter,

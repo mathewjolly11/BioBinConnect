@@ -118,7 +118,7 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
                 maxlength="4"
               />
             </div>
-            <button type="button" class="btn-main w-100" id="payWithUPI">
+        F    <button type="button" class="btn-main w-100" id="payWithUPI">
               <i class="fa fa-lock me-2"></i> Pay Securely
             </button>
           </div>
@@ -265,6 +265,23 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
     100% {
       transform: scale(1);
     }
+  }
+
+  /* Compact modal styling */
+  .compact-modal {
+    max-height: 90vh !important;
+    overflow-y: auto !important;
+  }
+
+  .compact-modal .swal2-html-container {
+    padding: 0.5rem !important;
+    margin: 0 !important;
+  }
+
+  .compact-modal .swal2-title {
+    font-size: 1.3rem !important;
+    padding: 0.5rem 0 !important;
+    margin: 0 !important;
   }
 </style>
 
@@ -552,34 +569,34 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
   function showDetailedSuccessMessage(data) {
       const emailStatus = data.email_status;
       const pickup = data.pickup_data;
-      
+
       let emailStatusHtml = '';
       let emailIcon = 'success';
-      
+
       // Check email sending status
       if (emailStatus.household_confirmation) {
-          emailStatusHtml += '<p class="text-success"><i class="fa fa-check-circle"></i> ✓ Confirmation email sent to you</p>';
+          emailStatusHtml += '<p class="mb-1 text-success"><i class="fa fa-check"></i> Confirmation email sent to you</p>';
       } else {
-          emailStatusHtml += '<p class="text-warning"><i class="fa fa-exclamation-triangle"></i> ⚠ Confirmation email failed to send</p>';
+          emailStatusHtml += '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Confirmation email failed to send</p>';
           emailIcon = 'warning';
       }
-      
+
       if (pickup.collector) {
           if (emailStatus.collector_assignment) {
-              emailStatusHtml += '<p class="text-success"><i class="fa fa-check-circle"></i> ✓ Assignment email sent to collector</p>';
+              emailStatusHtml += '<p class="mb-1 text-success"><i class="fa fa-check"></i> Assignment email sent to collector</p>';
           } else {
-              emailStatusHtml += '<p class="text-warning"><i class="fa fa-exclamation-triangle"></i> ⚠ Collector assignment email failed</p>';
+              emailStatusHtml += '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Collector assignment email failed</p>';
               emailIcon = 'warning';
           }
-          
+
           if (emailStatus.pickup_scheduled) {
-              emailStatusHtml += '<p class="text-success"><i class="fa fa-check-circle"></i> ✓ Schedule notification sent to you</p>';
+              emailStatusHtml += '<p class="mb-1 text-success"><i class="fa fa-check"></i> Schedule notification sent to you</p>';
           } else {
-              emailStatusHtml += '<p class="text-warning"><i class="fa fa-exclamation-triangle"></i> ⚠ Schedule notification failed to send</p>';
+              emailStatusHtml += '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Schedule notification failed to send</p>';
               emailIcon = 'warning';
           }
       }
-      
+
       // Show any specific errors
       if (emailStatus.errors.length > 0) {
           emailStatusHtml += '<hr><p class="text-danger"><strong>Email Errors:</strong></p>';
@@ -595,48 +612,51 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
           icon: emailIcon,
           title: 'Pickup Request Created!',
           html: `
-              <div class="text-center">
-                  <h5 class="text-success mb-3"><i class="fa fa-check-circle"></i> Payment Successful!</h5>
-                  
-                  <div class="row text-center mb-3">
+              <div class="text-center" style="font-size: 0.9rem;">
+                  <h6 class="text-success mb-2"><i class="fa fa-check-circle"></i> Payment Successful!</h6>
+
+                  <div class="row text-center mb-2">
                       <div class="col-6">
-                          <strong>Amount Paid:</strong><br>
-                          <span class="h5 text-primary">₹${pickup.amount}</span>
+                          <strong style="font-size: 0.85rem;">Amount Paid:</strong><br>
+                          <span class="h6 text-primary">₹${pickup.amount}</span>
                       </div>
                       <div class="col-6">
-                          <strong>Request ID:</strong><br>
-                          <span class="h6 text-info">#${pickup.pickup_id}</span>
+                          <strong style="font-size: 0.85rem;">Request ID:</strong><br>
+                          <span class="text-info" style="font-size: 1rem;">#${pickup.pickup_id}</span>
                       </div>
                   </div>
-                  
-                  <div class="alert alert-info">
+
+                  <div class="alert alert-info py-2 mb-2" style="font-size: 0.85rem;">
                       <strong>Transaction ID:</strong> ${pickup.transaction_id}<br>
                       <strong>Payment Method:</strong> ${pickup.payment_method}<br>
                       <strong>Scheduled Date:</strong> ${pickup.date}
                   </div>
-                  
+
                   ${pickup.collector ? `
-                      <div class="alert alert-success">
+                      <div class="alert alert-success py-2 mb-2" style="font-size: 0.85rem;">
                           <strong><i class="fa fa-user-circle"></i> Collector Assigned:</strong><br>
                           ${pickup.collector}<br>
                           <small>Status: <strong class="text-success">Approved</strong></small>
                       </div>
                   ` : ''}
-                  
+
                   ${pickup.warning ? `
-                      <div class="alert alert-warning">
+                      <div class="alert alert-warning py-2 mb-2" style="font-size: 0.85rem;">
                           <i class="fa fa-exclamation-triangle"></i> ${pickup.warning}
                       </div>
                   ` : ''}
-                  
-                  <hr>
-                  <h6><i class="fa fa-envelope"></i> Email Notifications:</h6>
-                  ${emailStatusHtml}
+
+                  <hr class="my-2">
+                  <h6 class="mb-2" style="font-size: 0.9rem;"><i class="fa fa-envelope"></i> Email Notifications:</h6>
+                  <div style="font-size: 0.85rem;">${emailStatusHtml}</div>
               </div>
           `,
           confirmButtonColor: '#6c9a2e',
           confirmButtonText: 'View My Requests',
-          width: '700px'
+          width: '600px',
+          customClass: {
+              popup: 'compact-modal'
+          }
       }).then(() => {
           // Redirect to view requests page
           window.location.href = '{% url "view_requests" %}';

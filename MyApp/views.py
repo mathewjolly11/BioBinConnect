@@ -847,6 +847,30 @@ def admin_update_delivery_status(request, order_id):
 @admin_required
 def admin_profile(request):
     """View for admin profile page"""
+    if request.method == 'POST':
+        # Handle password change
+        current_password = request.POST.get('current_password')
+        new_password = request.POST.get('new_password')
+        confirm_password = request.POST.get('confirm_password')
+        
+        # Validate current password
+        if not request.user.check_password(current_password):
+            messages.error(request, 'Current password is incorrect.')
+        # Validate new passwords match
+        elif new_password != confirm_password:
+            messages.error(request, 'New passwords do not match.')
+        # Validate password length
+        elif len(new_password) < 8:
+            messages.error(request, 'Password must be at least 8 characters long.')
+        else:
+            # Change password
+            request.user.set_password(new_password)
+            request.user.save()
+            messages.success(request, 'Password changed successfully!')
+            # Re-authenticate user to maintain session
+            from django.contrib.auth import update_session_auth_hash
+            update_session_auth_hash(request, request.user)
+    
     context = {
         'user': request.user,
     }

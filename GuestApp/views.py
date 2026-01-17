@@ -42,19 +42,9 @@ def login_view(request):
                         return render(request, 'Guest/login.html', context)
                     
                     login(request, user)
-                    # Handle admin login with SweetAlert
+                    # Handle admin login - redirect directly
                     if user.is_superuser:
-                        messages.success(request, 'admin_login_success')
-                        # Return to login page to show SweetAlert, then redirect via JavaScript
-                        context = {
-                            'login_form': LoginForm(),
-                            'user_form': UserRegistrationForm(),
-                            'household_form': HouseholdRegistrationForm(),
-                            'collector_form': CollectorRegistrationForm(),
-                            'compost_form': CompostManagerRegistrationForm(),
-                            'farmer_form': FarmerRegistrationForm(),
-                        }
-                        return render(request, 'Guest/login.html', context)
+                        return redirect('admin_index')
                     elif user.role == 'household':
                         return redirect('household_dashboard')
                     elif user.role == 'collector':

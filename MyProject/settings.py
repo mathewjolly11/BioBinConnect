@@ -13,20 +13,21 @@ https://docs.djangoproject.com/en/6.0/ref/settings/
 import os
 from pathlib import Path
 
+# Load environment variables from .env file using python-dotenv
+from dotenv import load_dotenv
+
+# Build paths inside the project like this: BASE_DIR / 'subdir'.
+BASE_DIR = Path(__file__).resolve().parent.parent
+
 # Load environment variables from .env file
-# Manual loading without python-dotenv dependency
-env_file = Path(__file__).resolve().parent.parent / '.env'
-if env_file.exists():
-    print(f"✓ Loading .env from: {env_file}")
-    with open(env_file) as f:
-        for line in f:
-            line = line.strip()
-            if line and not line.startswith('#') and '=' in line:
-                key, value = line.split('=', 1)
-                os.environ.setdefault(key.strip(), value.strip())
-    print(f"✓ EMAIL_HOST_USER: {os.environ.get('EMAIL_HOST_USER', 'NOT SET')}")
+dotenv_path = BASE_DIR / '.env'
+if dotenv_path.exists():
+    load_dotenv(dotenv_path)
+    print(f"✅ Loading .env from: {dotenv_path}")
+    print(f"✅ EMAIL_HOST_USER: {os.environ.get('EMAIL_HOST_USER', 'NOT SET')}")
+    print(f"✅ EMAIL_HOST_PASSWORD: {'SET' if os.environ.get('EMAIL_HOST_PASSWORD') else 'NOT SET'}")
 else:
-    print(f"⚠ .env file not found at: {env_file}")
+    print(f"⚠️ .env file not found at: {dotenv_path}")
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -153,13 +154,23 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configuration (Gmail SMTP)
-EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-EMAIL_HOST = 'smtp.gmail.com'
-EMAIL_PORT = 587
-EMAIL_USE_TLS = True
-EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER', 'your-email@gmail.com')
-EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD', 'your-app-password')
-DEFAULT_FROM_EMAIL = f'BioBinConnect <{EMAIL_HOST_USER}>'
+# Check if email credentials are properly configured
+EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
+EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
+
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and EMAIL_HOST_USER != 'your-email@gmail.com':
+    # Production SMTP configuration
+    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+    EMAIL_HOST = 'smtp.gmail.com'
+    EMAIL_PORT = 587
+    EMAIL_USE_TLS = True
+    DEFAULT_FROM_EMAIL = f'BioBinConnect <{EMAIL_HOST_USER}>'
+else:
+    # Development fallback - use console backend
+    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+    EMAIL_HOST_USER = 'noreply@biobinconnect.local'
+    DEFAULT_FROM_EMAIL = 'BioBinConnect <noreply@biobinconnect.local>'
+    print("⚠️ Email credentials not configured. Using console backend for development.")
 
 # Site URL for email links
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')

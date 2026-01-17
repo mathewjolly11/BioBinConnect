@@ -569,14 +569,13 @@
 
 <!-- SweetAlert for Admin Login Success -->
 <script>
-  // Show attractive loading indicator when login button is clicked
+  // Show loader on form submit (not button click) so it doesn't block submission
   document.addEventListener("DOMContentLoaded", function () {
-    const loginButton = document.getElementById("login-submit-btn");
+    const loginForm = document.getElementById("login-form");
 
-    if (loginButton) {
-      loginButton.addEventListener("click", function (e) {
-        // Don't prevent default - let the form submit naturally
-        // Show attractive loading alert with custom styling
+    if (loginForm) {
+      loginForm.addEventListener("submit", function (e) {
+        // Form will submit - just show the loader
         Swal.fire({
           title: '<strong style="color: #2d5016;">Logging You In</strong>',
           html: '<div style="color: #555; font-size: 16px; margin-top: 10px;">🚀 Preparing your dashboard...</div>',
@@ -591,7 +590,6 @@
           },
           didOpen: () => {
             Swal.showLoading();
-            // Customize the loader color
             const loader =
               Swal.getHtmlContainer().querySelector(".swal2-loader");
             if (loader) {
@@ -600,7 +598,6 @@
             }
           },
         });
-        // Form will submit naturally after this
       });
     }
   });
