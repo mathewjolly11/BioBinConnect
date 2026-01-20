@@ -356,6 +356,22 @@ def farmer_orders(request):
     farmer = Farmer.objects.get(user=request.user)
     orders = tbl_Order.objects.filter(Buyer_id=farmer).prefetch_related('tbl_orderitem_set').order_by('-Order_Date')
     
+    # Add calculated totals for each order
+    for order in orders:
+        waste_total = order.tbl_orderitem_set.filter(Item_Type='Waste').aggregate(
+            total=Sum('Quantity_kg'))['total'] or 0
+        compost_total = order.tbl_orderitem_set.filter(Item_Type='Compost').aggregate(
+            total=Sum('Quantity_kg'))['total'] or 0
+        
+        # Get unit prices
+        waste_item = order.tbl_orderitem_set.filter(Item_Type='Waste').first()
+        compost_item = order.tbl_orderitem_set.filter(Item_Type='Compost').first()
+        
+        order.waste_total = int(waste_total)
+        order.compost_total = int(compost_total)
+        order.waste_unit_price = waste_item.Unit_Price if waste_item else 0
+        order.compost_unit_price = compost_item.Unit_Price if compost_item else 0
+    
     # Calculate total spent
     total_spent = orders.aggregate(total=Sum('Total_Amount'))['total'] or 0
     

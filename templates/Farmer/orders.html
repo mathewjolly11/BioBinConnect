@@ -30,25 +30,50 @@
               <div class="mt-3">
                 <strong>Items:</strong>
                 <ul class="mt-2">
-                  {% for item in order.tbl_orderitem_set.all %}
-                  <li>
-                    {% if item.Item_Type == 'Waste' %} 🌾 Direct Waste - {{ item.Quantity_kg }} kg @ ₹{{ item.Unit_Price }}/kg {% else%} 🍂 Organic Compost - {{ item.Quantity_kg }} packets @ ₹{{item.Unit_Price }}/packet {% endif %}
-                    <br />
-                    <small class="text-muted">
-                      Delivery Status: {% if item.Delivery_Status == 'Pending' %}
-                      <span class="badge bg-warning">Pending</span>
-                      {% else %} {% if item.Delivery_Status == 'Dispatched' %}
-                      <span class="badge bg-info">Dispatched</span>
-                      {% else %} {% if item.Delivery_Status == 'Delivered' %}
-                      <span class="badge bg-success">Delivered</span>
-                      {% else %}
-                      <span class="badge bg-secondary"
-                        >{{ item.Delivery_Status }}</span
-                      >
-                      {% endif %} {% endif %} {% endif %}
-                    </small>
-                  </li>
-                  {% endfor %}
+                  {% if order.waste_total > 0 %}
+                    <li>
+                      🌾 Direct Waste - {{ order.waste_total }} kg @ ₹{{ order.waste_unit_price }}/kg
+                      <br />
+                      <small class="text-muted">
+                        Delivery Status: 
+                        {% for item in order.tbl_orderitem_set.all %}
+                          {% if item.Item_Type == 'Waste' %}
+                            {% if item.Delivery_Status == 'Pending' %}
+                              <span class="badge bg-warning">Pending</span>
+                            {% elif item.Delivery_Status == 'Dispatched' %}
+                              <span class="badge bg-info">Dispatched</span>
+                            {% elif item.Delivery_Status == 'Delivered' %}
+                              <span class="badge bg-success">Delivered</span>
+                            {% else %}
+                              <span class="badge bg-secondary">{{ item.Delivery_Status }}</span>
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+                      </small>
+                    </li>
+                  {% endif %}
+                  {% if order.compost_total > 0 %}
+                    <li>
+                      🍂 Organic Compost - {{ order.compost_total }} packets @ ₹{{ order.compost_unit_price }}/packet
+                      <br />
+                      <small class="text-muted">
+                        Delivery Status: 
+                        {% for item in order.tbl_orderitem_set.all %}
+                          {% if item.Item_Type == 'Compost' %}
+                            {% if item.Delivery_Status == 'Pending' %}
+                              <span class="badge bg-warning">Pending</span>
+                            {% elif item.Delivery_Status == 'Dispatched' %}
+                              <span class="badge bg-info">Dispatched</span>
+                            {% elif item.Delivery_Status == 'Delivered' %}
+                              <span class="badge bg-success">Delivered</span>
+                            {% else %}
+                              <span class="badge bg-secondary">{{ item.Delivery_Status }}</span>
+                            {% endif %}
+                          {% endif %}
+                        {% endfor %}
+                      </small>
+                    </li>
+                  {% endif %}
                 </ul>
               </div>
             </div>

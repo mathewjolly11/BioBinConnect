@@ -206,6 +206,7 @@
             <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Sales</h6>
             <a href="{% url 'admin_waste_sales' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-recycle me-2"></i> Waste Sales</a>
             <a href="{% url 'admin_compost_sales' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-leaf me-2"></i> Compost Sales</a>
+            <a href="{% url 'admin_stock_management' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-warehouse me-2"></i> Stock Management</a>
 
             <h6 class="text-uppercase text-muted small fw-bold mb-3 mt-4">Reports & Finance</h6>
             <a href="{% url 'admin_reports' %}" class="d-block py-2 text-dark border-bottom"><i class="fa fa-bar-chart me-2"></i> Analytics</a>
@@ -759,6 +760,9 @@
                             </li>
                             <li>
                                 <a class="" href="{% url 'admin_compost_sales' %}">Compost Sales</a>
+                            </li>
+                            <li>
+                                <a class="" href="{% url 'admin_stock_management' %}">Stock Management</a>
                             </li>
                         </ul>
                     </li>
@@ -1487,7 +1491,8 @@
                 
                 // Sales Management submenu
                 '/admin/waste-sales/': 'admin_waste_sales',
-                '/admin/compost-sales/': 'admin_compost_sales'
+                '/admin/compost-sales/': 'admin_compost_sales',
+                '/admin/stock-management/': 'admin_stock_management'
             };
 
             // Get the menu identifier for current path

@@ -2,7 +2,7 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.decorators import login_required
 from django.views.decorators.cache import never_cache
 from django.contrib import messages
-from MyApp.models import tbl_Order, tbl_OrderItem, tbl_FarmerSupply, tbl_PaymentTransaction, tbl_WasteInventory
+from MyApp.models import tbl_Order, tbl_OrderItem, tbl_FarmerSupply, tbl_PaymentTransaction, tbl_WasteInventory, tbl_CompostBatch
 from GuestApp.models import Collector
 from django.db.models import Sum, Count, Q
 from decimal import Decimal
@@ -319,3 +319,106 @@ def admin_update_delivery_status(request, order_id):
     # Redirect back to appropriate page
     referer = request.META.get('HTTP_REFERER', '/')
     return redirect(referer)
+
+
+@login_required(login_url='login')
+@never_cache
+def admin_stock_management(request):
+    """Admin view for stock management - shows waste inventory and compost stock"""
+    
+    # Get waste inventory data
+    waste_inventory = tbl_WasteInventory.objects.select_related(
+        'collection_request__household__user', 
+        'collector__user'
+    ).order_by('-collection_date')
+    
+    # Apply status filter for waste inventory
+    waste_status_filter = request.GET.get('waste_status', 'all')
+    if waste_status_filter != 'all':
+        waste_inventory = waste_inventory.filter(status=waste_status_filter)
+    
+    # Add total value calculation to waste inventory
+    waste_inventory_with_totals = []
+    for item in waste_inventory:
+        item.total_value = item.available_quantity_kg * item.price_per_kg
+        waste_inventory_with_totals.append(item)
+    
+    # Get compost batch data
+    from MyApp.models import tbl_CompostBatch
+    compost_batches = tbl_CompostBatch.objects.select_related(
+        'CompostManager_id__user'
+    ).order_by('-Date_Created')
+    
+    # Apply status filter for compost batches
+    compost_status_filter = request.GET.get('compost_status', 'all')
+    if compost_status_filter != 'all':
+        compost_batches = compost_batches.filter(Status=compost_status_filter)
+    
+    # Apply grade filter for compost batches
+    grade_filter = request.GET.get('grade', 'all')
+    if grade_filter != 'all':
+        compost_batches = compost_batches.filter(Grade=grade_filter)
+    
+    # Add total value calculation to compost batches
+    compost_batches_with_totals = []
+    for batch in compost_batches:
+        batch.total_value = batch.Stock_kg * batch.price_per_kg
+        batch.stock_floored = int(batch.Stock_kg)  # Floor the stock value
+        batch.source_floored = int(batch.Source_Waste_kg)  # Floor source waste
+        compost_batches_with_totals.append(batch)
+    
+    # Calculate summary statistics
+    waste_stats = {
+        'total_available': waste_inventory.filter(status__in=['Available', 'Used']).aggregate(
+            total=Sum('available_quantity_kg'))['total'] or 0,
+        'total_sold': waste_inventory.filter(status='Sold').aggregate(
+            total=Sum('available_quantity_kg'))['total'] or 0,
+        'total_composting': waste_inventory.filter(status='Composting').aggregate(
+            total=Sum('available_quantity_kg'))['total'] or 0,
+        'all_used': waste_inventory.filter(status='Used').aggregate(
+            total=Sum('available_quantity_kg'))['total'] or 0,
+    }
+    
+    compost_stats = {
+        'total_active': compost_batches.filter(Status__in=['Active', 'Ready']).aggregate(
+            total=Sum('Stock_kg'))['total'] or 0,
+        'total_active_floored': int(compost_batches.filter(Status__in=['Active', 'Ready']).aggregate(
+            total=Sum('Stock_kg'))['total'] or 0),
+        'total_sold': compost_batches.filter(Status='Sold').aggregate(
+            total=Sum('Stock_kg'))['total'] or 0,
+        'premium_stock': compost_batches.filter(Grade='Premium', Status__in=['Active', 'Ready']).aggregate(
+            total=Sum('Stock_kg'))['total'] or 0,
+        'premium_stock_floored': int(compost_batches.filter(Grade='Premium', Status__in=['Active', 'Ready']).aggregate(
+            total=Sum('Stock_kg'))['total'] or 0),
+        'standard_stock': compost_batches.filter(Grade='Standard', Status__in=['Active', 'Ready']).aggregate(
+            total=Sum('Stock_kg'))['total'] or 0,
+        'basic_stock': compost_batches.filter(Grade='Basic', Status__in=['Active', 'Ready']).aggregate(
+            total=Sum('Stock_kg'))['total'] or 0,
+    }
+    
+    # Get low stock alerts (less than 50kg)
+    low_waste_stock = waste_inventory.filter(
+        status__in=['Available', 'Used'], 
+        available_quantity_kg__lt=50,
+        available_quantity_kg__gt=0  # Exclude empty items
+    ).count()
+    
+    low_compost_stock = compost_batches.filter(
+        Status__in=['Active', 'Ready'], 
+        Stock_kg__lt=50,
+        Stock_kg__gt=0  # Exclude empty batches
+    ).count()
+    
+    context = {
+        'waste_inventory': waste_inventory_with_totals,
+        'compost_batches': compost_batches_with_totals,
+        'waste_stats': waste_stats,
+        'compost_stats': compost_stats,
+        'low_waste_stock': low_waste_stock,
+        'low_compost_stock': low_compost_stock,
+        'waste_status_filter': waste_status_filter,
+        'compost_status_filter': compost_status_filter,
+        'grade_filter': grade_filter,
+    }
+    
+    return render(request, 'Admin/stock_management.html', context)

@@ -1,0 +1,341 @@
+{% extends 'Admin/base.html' %}
+{% load static %}
+
+{% block title %}Stock Management - Admin{% endblock %}
+
+{% block extra_css %}
+<style>
+    .stats-card {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transition: transform 0.3s ease;
+        margin-bottom: 20px;
+    }
+    .stats-card:hover {
+        transform: translateY(-5px);
+    }
+    .alert-badge {
+        position: absolute;
+        top: -8px;
+        right: -8px;
+        background-color: #ff4757;
+        color: white;
+        border-radius: 50%;
+        width: 25px;
+        height: 25px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .table-responsive {
+        border-radius: 10px;
+        overflow: hidden;
+        box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    }
+    .nav-pills .nav-link {
+        border-radius: 25px;
+        margin-right: 10px;
+        font-weight: 600;
+    }
+    .nav-pills .nav-link.active {
+        background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    }
+    .grade-badge {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+        text-transform: uppercase;
+    }
+    .grade-premium { background-color: #ffd700; color: #000; }
+    .grade-standard { background-color: #87ceeb; color: #000; }
+    .grade-basic { background-color: #98fb98; color: #000; }
+    .status-badge {
+        padding: 5px 10px;
+        border-radius: 15px;
+        font-size: 12px;
+        font-weight: bold;
+    }
+    .status-available { background-color: #28a745; color: white; }
+    .status-used { background-color: #17a2b8; color: white; }
+    .status-sold { background-color: #6c757d; color: white; }
+    .status-active { background-color: #007bff; color: white; }
+    .status-ready { background-color: #28a745; color: white; }
+    .status-composting { background-color: #ffc107; color: #000; }
+    
+    /* Custom background colors */
+    .bg-purple { 
+        background-color: #6f42c1 !important; 
+    }
+</style>
+{% endblock %}
+
+{% block content %}
+<section id="main-content">
+    <section class="wrapper main-wrapper">
+        <div class="col-lg-12">
+            <section class="box">
+                <header class="panel_header">
+                    <h2 class="title">Stock Management</h2>
+                    <p class="subtitle">Monitor waste inventory and compost stock levels</p>
+                </header>
+                <div class="content-body">
+                    <!-- Page Header -->
+                    <div class="row mb-4">
+                        <div class="col-12">
+                            <div class="d-flex justify-content-between align-items-center">
+                                <div>
+                                    {% if low_waste_stock > 0 or low_compost_stock > 0 %}
+                                    <div class="position-relative">
+                                        <span class="badge bg-warning text-dark px-3 py-2">
+                                            <i class="fas fa-exclamation-triangle me-1"></i>
+                                            Low Stock Alert
+                                        </span>
+                                        {% if low_waste_stock > 0 or low_compost_stock > 0 %}
+                                        <span class="alert-badge">{{ low_waste_stock|add:low_compost_stock }}</span>
+                                        {% endif %}
+                                    </div>
+                                    {% endif %}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+    <!-- Stock Statistics -->
+    <div class="row mb-4">
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+            <div class="card stats-card bg-success text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Available Waste</h6>
+                            <h3 class="card-title mb-0">{{ waste_stats.total_available|floatformat:1 }} kg</h3>
+                            <small class="opacity-75">Includes Available & Used</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-trash fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+            <div class="card stats-card bg-info text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Active Compost</h6>
+                            <h3 class="card-title mb-0">{{ compost_stats.total_active_floored }} kg</h3>
+                            <small class="opacity-75">Includes Active & Ready</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-seedling fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="col-lg-4 col-md-6 col-sm-6 mb-3">
+            <div class="card stats-card bg-secondary text-white h-100">
+                <div class="card-body">
+                    <div class="d-flex justify-content-between">
+                        <div>
+                            <h6 class="card-subtitle mb-2">Total Used/Collected</h6>
+                            <h3 class="card-title mb-0">{{ waste_stats.all_used|floatformat:1 }} kg</h3>
+                            <small class="opacity-75">Successfully Collected</small>
+                        </div>
+                        <div class="align-self-center">
+                            <i class="fas fa-chart-line fa-2x opacity-75"></i>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Inventory Management Tabs -->
+    <div class="row">
+        <div class="col-12">
+            <!-- Waste Inventory Section -->
+            <div class="card mb-4">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-trash me-2"></i>Waste Inventory
+                    </h5>
+                </div>
+                <div class="card-body">
+                            <!-- Filters -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <form method="get" class="d-flex">
+                                        <select name="waste_status" class="form-select me-2" onchange="this.form.submit()">
+                                            <option value="all" {% if waste_status_filter == 'all' %}selected{% endif %}>All Status</option>
+                                            <option value="Available" {% if waste_status_filter == 'Available' %}selected{% endif %}>Available</option>
+                                            <option value="Used" {% if waste_status_filter == 'Used' %}selected{% endif %}>Used</option>
+                                            <option value="Sold" {% if waste_status_filter == 'Sold' %}selected{% endif %}>Sold</option>
+                                            <option value="Composting" {% if waste_status_filter == 'Composting' %}selected{% endif %}>Composting</option>
+                                        </select>
+                                        <input type="hidden" name="compost_status" value="{{ compost_status_filter }}">
+                                        <input type="hidden" name="grade" value="{{ grade_filter }}">
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Waste Inventory Table -->
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Inventory ID</th>
+                                            <th>Collector</th>
+                                            <th>Household</th>
+                                            <th>Quantity (kg)</th>
+                                            <th>Price/kg</th>
+                                            <th>Total Value</th>
+                                            <th>Collection Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for item in waste_inventory %}
+                                        <tr>
+                                            <td><strong>#{{ item.Inventory_id }}</strong></td>
+                                            <td>{{ item.collector.user.name|default:"No Collector" }}</td>
+                                            <td>{{ item.collection_request.household.user.name|default:"No Household" }}</td>
+                                            <td>
+                                                <strong>{{ item.available_quantity_kg|floatformat:1 }} kg</strong>
+                                                {% if item.available_quantity_kg == 0 %}
+                                                <i class="fas fa-info-circle text-info ms-1" title="Empty - Already collected"></i>
+                                                {% elif item.available_quantity_kg < 50 %}
+                                                <i class="fas fa-exclamation-triangle text-warning ms-1" title="Low stock"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td>₹{{ item.price_per_kg }}</td>
+                                            <td>₹{{ item.total_value|floatformat:2 }}</td>
+                                            <td>{{ item.collection_date|date:"M d, Y" }}</td>
+                                            <td>
+                                                <span class="status-badge status-{{ item.status|lower }}">
+                                                    {{ item.status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="8" class="text-center py-4">
+                                                <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                                                <p class="text-muted">No waste inventory found</p>
+                                                <small class="text-muted">Try changing the status filter above</small>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+            </div>
+
+            <!-- Compost Stock Section -->
+            <div class="card">
+                <div class="card-header">
+                    <h5 class="card-title mb-0">
+                        <i class="fas fa-seedling me-2"></i>Compost Stock
+                    </h5>
+                </div>
+                <div class="card-body">
+                            <!-- Filters -->
+                            <div class="row mb-3">
+                                <div class="col-md-4">
+                                    <form method="get" class="d-flex">
+                                        <select name="compost_status" class="form-select me-2" onchange="this.form.submit()">
+                                            <option value="all" {% if compost_status_filter == 'all' %}selected{% endif %}>All Status</option>
+                                            <option value="Active" {% if compost_status_filter == 'Active' %}selected{% endif %}>Active</option>
+                                            <option value="Ready" {% if compost_status_filter == 'Ready' %}selected{% endif %}>Ready</option>
+                                            <option value="Sold" {% if compost_status_filter == 'Sold' %}selected{% endif %}>Sold</option>
+                                        </select>
+                                        <input type="hidden" name="waste_status" value="{{ waste_status_filter }}">
+                                        <input type="hidden" name="grade" value="{{ grade_filter }}">
+                                    </form>
+                                </div>
+                                <div class="col-md-4">
+                                    <form method="get" class="d-flex">
+                                        <select name="grade" class="form-select me-2" onchange="this.form.submit()">
+                                            <option value="all" {% if grade_filter == 'all' %}selected{% endif %}>All Grades</option>
+                                            <option value="Premium" {% if grade_filter == 'Premium' %}selected{% endif %}>Premium</option>
+                                            <option value="Standard" {% if grade_filter == 'Standard' %}selected{% endif %}>Standard</option>
+                                            <option value="Basic" {% if grade_filter == 'Basic' %}selected{% endif %}>Basic</option>
+                                        </select>
+                                        <input type="hidden" name="waste_status" value="{{ waste_status_filter }}">
+                                        <input type="hidden" name="compost_status" value="{{ compost_status_filter }}">
+                                    </form>
+                                </div>
+                            </div>
+
+                            <!-- Compost Stock Table -->
+                            <div class="table-responsive">
+                                <table class="table table-hover">
+                                    <thead class="table-dark">
+                                        <tr>
+                                            <th>Batch ID</th>
+                                            <th>Batch Name</th>
+                                            <th>Manager</th>
+                                            <th>Grade</th>
+                                            <th>Stock (kg)</th>
+                                            <th>Source Waste (kg)</th>
+                                            <th>Price/kg</th>
+                                            <th>Total Value</th>
+                                            <th>Created Date</th>
+                                            <th>Status</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        {% for batch in compost_batches %}
+                                        <tr>
+                                            <td><strong>#{{ batch.Batch_id }}</strong></td>
+                                            <td>{{ batch.Batch_name }}</td>
+                                            <td>{{ batch.CompostManager_id.user.name|default:"No Manager" }}</td>
+                                            <td>
+                                                <span class="grade-badge grade-{{ batch.Grade|lower }}">
+                                                    {{ batch.Grade }}
+                                                </span>
+                                            </td>
+                                            <td>
+                                                <strong>{{ batch.stock_floored }} kg</strong>
+                                                {% if batch.Stock_kg < 50 %}
+                                                <i class="fas fa-exclamation-triangle text-warning ms-1" title="Low stock"></i>
+                                                {% endif %}
+                                            </td>
+                                            <td>{{ batch.source_floored }} kg</td>
+                                            <td>₹{{ batch.price_per_kg }}</td>
+                                            <td>₹{{ batch.total_value|floatformat:2 }}</td>
+                                            <td>{{ batch.Date_Created|date:"M d, Y" }}</td>
+                                            <td>
+                                                <span class="status-badge status-{{ batch.Status|lower }}">
+                                                    {{ batch.Status }}
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        {% empty %}
+                                        <tr>
+                                            <td colspan="10" class="text-center py-4">
+                                                <i class="fas fa-inbox fa-2x text-muted mb-2"></i>
+                                                <p class="text-muted">No compost batches found</p>
+                                            </td>
+                                        </tr>
+                                        {% endfor %}
+                                    </tbody>
+                                </table>
+                            </div>
+                </div>
+            </div>
+        </div>
+    </div>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </section>
+</section>
+{% endblock %}

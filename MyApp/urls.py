@@ -36,6 +36,7 @@ urlpatterns = [
     path('assign-collector/<int:order_id>/', sales_views.assign_waste_collector, name='assign_waste_collector'),
     path('compost-sales/', sales_views.admin_compost_sales, name='admin_compost_sales'),
     path('update-delivery/<int:order_id>/', sales_views.admin_update_delivery_status, name='admin_update_delivery'),
+    path('stock-management/', sales_views.admin_stock_management, name='admin_stock_management'),
     
     # Salary management
     path('salaries/', salary_views.admin_salary_management, name='admin_salary_management'),
