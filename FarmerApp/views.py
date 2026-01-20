@@ -323,23 +323,30 @@ def farmer_place_order(request):
             
             item_name = "Premium Organic Compost - Grade A"
             available_qty = total_stock
+            available_packets = int(total_stock)  # Floor to get packet count
             price = 200  # Fixed price
             item_id = 'all'  # Keep as 'all' for processing
         else:
             item = tbl_CompostBatch.objects.get(Batch_id=item_id)
             item_name = f"{item.Batch_name} - Standard Compost"
             available_qty = item.Stock_kg
+            available_packets = int(item.Stock_kg)  # Floor to get packet count
             price = item.price_per_kg
     else:
         return redirect('farmer_dashboard')
     
     farmer = Farmer.objects.get(user=request.user)
     
+    # Set available_packets for non-compost orders
+    if order_type != 'compost':
+        available_packets = 0
+    
     context = {
         'order_type': order_type,
         'item_id': item_id,
         'item_name': item_name,
         'available_qty': available_qty,
+        'available_packets': available_packets,
         'price': price,
         'farmer': farmer
     }

@@ -21,8 +21,13 @@
                     <!-- Item Information -->
                     <div class="alert alert-info">
                         <h5>{{ item_name }}</h5>
+                        {% if order_type == 'compost' %}
+                        <p class="mb-2"><strong>Available:</strong> {{ available_packets }} packets</p>
+                        <p class="mb-0"><strong>Price:</strong> ₹{{ price }}/packet</p>
+                        {% else %}
                         <p class="mb-2"><strong>Available:</strong> {{ available_qty }} kg</p>
                         <p class="mb-0"><strong>Price:</strong> ₹{{ price }}/kg</p>
+                        {% endif %}
                     </div>
 
                     <!-- Order Form -->
@@ -36,9 +41,9 @@
                                 {% if order_type == 'compost' %}
                                 <label for="quantity" class="form-label">Number of Packets (1kg each) *</label>
                                 <input type="number" class="form-control" id="quantity" name="quantity" min="1"
-                                    max="{{ available_qty|floatformat:0 }}" step="1" value="1" required
+                                    max="{{ available_packets }}" step="1" value="1" required
                                     onchange="calculateTotal()">
-                                <small class="text-muted">Maximum: {{ available_qty|floatformat:0 }} packets available</small>
+                                <small class="text-muted">Maximum: {{ available_packets }} packets available</small>
                                 {% else %}
                                 <label for="quantity" class="form-label">Quantity (kg) *</label>
                                 <input type="number" class="form-control" id="quantity" name="quantity" min="1"
