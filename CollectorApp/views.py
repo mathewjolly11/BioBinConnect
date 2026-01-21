@@ -20,11 +20,12 @@ def collector_dashboard(request):
     
     collector = Collector.objects.get(user=request.user)
     
-    # Today's pickups
+    # Today's pickups (only pending/active ones)
     today = timezone.now().date()
     today_pickups = tbl_PickupRequest.objects.filter(
         assigned_collector=collector,
-        scheduled_date=today
+        scheduled_date=today,
+        status__in=['Assigned', 'Pending', 'Scheduled', 'Approved']  # Include Approved status
     )
     today_pickups_count = today_pickups.count()
     
@@ -176,11 +177,14 @@ def log_collection(request, pickup_id):
             collection.save()
             
             # Create waste inventory for farmer purchasing
+            from MyApp.models import SystemSettings
+            default_price = float(SystemSettings.get_setting('waste_price_per_kg', '10.00'))
+            
             waste_inventory = tbl_WasteInventory.objects.create(
                 collection_request=collection,
                 collector=collector,
                 available_quantity_kg=collection.total_quantity_kg,
-                price_per_kg=10.00,  # Default price ₹10/kg
+                price_per_kg=default_price,  # Get price from system settings
                 collection_date=timezone.now(),
                 is_available=True,
                 status='Available'
@@ -211,9 +215,15 @@ def log_collection(request, pickup_id):
                     print(f"❌ Invalid household email: {household_email}")
                 else:
                     email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
-                    if not email_status['household_completion']:
+                    if email_status['household_completion']:
+                        # Email sent successfully  
                         if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
-                            email_status['errors'].append('Email configuration not set up (using console backend)')
+                            print(f"✅ Collection completion email logged to console for {household_email}")
+                        else:
+                            print(f"✅ Collection completion email sent to {household_email}")
+                    else:
+                        if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+                            email_status['errors'].append('Email logged to console (development mode)')
                         else:
                             email_status['errors'].append('Failed to send completion email (Gmail sending limit may be exceeded)')
                             
@@ -250,9 +260,14 @@ def log_collection(request, pickup_id):
     else:
         form = CollectionLogForm()
     
+    # Get current waste price for display
+    from MyApp.models import SystemSettings
+    current_waste_price = SystemSettings.get_setting('waste_price_per_kg', '10.00')
+    
     return render(request, 'Collector/log_collection.html', {
         'form': form, 
-        'pickup': pickup_request
+        'pickup': pickup_request,
+        'current_waste_price': current_waste_price
     })
 
 @login_required(login_url='login')
@@ -297,11 +312,14 @@ def log_collection_ajax(request, pickup_id):
             collection.save()
             
             # Create waste inventory for farmer purchasing
+            from MyApp.models import SystemSettings
+            default_price = float(SystemSettings.get_setting('waste_price_per_kg', '10.00'))
+            
             waste_inventory = tbl_WasteInventory.objects.create(
                 collection_request=collection,
                 collector=collector,
                 available_quantity_kg=collection.total_quantity_kg,
-                price_per_kg=10.00,  # Default price ₹10/kg
+                price_per_kg=default_price,  # Get price from system settings
                 collection_date=timezone.now(),
                 is_available=True,
                 status='Available'
@@ -332,9 +350,15 @@ def log_collection_ajax(request, pickup_id):
                     print(f"❌ Invalid household email: {household_email}")
                 else:
                     email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
-                    if not email_status['household_completion']:
+                    if email_status['household_completion']:
+                        # Email sent successfully  
                         if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
-                            email_status['errors'].append('Email configuration not set up (using console backend)')
+                            print(f"✅ Collection completion email logged to console for {household_email}")
+                        else:
+                            print(f"✅ Collection completion email sent to {household_email}")
+                    else:
+                        if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+                            email_status['errors'].append('Email logged to console (development mode)')
                         else:
                             email_status['errors'].append('Failed to send completion email (Gmail sending limit may be exceeded)')
                             

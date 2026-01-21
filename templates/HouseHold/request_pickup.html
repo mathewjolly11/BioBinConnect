@@ -15,6 +15,18 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
   <div class="container">
     <div class="row">
       <div class="col-md-8 offset-md-2">
+        <!-- Display Django Messages -->
+        {% if messages %}
+        <div class="mb-4">
+          {% for message in messages %}
+          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+          {% endfor %}
+        </div>
+        {% endif %}
+        
         <!-- Step 1: Pickup Request Details -->
         <div class="de_testi bg-white p-5 wow fadeInUp" id="step1">
           <h4 class="mb-4">Step 1: Pickup Request Details</h4>
@@ -118,7 +130,7 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
                 maxlength="4"
               />
             </div>
-        F    <button type="button" class="btn-main w-100" id="payWithUPI">
+           <button type="button" class="btn-main w-100" id="payWithUPI">
               <i class="fa fa-lock me-2"></i> Pay Securely
             </button>
           </div>
@@ -669,22 +681,7 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
       if (binTypeSelect.value) {
           binTypeSelect.dispatchEvent(new Event('change'));
       }
-
-      // Show form errors if any
-      {% if request.session.form_errors %}
-      Swal.fire({
-          icon: 'error',
-          title: 'Form Validation Error',
-          html: `
-              <ul style="text-align: left;">
-                  {% for error in request.session.form_errors %}
-                  <li>{{ error }}</li>
-                  {% endfor %}
-              </ul>
-          `,
-          confirmButtonColor: '#6c9a2e'
-      });
-      {% endif %}
   });
 </script>
+
 {% endblock %}

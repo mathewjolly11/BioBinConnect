@@ -1,8 +1,8 @@
 from django import forms
 from MyApp.models import tbl_CompostBatch
 
-class CompostBatchForm(forms.ModelForm):
-    """Form for creating and editing compost batches"""
+class CreateCompostBatchForm(forms.ModelForm):
+    """Form for creating new compost batches (only batch name required)"""
     
     class Meta:
         model = tbl_CompostBatch
@@ -12,6 +12,28 @@ class CompostBatchForm(forms.ModelForm):
         }
         labels = {
             'Batch_name': 'Batch Name',
+        }
+
+
+class CompostBatchForm(forms.ModelForm):
+    """Form for creating and editing compost batches"""
+    
+    class Meta:
+        model = tbl_CompostBatch
+        fields = ['Batch_name', 'Grade', 'price_per_kg', 'Source_Waste_kg', 'Stock_kg']
+        widgets = {
+            'Batch_name': forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Enter batch name'}),
+            'Grade': forms.Select(attrs={'class': 'form-control'}),
+            'price_per_kg': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter price per kg', 'step': '0.01'}),
+            'Source_Waste_kg': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter source waste in kg', 'step': '0.01'}),
+            'Stock_kg': forms.NumberInput(attrs={'class': 'form-control', 'placeholder': 'Enter current stock in kg', 'step': '0.01'}),
+        }
+        labels = {
+            'Batch_name': 'Batch Name',
+            'Grade': 'Compost Grade',
+            'price_per_kg': 'Price per KG (₹)',
+            'Source_Waste_kg': 'Source Waste (kg)',
+            'Stock_kg': 'Current Stock (kg)',
         }
     
     def clean_Source_Waste_kg(self):

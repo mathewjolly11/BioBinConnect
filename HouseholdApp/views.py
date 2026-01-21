@@ -285,15 +285,13 @@ def request_pickup(request):
                     'errors': error_list
                 })
             
-            request.session['form_errors'] = error_list
+            # Add errors to Django messages for display
+            for error in error_list:
+                messages.error(request, error)
     else:
         form = PickupRequestForm()
     
-    # Clear form errors after displaying
     context = {'form': form}
-    if 'form_errors' in request.session:
-        del request.session['form_errors']
-    
     return render(request, 'HouseHold/request_pickup.html', context)
 
 @login_required(login_url='login')

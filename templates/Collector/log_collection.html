@@ -26,7 +26,7 @@
             </div>
           </div>
 
-          <form id="collectionForm" method="post" class="form-border">
+          <form id="collectionForm" method="post" class="form-border" onsubmit="return false;">
             {% csrf_token %}
             <div class="col-md-12">
               <label
@@ -43,13 +43,13 @@
 
               <div class="form-text">
                 <i class="fa fa-info-circle"></i> Please verify the weight
-                before submitting. Default price: ₹10/kg will be applied for
+                before submitting. Default price: ₹{{ current_waste_price }}/kg will be applied for
                 farmer purchases.
               </div>
             </div>
 
             <div class="col-md-12 text-center mt-4">
-              <button type="submit" id="submitBtn" class="btn-main">
+              <button type="button" id="submitBtn" class="btn-main" onclick="handleSubmit(event)">
                 <i class="fa fa-check-circle me-2"></i>Submit Collection Log
               </button>
               <a href="{% url 'view_assigned_pickups' %}" class="btn-line ms-2"
@@ -117,51 +117,54 @@
 <script>
   let formSubmitted = false;
 
-  document
-    .getElementById("collectionForm")
-    .addEventListener("submit", function (e) {
-      e.preventDefault();
+  function handleSubmit(event) {
+    event.preventDefault();
+    
+    if (formSubmitted) {
+      console.log('Form already submitted, ignoring');
+      return false;
+    }
 
-      if (formSubmitted) return;
+    const weight = document.getElementById(
+      "{{ form.total_quantity_kg.id_for_label }}",
+    ).value;
 
-      const weight = document.getElementById(
-        "{{ form.total_quantity_kg.id_for_label }}",
-      ).value;
-
-      if (!weight || parseFloat(weight) <= 0) {
-        Swal.fire({
-          icon: "warning",
-          title: "Invalid Weight",
-          text: "Please enter a valid weight greater than 0 kg",
-          confirmButtonColor: "#6c9a2e",
-        });
-        return;
-      }
-
-      // Confirm before submission
+    if (!weight || parseFloat(weight) <= 0) {
       Swal.fire({
-        title: "Confirm Collection",
-        html: `
-              <div class="text-center">
-                  <p><strong>Weight to log:</strong> ${weight} kg</p>
-                  <p><strong>Household:</strong> {{ pickup.household.household_name }}</p>
-                  <p><strong>Pickup ID:</strong> #{{ pickup.Pickup_id }}</p>
-                  <hr>
-                  <small class="text-muted">This will complete the pickup and make the waste available for farmer purchase at ₹10/kg</small>
-              </div>
-          `,
-        icon: "question",
-        showCancelButton: true,
-        confirmButtonText: '<i class="fa fa-check"></i> Yes, Log Collection',
-        cancelButtonText: '<i class="fa fa-times"></i> Cancel',
+        icon: "warning",
+        title: "Invalid Weight",
+        text: "Please enter a valid weight greater than 0 kg",
         confirmButtonColor: "#6c9a2e",
-        cancelButtonColor: "#6b7280",
-      }).then((result) => {
-        if (result.isConfirmed) {
-          submitCollection();
-        }
       });
+      return false;
+    }
+
+    // Confirm before submission
+    Swal.fire({
+      title: "Confirm Collection",
+      html: `
+            <div class="text-center">
+                <p><strong>Weight to log:</strong> ${weight} kg</p>
+                <p><strong>Household:</strong> {{ pickup.household.household_name }}</p>
+                <p><strong>Pickup ID:</strong> #{{ pickup.Pickup_id }}</p>
+                <hr>
+                  <small class="text-muted">This will complete the pickup and make the waste available for farmer purchase at ₹{{ current_waste_price }}/kg</small>
+            </div>
+        `,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonText: '<i class="fa fa-check"></i> Yes, Log Collection',
+      cancelButtonText: '<i class="fa fa-times"></i> Cancel',
+      confirmButtonColor: "#6c9a2e",
+      cancelButtonColor: "#6b7280",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        submitCollection();
+      }
     });
+    
+    return false;
+  }
 
   function submitCollection() {
     if (formSubmitted) return;
@@ -304,7 +307,7 @@
                   
                   <div class="alert alert-info mb-4">
                       <h6><i class="fa fa-shopping-cart"></i> Waste Inventory</h6>
-                      <p>This waste is now available for farmer purchase at <strong>₹10/kg</strong></p>
+                      <p>This waste is now available for farmer purchase at <strong>₹{{ current_waste_price }}/kg</strong></p>
                       <small>Inventory ID: #${collection.inventory_id}</small>
                   </div>
                   

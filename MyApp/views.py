@@ -1136,6 +1136,14 @@ def admin_settings(request):
                 'Days after which waste is automatically marked unavailable'
             )
             
+            # Save waste price per kg
+            waste_price = str(form.cleaned_data['waste_price_per_kg'])
+            SystemSettings.set_setting(
+                'waste_price_per_kg',
+                waste_price,
+                'Default price for waste sold to farmers per kilogram (in ₹)'
+            )
+            
             messages.success(request, 'System settings updated successfully!')
             return redirect('admin_settings')
     else:
@@ -1146,6 +1154,7 @@ def admin_settings(request):
     current_low_stock = SystemSettings.get_setting('low_stock_threshold', '50')
     current_expiry_days = SystemSettings.get_setting('expiry_warning_days', '7')
     current_unavailable_days = SystemSettings.get_setting('auto_unavailable_days', '30')
+    current_waste_price = SystemSettings.get_setting('waste_price_per_kg', '10.00')
     
     context = {
         'form': form,
@@ -1153,6 +1162,7 @@ def admin_settings(request):
         'current_low_stock': current_low_stock,
         'current_expiry_days': current_expiry_days,
         'current_unavailable_days': current_unavailable_days,
+        'current_waste_price': current_waste_price,
     }
     return render(request, 'Admin/settings.html', context)
 

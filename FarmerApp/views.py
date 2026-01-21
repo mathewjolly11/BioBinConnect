@@ -162,11 +162,16 @@ def farmer_browse_compost(request):
     # Get the most recent batch for display info
     latest_batch = available_batches.order_by('-Date_Created').first() if available_batches.exists() else None
     
+    # Get conversion ratio from settings
+    from MyApp.models import SystemSettings
+    conversion_ratio = SystemSettings.get_setting('compost_conversion_ratio', '4.0')
+    
     context = {
         'total_stock': total_stock,
         'batch_count': batch_count,
         'latest_batch': latest_batch,
-        'has_stock': total_stock > 0
+        'has_stock': total_stock > 0,
+        'conversion_ratio': conversion_ratio,
     }
     return render(request, 'Farmer/browse_compost.html', context)
 
@@ -305,7 +310,9 @@ def farmer_place_order(request):
             
             item_name = "Fresh Organic Waste for Animal Feed"
             available_qty = total_stock
-            price = 10  # Fixed price ₹10/kg
+            # Get price from system settings
+            from MyApp.models import SystemSettings
+            price = float(SystemSettings.get_setting('waste_price_per_kg', '10.00'))  # Get price from system settings
             item_id = 'all'  # Keep as 'all' for processing
         else:
             item = tbl_WasteInventory.objects.get(Inventory_id=item_id)
@@ -374,10 +381,16 @@ def farmer_orders(request):
         waste_item = order.tbl_orderitem_set.filter(Item_Type='Waste').first()
         compost_item = order.tbl_orderitem_set.filter(Item_Type='Compost').first()
         
+        # Get unique delivery statuses
+        waste_statuses = set(item.Delivery_Status for item in order.tbl_orderitem_set.filter(Item_Type='Waste'))
+        compost_statuses = set(item.Delivery_Status for item in order.tbl_orderitem_set.filter(Item_Type='Compost'))
+        
         order.waste_total = int(waste_total)
         order.compost_total = int(compost_total)
         order.waste_unit_price = waste_item.Unit_Price if waste_item else 0
         order.compost_unit_price = compost_item.Unit_Price if compost_item else 0
+        order.waste_statuses = list(waste_statuses)
+        order.compost_statuses = list(compost_statuses)
     
     # Calculate total spent
     total_spent = orders.aggregate(total=Sum('Total_Amount'))['total'] or 0

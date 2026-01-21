@@ -104,6 +104,9 @@ def admin_pay_salary(request):
                 total_amount = 0
                 count = 0
                 
+                # Get all active collectors
+                collectors = Collector.objects.filter(user__is_verified=True)
+                
                 for collector in collectors:
                     unpaid_dates = tbl_WasteInventory.objects.filter(
                         collector=collector,
@@ -145,6 +148,9 @@ def admin_pay_salary(request):
             try:
                 total_amount = 0
                 count = 0
+                
+                # Get all active managers
+                managers = CompostManager.objects.filter(user__is_verified=True)
                 
                 for manager in managers:
                     unpaid_dates = tbl_CompostBatch.objects.filter(

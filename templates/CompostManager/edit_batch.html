@@ -1,94 +1,202 @@
 {% extends 'CompostManager/base.html' %}
 
-{% block title %}Edit Batch - BioBinConnect{% endblock %}
+<style>
+  /* Comprehensive button fix - LOCK SIZE COMPLETELY (from Farmer Dashboard) */
+  .btn {
+    max-width: 100% !important;
+    width: auto !important;
+    flex-grow: 0 !important;
+    flex-shrink: 1 !important;
+    flex-basis: auto !important;
+    box-sizing: border-box !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    scale: 1 !important;
+    animation: none !important;
+    -webkit-animation: none !important;
+    transition:
+      background-color 0.15s ease,
+      color 0.15s ease,
+      border-color 0.15s ease !important;
+  }
 
-{% block content %}
+  .btn:hover,
+  .btn:active,
+  .btn:focus,
+  .btn:focus-visible {
+    transform: none !important;
+    -webkit-transform: none !important;
+    -moz-transform: none !important;
+    -ms-transform: none !important;
+    -o-transform: none !important;
+    scale: 1 !important;
+    animation: none !important;
+  }
+
+  /* Flex container fixes */
+  .d-flex {
+    flex-wrap: wrap !important;
+  }
+
+  .d-flex .btn {
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+  }
+
+  /* Global container fixes */
+  * {
+    box-sizing: border-box !important;
+  }
+</style>
+
+{% block title %}Edit Batch - BioBinConnect{% endblock %} {% block content %}<br /><br /><br /><br /><br />
 <div class="container mt-5">
-    <div class="row">
-        <div class="col-md-8 offset-md-2">
-            <div class="card shadow-sm">
-                <div class="card-header bg-primary text-white">
-                    <h4 class="mb-0"><i class="fas fa-edit me-2"></i>Edit Compost Batch</h4>
-                </div>
-                <div class="card-body">
-                    {% if messages %}
-                    {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-                    </div>
-                    {% endfor %}
-                    {% endif %}
-
-                    <form method="post">
-                        {% csrf_token %}
-
-                        <div class="mb-3">
-                            <label for="{{ form.Batch_name.id_for_label }}" class="form-label">{{ form.Batch_name.label }}</label>
-                            {{ form.Batch_name }}
-                            {% if form.Batch_name.errors %}
-                            <div class="text-danger">{{ form.Batch_name.errors }}</div>
-                            {% endif %}
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.Grade.id_for_label }}" class="form-label">{{ form.Grade.label }}</label>
-                                {{ form.Grade }}
-                                {% if form.Grade.errors %}
-                                <div class="text-danger">{{ form.Grade.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.price_per_kg.id_for_label }}" class="form-label">{{ form.price_per_kg.label }}</label>
-                                {{ form.price_per_kg }}
-                                {% if form.price_per_kg.errors %}
-                                <div class="text-danger">{{ form.price_per_kg.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="row">
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.Source_Waste_kg.id_for_label }}" class="form-label">{{ form.Source_Waste_kg.label }}</label>
-                                {{ form.Source_Waste_kg }}
-                                <small class="text-muted">Original source waste quantity</small>
-                                {% if form.Source_Waste_kg.errors %}
-                                <div class="text-danger">{{ form.Source_Waste_kg.errors }}</div>
-                                {% endif %}
-                            </div>
-                            <div class="col-md-6 mb-3">
-                                <label for="{{ form.Stock_kg.id_for_label }}" class="form-label">{{ form.Stock_kg.label }}</label>
-                                {{ form.Stock_kg }}
-                                <small class="text-muted">Current available stock</small>
-                                {% if form.Stock_kg.errors %}
-                                <div class="text-danger">{{ form.Stock_kg.errors }}</div>
-                                {% endif %}
-                            </div>
-                        </div>
-
-                        <div class="alert alert-info">
-                            <strong>Batch ID:</strong> #{{ batch.Batch_id }}<br>
-                            <strong>Created:</strong> {{ batch.Date_Created|date:"d M Y" }}<br>
-                            <strong>Status:</strong>
-                            <span
-                                class="badge bg-{% if batch.Status == 'Processing' %}warning{% elif batch.Status == 'Ready' %}success{% else %}secondary{% endif %}">
-                                {{ batch.Status }}
-                            </span>
-                        </div>
-
-                        <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
-                            <a href="{% url 'manage_batches' %}" class="btn btn-secondary">
-                                <i class="fas fa-times me-2"></i>Cancel
-                            </a>
-                            <button type="submit" class="btn btn-primary">
-                                <i class="fas fa-save me-2"></i>Save Changes
-                            </button>
-                        </div>
-                    </form>
-                </div>
-            </div>
+  <div class="row">
+    <div class="col-md-8 offset-md-2">
+      <div class="card shadow-sm">
+        <div class="card-header bg-primary text-white">
+          <h4 class="mb-0">
+            <i class="fas fa-edit me-2"></i>Edit Compost Batch
+          </h4>
         </div>
+        <div class="card-body">
+          {% if messages %} {% for message in messages %}
+          <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show"
+            role="alert"
+          >
+            {{ message }}
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+            ></button>
+          </div>
+          {% endfor %} {% endif %}
+
+          <form method="post">
+            {% csrf_token %}
+
+            <div class="mb-3">
+              <label for="{{ form.Batch_name.id_for_label }}" class="form-label"
+                >{{ form.Batch_name.label }}</label
+              >
+              {{ form.Batch_name }} {% if form.Batch_name.errors %}
+              <div class="text-danger">{{ form.Batch_name.errors }}</div>
+              {% endif %}
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label for="{{ form.Grade.id_for_label }}" class="form-label"
+                  >{{ form.Grade.label }}</label
+                >
+                {{ form.Grade }} {% if form.Grade.errors %}
+                <div class="text-danger">{{ form.Grade.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.price_per_kg.id_for_label }}"
+                  class="form-label"
+                  >{{ form.price_per_kg.label }}</label
+                >
+                {{ form.price_per_kg }} {% if form.price_per_kg.errors %}
+                <div class="text-danger">{{ form.price_per_kg.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="row">
+              <div class="col-md-6 mb-3">
+                <label
+                  for="{{ form.Source_Waste_kg.id_for_label }}"
+                  class="form-label"
+                  >{{ form.Source_Waste_kg.label }}</label
+                >
+                {{ form.Source_Waste_kg }}
+                <small class="text-muted">Original source waste quantity</small>
+                {% if form.Source_Waste_kg.errors %}
+                <div class="text-danger">{{ form.Source_Waste_kg.errors }}</div>
+                {% endif %}
+              </div>
+              <div class="col-md-6 mb-3">
+                <label for="{{ form.Stock_kg.id_for_label }}" class="form-label"
+                  >{{ form.Stock_kg.label }}</label
+                >
+                {{ form.Stock_kg }}
+                <small class="text-muted">Current available stock</small>
+                {% if form.Stock_kg.errors %}
+                <div class="text-danger">{{ form.Stock_kg.errors }}</div>
+                {% endif %}
+              </div>
+            </div>
+
+            <div class="alert alert-info">
+              <strong>Batch ID:</strong> #{{ batch.Batch_id }}<br />
+              <strong>Created:</strong> {{ batch.Date_Created|date:"d M Y" }}<br />
+              <strong>Status:</strong>
+              <span
+                class="badge bg-{% if batch.Status == 'Processing' %}warning{% elif batch.Status == 'Ready' %}success{% else %}secondary{% endif %}"
+              >
+                {{ batch.Status }}
+              </span>
+            </div>
+
+            <div class="d-grid gap-2 d-md-flex justify-content-md-end mt-4">
+              <a
+                href="{% url 'manage_batches' %}"
+                onclick="
+                  window.location.href = this.href;
+                  return false;
+                "
+                style="
+                  background: #6c757d;
+                  color: white;
+                  padding: 10px 24px;
+                  border: none;
+                  border-radius: 6px;
+                  font-weight: 600;
+                  text-decoration: none;
+                  display: inline-block;
+                  cursor: pointer;
+                  transform: none !important;
+                  transition: background-color 0.15s ease !important;
+                "
+                onmouseover="this.style.backgroundColor = '#5a6268'"
+                onmouseout="this.style.backgroundColor = '#6c757d'"
+              >
+                <i class="fas fa-times me-2"></i>Cancel
+              </a>
+              <button
+                type="submit"
+                style="
+                  background: #007bff;
+                  color: white;
+                  padding: 10px 24px;
+                  border: none;
+                  border-radius: 6px;
+                  font-weight: 600;
+                  cursor: pointer;
+                  transform: none !important;
+                  transition: background-color 0.15s ease !important;
+                "
+                onmouseover="this.style.backgroundColor = '#0056b3'"
+                onmouseout="this.style.backgroundColor = '#007bff'"
+              >
+                <i class="fas fa-save me-2"></i>Save Changes
+              </button>
+            </div>
+          </form>
+        </div>
+      </div>
     </div>
+  </div>
 </div>
+<br /><br /><br /><br />
 {% endblock %}

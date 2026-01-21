@@ -8,7 +8,7 @@ from django.utils import timezone
 from GuestApp.models import CompostManager
 from GuestApp.forms import CompostManagerEditForm, ProfileEditForm
 from MyApp.models import tbl_WasteInventory, tbl_CompostBatch
-from .forms import CompostBatchForm, BatchStatusUpdateForm
+from .forms import CreateCompostBatchForm, CompostBatchForm, BatchStatusUpdateForm
 from decimal import Decimal
 
 @login_required(login_url='login')
@@ -79,7 +79,7 @@ def create_compost_batch(request):
     ).select_related('collector')
     
     if request.method == 'POST':
-        form = CompostBatchForm(request.POST)
+        form = CreateCompostBatchForm(request.POST)
         waste_ids = request.POST.getlist('waste_ids')
         
         if form.is_valid() and waste_ids:
@@ -117,11 +117,16 @@ def create_compost_batch(request):
             else:
                 messages.error(request, 'Please correct the errors below.')
     else:
-        form = CompostBatchForm()
+        form = CreateCompostBatchForm()
+    
+    # Get conversion ratio from settings for display in template
+    from MyApp.models import SystemSettings
+    conversion_ratio = SystemSettings.get_setting('compost_conversion_ratio', '4.0')
     
     context = {
         'form': form,
         'available_waste': available_waste,
+        'conversion_ratio': conversion_ratio,
     }
     return render(request, 'CompostManager/create_batch.html', context)
 
@@ -169,26 +174,41 @@ def update_batch_status(request, batch_id):
 @never_cache
 def edit_batch(request, batch_id):
     """Edit batch details"""
-    compost_manager = CompostManager.objects.get(user=request.user)
-    batch = get_object_or_404(tbl_CompostBatch, Batch_id=batch_id, CompostManager_id=compost_manager)
-    
-    if request.method == 'POST':
-        form = CompostBatchForm(request.POST, instance=batch)
-        if form.is_valid():
-            form.save()
-            messages.success(request, 'Batch updated successfully!')
-            return redirect('manage_batches')
+    print(f"DEBUG: Entering edit_batch with batch_id={batch_id}, user={request.user}")
+    try:
+        compost_manager = CompostManager.objects.get(user=request.user)
+        print(f"DEBUG: Found manager: {compost_manager}")
+        batch = get_object_or_404(tbl_CompostBatch, Batch_id=batch_id, CompostManager_id=compost_manager)
+        print(f"DEBUG: Found batch: {batch}")
+        
+        if request.method == 'POST':
+            print("DEBUG: Processing POST request")
+            form = CompostBatchForm(request.POST, instance=batch)
+            if form.is_valid():
+                form.save()
+                messages.success(request, 'Batch updated successfully!')
+                return redirect('manage_batches')
+            else:
+                print(f"DEBUG: Form invalid: {form.errors}")
+                messages.error(request, 'Please correct the errors below.')
         else:
-            messages.error(request, 'Please correct the errors below.')
-    else:
-        form = CompostBatchForm(instance=batch)
-    
-    context = {
-        'form': form,
-        'batch': batch,
-        'is_edit': True,
-    }
-    return render(request, 'CompostManager/edit_batch.html', context)
+            print("DEBUG: Processing GET request")
+            form = CompostBatchForm(instance=batch)
+            print(f"DEBUG: Form initialized with fields: {list(form.fields.keys())}")
+        
+        context = {
+            'form': form,
+            'batch': batch,
+            'is_edit': True,
+        }
+        return render(request, 'CompostManager/edit_batch.html', context)
+    except Exception as e:
+        print(f"DEBUG: Exception in edit_batch: {e}")
+        import traceback
+        traceback.print_exc()
+        messages.error(request, f"Error loading batch: {str(e)}")
+        return redirect('manage_batches')
+
 
 @login_required(login_url='login')
 @never_cache

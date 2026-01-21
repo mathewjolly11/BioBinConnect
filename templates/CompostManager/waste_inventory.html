@@ -2,6 +2,36 @@
 
 {% block title %}Waste Inventory - BioBinConnect{% endblock %}
 
+<style>
+  /* Custom CompostManager button styles - prevent enlargement */
+  .btn,
+  .btn-group .btn,
+  .btn-outline-primary,
+  .btn-outline-secondary,
+  .btn-success,
+  .btn-secondary,
+  .btn-primary {
+    transform: none !important;
+    transition: background-color 0.3s ease, color 0.3s ease, opacity 0.3s ease, border-color 0.3s ease !important;
+    -webkit-transform: none !important;
+  }
+
+  .btn:hover,
+  .btn-group .btn:hover,
+  .btn:active,
+  .btn:focus,
+  .btn:focus-visible {
+    transform: none !important;
+    -webkit-transform: none !important;
+    opacity: 0.9;
+  }
+
+  /* Ensure Bootstrap animations don't override */
+  .btn-group .btn {
+    animation: none !important;
+  }
+</style>
+
 {% block content %}
 <div class="container mt-5">
     <div class="row mb-4">

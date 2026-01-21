@@ -266,6 +266,19 @@ class SystemSettingsForm(forms.Form):
         })
     )
     
+    waste_price_per_kg = forms.DecimalField(
+        label='Waste Price per kg (₹)',
+        help_text='Default price for waste sold to farmers per kilogram',
+        min_value=1.0,
+        max_value=100.0,
+        decimal_places=2,
+        widget=forms.NumberInput(attrs={
+            'class': 'form-control',
+            'placeholder': '10.00',
+            'step': '0.50'
+        })
+    )
+    
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
         # Load current values from database
@@ -273,4 +286,5 @@ class SystemSettingsForm(forms.Form):
         self.fields['low_stock_threshold'].initial = SystemSettings.get_setting('low_stock_threshold', '50')
         self.fields['expiry_warning_days'].initial = SystemSettings.get_setting('expiry_warning_days', '7')
         self.fields['auto_unavailable_days'].initial = SystemSettings.get_setting('auto_unavailable_days', '30')
+        self.fields['waste_price_per_kg'].initial = SystemSettings.get_setting('waste_price_per_kg', '10.00')
 

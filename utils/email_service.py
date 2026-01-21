@@ -58,8 +58,12 @@ def send_email(subject, template_name, context, recipient_email):
         # Handle specific Gmail errors
         if "Daily user sending limit exceeded" in error_msg:
             print("   ⚠️ Gmail daily sending limit reached. Email will retry later.")
+        elif "Daily sending quota exceeded" in error_msg:
+            print("   ⚠️ Gmail daily quota exceeded. Consider using a different email service.")
         elif "Authentication failed" in error_msg or "Username and Password not accepted" in error_msg:
             print("   ⚠️ Gmail authentication failed. Check EMAIL_HOST_USER and EMAIL_HOST_PASSWORD.")
+        elif "Application-specific password required" in error_msg:
+            print("   ⚠️ Please use Gmail App Password instead of regular password.")
         
         return False
 

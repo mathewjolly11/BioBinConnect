@@ -20,7 +20,8 @@
             <div class="col-md-8">
               <h5>Order #{{ order.Order_id }}</h5>
               <p class="mb-2">
-                <strong>📅 Date:</strong> {{ order.Order_Date|date:"M d, Y H:i"}}
+                <strong>📅 Date:</strong> {{ order.Order_Date|date:"M d, Y
+                H:i"}}
               </p>
               <p class="mb-2">
                 <strong>📍 Delivery:</strong> {{ order.Delivery_Address }}
@@ -31,48 +32,46 @@
                 <strong>Items:</strong>
                 <ul class="mt-2">
                   {% if order.waste_total > 0 %}
-                    <li>
-                      🌾 Direct Waste - {{ order.waste_total }} kg @ ₹{{ order.waste_unit_price }}/kg
-                      <br />
+                  <li>
+                    🌾 Direct Waste - {{ order.waste_total }} kg @ ₹{{
+                    order.waste_unit_price }}/kg
+                    <br />
+                    <small class="text-muted">
+                      Delivery Status: 
+                      {% for status in order.waste_statuses %}
+                        {% if status == 'Pending' %}
+                          <span class="badge bg-warning">Pending</span>
+                        {% elif status == 'Dispatched' %}
+                          <span class="badge bg-info">Dispatched</span>
+                        {% elif status == 'Delivered' %}
+                          <span class="badge bg-success">Delivered</span>
+                        {% else %}
+                          <span class="badge bg-secondary">{{ status }}</span>
+                        {% endif %}
+                      {% endfor %}
+                    </small>
+                  </li>
+                  {% endif %} {% if order.compost_total > 0 %}
+                  <li>
+                    🍂 Organic Compost - {{ order.compost_total }} packets @ ₹{{
+                    order.compost_unit_price }}/packet
+                    <br />
                       <small class="text-muted">
                         Delivery Status: 
-                        {% for item in order.tbl_orderitem_set.all %}
-                          {% if item.Item_Type == 'Waste' %}
-                            {% if item.Delivery_Status == 'Pending' %}
-                              <span class="badge bg-warning">Pending</span>
-                            {% elif item.Delivery_Status == 'Dispatched' %}
-                              <span class="badge bg-info">Dispatched</span>
-                            {% elif item.Delivery_Status == 'Delivered' %}
-                              <span class="badge bg-success">Delivered</span>
-                            {% else %}
-                              <span class="badge bg-secondary">{{ item.Delivery_Status }}</span>
-                            {% endif %}
+                        {% for status in order.compost_statuses %}
+                          {% if status == 'Pending' %}
+                            <span class="badge bg-warning">Pending</span>
+                          {% elif status == 'Dispatched' %}
+                            <span class="badge bg-info">Dispatched</span>
+                          {% elif status == 'Delivered' %}
+                            <span class="badge bg-success">Delivered</span>
+                          {% else %}
+                            <span class="badge bg-secondary">{{ status }}</span>
                           {% endif %}
                         {% endfor %}
                       </small>
                     </li>
-                  {% endif %}
-                  {% if order.compost_total > 0 %}
-                    <li>
-                      🍂 Organic Compost - {{ order.compost_total }} packets @ ₹{{ order.compost_unit_price }}/packet
-                      <br />
-                      <small class="text-muted">
-                        Delivery Status: 
-                        {% for item in order.tbl_orderitem_set.all %}
-                          {% if item.Item_Type == 'Compost' %}
-                            {% if item.Delivery_Status == 'Pending' %}
-                              <span class="badge bg-warning">Pending</span>
-                            {% elif item.Delivery_Status == 'Dispatched' %}
-                              <span class="badge bg-info">Dispatched</span>
-                            {% elif item.Delivery_Status == 'Delivered' %}
-                              <span class="badge bg-success">Delivered</span>
-                            {% else %}
-                              <span class="badge bg-secondary">{{ item.Delivery_Status }}</span>
-                            {% endif %}
-                          {% endif %}
-                        {% endfor %}
-                      </small>
-                    </li>
+                  </li>
                   {% endif %}
                 </ul>
               </div>
@@ -105,7 +104,8 @@
           <div class="col-md-4">
             <div class="de_testi bg-light p-4 rounded text-center">
               <h3>
-                {% widthratio orders|length 1 1 as pending_count %} {{orders|length }}
+                {% widthratio orders|length 1 1 as pending_count %}
+                {{orders|length }}
               </h3>
               <p class="mb-0">Pending Deliveries</p>
             </div>

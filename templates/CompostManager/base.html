@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 {% load static %}
 <html lang="en">
   <head>
@@ -464,11 +464,28 @@
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
     <script>
-      // Prevent back button after logout
-      window.history.pushState(null, "", window.location.href);
-      window.onpopstate = function () {
+      // Prevent back button after logout (but allow normal navigation)
+      (function () {
+        var isNavigatingAway = false;
+
+        // Mark when user is navigating away via link click
+        document.addEventListener("click", function (e) {
+          var target = e.target.closest("a");
+          if (target && target.href && !target.target) {
+            isNavigatingAway = true;
+          }
+        });
+
+        // Only prevent back button, not forward navigation
+        window.addEventListener("popstate", function (e) {
+          if (!isNavigatingAway) {
+            window.history.pushState(null, "", window.location.href);
+          }
+        });
+
+        // Initialize history state
         window.history.pushState(null, "", window.location.href);
-      };
+      })();
 
       // Logout with SweetAlert confirmation (matching green eco-theme)
       document.addEventListener("DOMContentLoaded", function () {
