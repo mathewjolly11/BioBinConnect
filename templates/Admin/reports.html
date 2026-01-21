@@ -286,38 +286,95 @@
             </div>
         </div>
 
-        <!-- Manager Salaries Preview -->
+        <!-- User Activity Summary -->
         <div class="d-flex justify-content-between align-items-center mb-3">
-            <h4 style="font-weight: 700; color: #1F2937;">💼 Manager Salaries Preview</h4>
-            <a href="{% url 'manager_salaries' %}" class="btn btn-primary btn-sm">View Full Details</a>
+            <h4 style="font-weight: 700; color: #1F2937;">👥 System Usage Overview</h4>
         </div>
-        <div class="card">
-            <div class="card-body">
-                <div class="table-responsive">
-                    <table class="table table-hover">
-                        <thead class="table-light">
-                            <tr>
-                                <th>Manager Name</th>
-                                <th>Days Worked</th>
-                                <th>Daily Rate</th>
-                                <th>Total Salary</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            {% for salary in manager_salaries|slice:":5" %}
-                            <tr>
-                                <td>{{ salary.manager.user.name }}</td>
-                                <td>{{ salary.days_worked }} days</td>
-                                <td>&#8377;{{ salary.daily_rate }}</td>
-                                <td><strong>&#8377;{{ salary.total_salary|floatformat:2 }}</strong></td>
-                            </tr>
-                            {% empty %}
-                            <tr>
-                                <td colspan="4" class="text-center text-muted">No compost managers found</td>
-                            </tr>
-                            {% endfor %}
-                        </tbody>
-                    </table>
+        <div class="row mb-4">
+            <div class="col-md-3 mb-3">
+                <div class="card text-center" style="border-left: 4px solid #10B981;">
+                    <div class="card-body">
+                        <h5 style="color: #6B7280; font-weight: 600;">🏠 Households</h5>
+                        <h3 style="color: #1F2937; font-weight: 800;">{{ total_households }}</h3>
+                        <small class="text-muted">Active Users</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center" style="border-left: 4px solid #3B82F6;">
+                    <div class="card-body">
+                        <h5 style="color: #6B7280; font-weight: 600;">🚛 Collectors</h5>
+                        <h3 style="color: #1F2937; font-weight: 800;">{{ total_collectors }}</h3>
+                        <small class="text-muted">Active Workers</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center" style="border-left: 4px solid #F59E0B;">
+                    <div class="card-body">
+                        <h5 style="color: #6B7280; font-weight: 600;">🌾 Farmers</h5>
+                        <h3 style="color: #1F2937; font-weight: 800;">{{ total_farmers_count }}</h3>
+                        <small class="text-muted">Registered</small>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-3 mb-3">
+                <div class="card text-center" style="border-left: 4px solid #8B5CF6;">
+                    <div class="card-body">
+                        <h5 style="color: #6B7280; font-weight: 600;">🏭 Managers</h5>
+                        <h3 style="color: #1F2937; font-weight: 800;">{{ total_compost_managers }}</h3>
+                        <small class="text-muted">Active</small>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Performance Metrics -->
+        <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 style="font-weight: 700; color: #1F2937;">📈 Performance Metrics</h4>
+            <a href="{% url 'payment_transactions' %}" class="btn btn-primary btn-sm">View All Transactions</a>
+        </div>
+        <div class="row mb-4">
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #10B981;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 style="color: #6B7280; font-weight: 600; margin-bottom: 8px;">💸 Total Payments</h6>
+                                <h4 style="color: #1F2937; font-weight: 800; margin: 0;">₹{{ total_payment_amount|floatformat:2 }}</h4>
+                                <small class="text-success">Collected</small>
+                            </div>
+                            <div style="font-size: 2.5rem; opacity: 0.2;">💰</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #3B82F6;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 style="color: #6B7280; font-weight: 600; margin-bottom: 8px;">📦 Waste Orders</h6>
+                                <h4 style="color: #1F2937; font-weight: 800; margin: 0;">{{ waste_orders_count }}</h4>
+                                <small class="text-info">Total Orders</small>
+                            </div>
+                            <div style="font-size: 2.5rem; opacity: 0.2;">📦</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-4 mb-3">
+                <div class="card h-100" style="border-left: 5px solid #F59E0B;">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-center">
+                            <div>
+                                <h6 style="color: #6B7280; font-weight: 600; margin-bottom: 8px;">🍂 Compost Orders</h6>
+                                <h4 style="color: #1F2937; font-weight: 800; margin: 0;">{{ compost_orders_count }}</h4>
+                                <small class="text-warning">Total Orders</small>
+                            </div>
+                            <div style="font-size: 2.5rem; opacity: 0.2;">🌱</div>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>

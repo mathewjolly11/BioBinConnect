@@ -396,18 +396,29 @@ def admin_stock_management(request):
             total=Sum('Stock_kg'))['total'] or 0,
     }
     
-    # Get low stock alerts (less than 50kg)
-    low_waste_stock = waste_inventory.filter(
-        status__in=['Available', 'Used'], 
-        available_quantity_kg__lt=50,
-        available_quantity_kg__gt=0  # Exclude empty items
-    ).count()
+    # Calculate shortage against minimum total thresholds
+    min_total_waste = 50  # Minimum 50kg total waste needed
+    min_total_compost_packets = 50  # Minimum 50 compost packets needed
     
-    low_compost_stock = compost_batches.filter(
-        Status__in=['Active', 'Ready'], 
-        Stock_kg__lt=50,
-        Stock_kg__gt=0  # Exclude empty batches
-    ).count()
+    # Calculate total available waste (only Available status)
+    total_available_waste = waste_inventory.filter(
+        status='Available'
+    ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
+    
+    # Calculate total compost in packets (assuming 4kg per packet)
+    total_compost_kg = compost_batches.filter(
+        Status__in=['Active', 'Ready']
+    ).aggregate(total=Sum('Stock_kg'))['total'] or 0
+    
+    compost_kg_per_packet = 4  # 4kg per packet/pallet
+    total_compost_packets = total_compost_kg / compost_kg_per_packet
+    
+    # Calculate shortages
+    waste_shortage = max(0, min_total_waste - total_available_waste)
+    compost_packet_shortage = max(0, min_total_compost_packets - total_compost_packets)
+    
+    low_waste_stock = waste_shortage
+    low_compost_stock = compost_packet_shortage
     
     context = {
         'waste_inventory': waste_inventory_with_totals,

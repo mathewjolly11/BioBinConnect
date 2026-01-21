@@ -75,34 +75,38 @@
                                 <div class="card-header">
                                     <h4 class="card-title">Filter Payments</h4>
                                 </div>
-                                <div class="card-body">
-                                    <form method="get" class="row g-3">
+                                <div class="card-body" style="padding: 30px;">
+                                    <form method="get" class="row align-items-end" style="gap: 15px;">
                                         <div class="col-md-3">
-                                            <label class="form-label">From Date</label>
+                                            <label class="form-label" style="margin-bottom: 8px; font-weight: 600;">From Date</label>
                                             <input type="date" name="from_date" class="form-control"
-                                                value="{{ from_date }}">
+                                                value="{{ from_date }}" style="height: 42px; font-size: 14px;">
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">To Date</label>
+                                            <label class="form-label" style="margin-bottom: 8px; font-weight: 600;">To Date</label>
                                             <input type="date" name="to_date" class="form-control"
-                                                value="{{ to_date }}">
+                                                value="{{ to_date }}" style="height: 42px; font-size: 14px;">
                                         </div>
                                         <div class="col-md-3">
-                                            <label class="form-label">Status</label>
-                                            <select name="status" class="form-control">
-                                                <option value="">All</option>
+                                            <label class="form-label" style="margin-bottom: 8px; font-weight: 600;">Status</label>
+                                            <select name="status" class="form-control" style="height: 42px; font-size: 14px; padding: 8px 30px 8px 12px;">
+                                                <option value="">All Status</option>
                                                 <option value="Completed" {% if check_completed %}selected{% endif %}>
                                                     Completed
                                                 </option>
                                                 <option value="Pending" {% if check_pending %}selected{% endif %}>
                                                     Pending
                                                 </option>
+                                                <option value="Failed" {% if status == 'Failed' %}selected{% endif %}>
+                                                    Failed
+                                                </option>
                                             </select>
                                         </div>
-                                        <div class="col-md-3">
-                                            <label class="form-label">&nbsp;</label>
-                                            <button type="submit" class="btn btn-primary w-100"
-                                                style="margin-top: 25px;">Filter</button>
+                                        <div class="col-md-2">
+                                            <button type="submit" class="btn btn-primary" 
+                                                style="height: 42px; width: 100%; font-size: 14px; font-weight: 600;">
+                                                Filter
+                                            </button>
                                         </div>
                                     </form>
                                 </div>
@@ -118,7 +122,9 @@
                                     <h4 class="card-title">Payment Transactions</h4>
                                     <!-- Use 'btn btn-secondary' or similar helper classes instead of 'btn-line' if not defined -->
                                     <a href="{% url 'export_payment_report' %}?from_date={{ from_date }}&to_date={{ to_date }}&status={{ status }}"
-                                        class="btn btn-secondary btn-sm" style="float: right;">Export to Excel</a>
+                                        class="btn btn-success btn-sm" style="float: right; background-color: #10B981; border-color: #10B981; color: white;">
+                                        <i class="fa fa-file-excel-o"></i> Export to Excel
+                                    </a>
                                 </div>
                                 <div class="card-body">
                                     <div class="table-responsive">
@@ -184,4 +190,85 @@
 
     </section>
 </section>
+
+<style>
+<style>
+    /* Clean layout styling */
+    .card {
+        overflow: visible !important;
+        border-radius: 8px;
+        box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    }
+    
+    .card-body {
+        overflow: visible !important;
+        position: relative;
+    }
+    
+    .form-control {
+        border: 1px solid #e0e0e0;
+        border-radius: 6px;
+        transition: border-color 0.3s ease;
+        box-sizing: border-box;
+    }
+    
+    .form-control:focus {
+        border-color: #007bff;
+        box-shadow: 0 0 0 2px rgba(0,123,255,0.25);
+        outline: none;
+    }
+    
+    /* Select dropdown specific styling */
+    select.form-control {
+        appearance: auto;
+        -webkit-appearance: menulist;
+        -moz-appearance: menulist;
+        background-color: #fff;
+        cursor: pointer;
+    }
+    
+    /* Button styling */
+    .btn-primary {
+        background-color: #28a745;
+        border-color: #28a745;
+        border-radius: 6px;
+        font-weight: 600;
+        transition: all 0.3s ease;
+    }
+    
+    .btn-primary:hover {
+        background-color: #218838;
+        border-color: #218838;
+        transform: translateY(-1px);
+    }
+    
+    /* Form row alignment */
+    .row.align-items-end {
+        margin: 0;
+    }
+    
+    .row.align-items-end > * {
+        padding: 0 8px;
+    }
+    
+    /* Label styling */
+    .form-label {
+        color: #333;
+        font-size: 14px;
+        margin-bottom: 8px;
+    }
+    
+    /* Responsive improvements */
+    @media (max-width: 768px) {
+        .row.align-items-end {
+            flex-direction: column;
+        }
+        
+        .row.align-items-end > * {
+            width: 100%;
+            margin-bottom: 20px;
+        }
+    }
+</style>
+</style>
 {% endblock %}

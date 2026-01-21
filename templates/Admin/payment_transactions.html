@@ -138,7 +138,6 @@
                                 <th class="text-secondary text-uppercase small">Amount</th>
                                 <th class="text-secondary text-uppercase small">Type</th>
                                 <th class="text-secondary text-uppercase small">Status</th>
-                                <th class="text-secondary text-uppercase small">Reference</th>
                             </tr>
                         </thead>
                         <tbody>
@@ -180,12 +179,10 @@
                                         style="background-color: #fee2e2 !important; color: #991b1b !important;">Failed</span>
                                     {% endif %}
                                 </td>
-                                <td><small class="text-muted font-monospace">{{ txn.Reference_id|default:"-" }}</small>
-                                </td>
                             </tr>
                             {% empty %}
                             <tr>
-                                <td colspan="8" class="text-center py-5">
+                                <td colspan="7" class="text-center py-5">
                                     <div class="text-muted">
                                         <div style="font-size: 2rem; margin-bottom: 10px;">📭</div>
                                         No transactions found fitting criteria

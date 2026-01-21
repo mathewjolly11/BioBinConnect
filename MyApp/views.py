@@ -704,6 +704,7 @@ def payment_report(request):
         'status': status or '',
         'check_completed': status == 'Completed',
         'check_pending': status == 'Pending',
+        'check_failed': status == 'Failed',
     }
     
     return render(request, 'Admin/payment_report_v3.html', context)

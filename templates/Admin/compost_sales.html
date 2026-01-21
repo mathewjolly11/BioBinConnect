@@ -44,33 +44,37 @@
                     <!-- Statistics Cards -->
                     <div class="row mb-4">
                         <div class="col-md-3">
-                            <div class="card bg-primary text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Total Orders</h5>
+                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);">
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">🌱</h1>
+                                    <h5 class="mt-2">Total Orders</h5>
                                     <h2>{{ total_orders }}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-success text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Total Revenue</h5>
+                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">💰</h1>
+                                    <h5 class="mt-2">Total Revenue</h5>
                                     <h2>₹{{ total_revenue }}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-warning text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Pending</h5>
+                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">⏳</h1>
+                                    <h5 class="mt-2">Pending</h5>
                                     <h2>{{ pending_orders }}</h2>
                                 </div>
                             </div>
                         </div>
                         <div class="col-md-3">
-                            <div class="card bg-info text-white stats-card">
-                                <div class="card-body">
-                                    <h5>Completed</h5>
+                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);">
+                                <div class="card-body text-center">
+                                    <h1 style="font-size: 3rem;">✅</h1>
+                                    <h5 class="mt-2">Completed</h5>
                                     <h2>{{ completed_orders }}</h2>
                                 </div>
                             </div>
@@ -136,13 +140,21 @@
                                     </td>
                                     <td>{{ order.Order_Date|date:"d M Y" }}</td>
                                     <td>
+                                        {% with order.tbl_orderitem_set.first as item %}
+                                        {% if item.Delivery_Status == 'Delivered' %}
+                                        <span class="badge bg-success" style="font-size: 0.9rem;">
+                                            ✅ Order Complete
+                                        </span>
+                                        {% else %}
                                         <select class="status-select"
                                             onchange="updateStatus({{ order.Order_id }}, this.value, this)">
                                             <option value="">Update Status</option>
-                                            <option value="Pending">📦 Pending</option>
-                                            <option value="Dispatched">🚚 Dispatched</option>
+                                            <option value="Pending" {% if item.Delivery_Status == 'Pending' %}selected{% endif %}>📦 Pending</option>
+                                            <option value="Dispatched" {% if item.Delivery_Status == 'Dispatched' %}selected{% endif %}>🚚 Dispatched</option>
                                             <option value="Delivered">✅ Delivered</option>
                                         </select>
+                                        {% endif %}
+                                        {% endwith %}
                                     </td>
                                 </tr>
                                 {% empty %}

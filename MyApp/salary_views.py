@@ -83,7 +83,9 @@ def admin_salary_management(request):
     context = {
         'collectors': collector_data,
         'managers': manager_data,
-        'daily_rate': 1000
+        'daily_rate': 1000,
+        'has_unpaid_collectors': any(item['unpaid_days'] > 0 for item in collector_data),
+        'has_unpaid_managers': any(item['unpaid_days'] > 0 for item in manager_data),
     }
     
     return render(request, 'Admin/salary_management.html', context)
@@ -94,6 +96,93 @@ def admin_salary_management(request):
 def admin_pay_salary(request):
     """Process salary payment for selected dates"""
     if request.method == 'POST':
+        action = request.POST.get('action')
+        
+        if action == 'pay_all_collectors':
+            # Pay all collectors with unpaid days
+            try:
+                total_amount = 0
+                count = 0
+                
+                for collector in collectors:
+                    unpaid_dates = tbl_WasteInventory.objects.filter(
+                        collector=collector,
+                        salary_paid=False
+                    ).values('collection_date__date').distinct()
+                    
+                    if unpaid_dates.exists():
+                        # Mark all unpaid collections as paid
+                        tbl_WasteInventory.objects.filter(
+                            collector=collector,
+                            salary_paid=False
+                        ).update(salary_paid=True)
+                        
+                        # Calculate amount
+                        days_count = unpaid_dates.count()
+                        amount = days_count * 1000
+                        total_amount += amount
+                        count += 1
+                        
+                        # Create payment transaction
+                        tbl_PaymentTransaction.objects.create(
+                            Payer_id=request.user,
+                            Receiver_id=collector.user,
+                            Amount=amount,
+                            transaction_type='CollectorSalary',
+                            Reference_id=None,
+                            status='Success'
+                        )
+                
+                messages.success(request, f'Paid salaries to {count} collectors. Total amount: ₹{total_amount:,.2f}')
+                return redirect('admin_salary_management')
+                
+            except Exception as e:
+                messages.error(request, f'Error paying collectors: {str(e)}')
+                return redirect('admin_salary_management')
+        
+        elif action == 'pay_all_managers':
+            # Pay all managers with unpaid days
+            try:
+                total_amount = 0
+                count = 0
+                
+                for manager in managers:
+                    unpaid_dates = tbl_CompostBatch.objects.filter(
+                        CompostManager_id=manager,
+                        salary_paid=False
+                    ).values('Date_Created').distinct()
+                    
+                    if unpaid_dates.exists():
+                        # Mark all unpaid batches as paid
+                        tbl_CompostBatch.objects.filter(
+                            CompostManager_id=manager,
+                            salary_paid=False
+                        ).update(salary_paid=True)
+                        
+                        # Calculate amount
+                        days_count = unpaid_dates.count()
+                        amount = days_count * 1000
+                        total_amount += amount
+                        count += 1
+                        
+                        # Create payment transaction
+                        tbl_PaymentTransaction.objects.create(
+                            Payer_id=request.user,
+                            Receiver_id=manager.user,
+                            Amount=amount,
+                            transaction_type='ManagerSalary',
+                            Reference_id=None,
+                            status='Success'
+                        )
+                
+                messages.success(request, f'Paid salaries to {count} managers. Total amount: ₹{total_amount:,.2f}')
+                return redirect('admin_salary_management')
+                
+            except Exception as e:
+                messages.error(request, f'Error paying managers: {str(e)}')
+                return redirect('admin_salary_management')
+        
+        # Original single payment logic
         try:
             user_type = request.POST.get('user_type')  # 'collector' or 'manager'
             user_id = request.POST.get('user_id')

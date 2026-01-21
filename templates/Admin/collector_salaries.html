@@ -131,11 +131,11 @@
                 <!-- Summary Footer -->
                 <div class="row mt-4">
                     <div class="col-12">
-                        <div class="alert alert-info text-center">
-                            <h5 class="mb-2">💼 Salary Summary</h5>
-                            <p class="mb-0">
-                                <strong>{{ collectors_with_payments }}</strong> of <strong>{{ total_collectors }}</strong> collectors received 
-                                <strong>&#8377;{{ total_salary_paid|floatformat:2 }}</strong> in total payments
+                        <div class="alert alert-info text-center" style="background-color: #F8FAFC; border-left: 4px solid #3B82F6; border: 1px solid #E2E8F0;">
+                            <h5 class="mb-2" style="color: #1E40AF; font-weight: 700;">💼 Salary Summary</h5>
+                            <p class="mb-0" style="color: #000000; font-weight: 700; font-size: 16px;">
+                                <strong style="color: #000000;">{{ collectors_with_payments }}</strong> of <strong style="color: #000000;">{{ total_collectors }}</strong> collectors received 
+                                <strong style="color: #DC2626; background-color: #FEF2F2; padding: 2px 6px; border-radius: 4px;">&#8377;{{ total_salary_paid|floatformat:2 }}</strong> in total payments
                             </p>
                         </div>
                     </div>

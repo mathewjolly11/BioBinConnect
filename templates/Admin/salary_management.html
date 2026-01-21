@@ -10,7 +10,20 @@
           <p class="text-muted mb-4">Daily Rate: ₹{{ daily_rate }}/day</p>
 
           <!-- Collectors Section -->
-          <h4 class="mt-4">👷 Collectors</h4>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mt-4 mb-0">👷 Collectors</h4>
+            {% if collectors %}
+              {% if has_unpaid_collectors %}
+              <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#payAllCollectorsModal">
+                💰 Pay All Collectors
+              </button>
+              {% else %}
+              <button type="button" class="btn btn-success btn-sm" disabled title="All collectors have been paid">
+                ✅ No Salary Pending
+              </button>
+              {% endif %}
+            {% endif %}
+          </div>
           <div class="table-responsive">
             <table class="table table-hover table-striped">
               <thead class="table-primary">
@@ -38,7 +51,7 @@
                       <i class="fa fa-money"></i> Pay Salary
                     </a>
                     {% else %}
-                    <span class="badge bg-secondary">All Paid</span>
+                    <span class="badge bg-success" style="background-color: #10B981 !important; color: white; font-weight: 600;">✅ All Paid</span>
                     {% endif %}
                   </td>
                 </tr>
@@ -52,7 +65,20 @@
           </div>
 
           <!-- Compost Managers Section -->
-          <h4 class="mt-5">🌱 Compost Managers</h4>
+          <div class="d-flex justify-content-between align-items-center mb-3">
+            <h4 class="mt-5 mb-0">🌱 Compost Managers</h4>
+            {% if managers %}
+              {% if has_unpaid_managers %}
+              <button type="button" class="btn btn-warning btn-sm" data-bs-toggle="modal" data-bs-target="#payAllManagersModal">
+                💰 Pay All Managers
+              </button>
+              {% else %}
+              <button type="button" class="btn btn-success btn-sm" disabled title="All managers have been paid">
+                ✅ No Salary Pending
+              </button>
+              {% endif %}
+            {% endif %}
+          </div>
           <div class="table-responsive">
             <table class="table table-hover table-striped">
               <thead class="table-success">
@@ -67,7 +93,7 @@
               <tbody>
                 {% for item in managers %}
                 <tr>
-                  <td>{{ item.manager.compost_manager_name }}</td>
+                  <td>{{ item.manager.compostmanager_name }}</td>
                   <td>{{ item.manager.user.email }}</td>
                   <td>{{ item.unpaid_days }} days</td>
                   <td>₹{{ item.total_due|floatformat:2 }}</td>
@@ -80,7 +106,7 @@
                       <i class="fa fa-money"></i> Pay Salary
                     </a>
                     {% else %}
-                    <span class="badge bg-secondary">All Paid</span>
+                    <span class="badge bg-success" style="background-color: #10B981 !important; color: white; font-weight: 600;">✅ All Paid</span>
                     {% endif %}
                   </td>
                 </tr>
@@ -156,6 +182,108 @@
         >
           <i class="fa fa-check"></i> Process Payment
         </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pay All Collectors Modal -->
+<div class="modal fade" id="payAllCollectorsModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-warning">
+        <h5 class="modal-title">💰 Pay All Collectors</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <strong>⚠️ Confirm Mass Payment</strong>
+        </div>
+        <p>You are about to pay salaries for <strong>all collectors</strong> with unpaid days.</p>
+        
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Collector</th>
+                <th>Unpaid Days</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in collectors %}
+              {% if item.unpaid_days > 0 %}
+              <tr>
+                <td>{{ item.collector.collector_name }}</td>
+                <td>{{ item.unpaid_days }} days</td>
+                <td>₹{{ item.total_due|floatformat:2 }}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="post" style="display: inline;">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="pay_all_collectors">
+          <button type="submit" class="btn btn-warning">
+            <i class="fa fa-money"></i> Pay All Collectors
+          </button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Pay All Managers Modal -->
+<div class="modal fade" id="payAllManagersModal" tabindex="-1">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-success">
+        <h5 class="modal-title">💰 Pay All Managers</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal"></button>
+      </div>
+      <div class="modal-body">
+        <div class="alert alert-warning">
+          <strong>⚠️ Confirm Mass Payment</strong>
+        </div>
+        <p>You are about to pay salaries for <strong>all compost managers</strong> with unpaid days.</p>
+        
+        <div class="table-responsive">
+          <table class="table table-sm">
+            <thead>
+              <tr>
+                <th>Manager</th>
+                <th>Unpaid Days</th>
+                <th>Amount</th>
+              </tr>
+            </thead>
+            <tbody>
+              {% for item in managers %}
+              {% if item.unpaid_days > 0 %}
+              <tr>
+                <td>{{ item.manager.compostmanager_name }}</td>
+                <td>{{ item.unpaid_days }} days</td>
+                <td>₹{{ item.total_due|floatformat:2 }}</td>
+              </tr>
+              {% endif %}
+              {% endfor %}
+            </tbody>
+          </table>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
+        <form method="post" style="display: inline;">
+          {% csrf_token %}
+          <input type="hidden" name="action" value="pay_all_managers">
+          <button type="submit" class="btn btn-success">
+            <i class="fa fa-money"></i> Pay All Managers
+          </button>
+        </form>
       </div>
     </div>
   </div>
