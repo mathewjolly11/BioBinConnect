@@ -36,7 +36,6 @@ def get_system_alerts():
     
     # Check waste stock
     total_waste_stock = tbl_WasteInventory.objects.filter(
-        is_available=True,
         status='Available'
     ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
     
@@ -184,7 +183,6 @@ def index(request):
     
     # Inventory Statistics
     waste_stock = tbl_WasteInventory.objects.filter(
-        is_available=True,
         status='Available'
     ).aggregate(
         total=Sum('available_quantity_kg')

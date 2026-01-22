@@ -1,5 +1,3 @@
-import csv
-
 from datetime import datetime
 from django.http import HttpResponse
 from openpyxl import Workbook

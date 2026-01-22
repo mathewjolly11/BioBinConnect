@@ -1,342 +1,743 @@
-{% extends 'Admin/base.html' %}
-{% load static %}
+{% extends 'Admin/base.html' %} {% load static %} {% block content %}
+<style>
+  .stats-card {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
+
+  .status-select {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+  }
+
+  .status-select:hover {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  }
+
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+  }
+
+  /* Sliding Toggle Switch */
+  .toggle-switch {
+    position: relative;
+    display: inline-block;
+    width: 50px;
+    height: 24px;
+  }
+
+  .toggle-switch input {
+    opacity: 0;
+    width: 0;
+    height: 0;
+  }
+
+  .toggle-slider {
+    position: absolute;
+    cursor: pointer;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: #ccc;
+    transition: 0.3s;
+    border-radius: 24px;
+  }
+
+  .toggle-slider:before {
+    position: absolute;
+    content: "";
+    height: 18px;
+    width: 18px;
+    left: 3px;
+    bottom: 3px;
+    background-color: white;
+    transition: 0.3s;
+    border-radius: 50%;
+  }
+
+  .toggle-switch input:checked + .toggle-slider {
+    background-color: #28a745;
+  }
+
+  .toggle-switch input:checked + .toggle-slider:before {
+    transform: translateX(26px);
+  }
+
+  .toggle-switch input:disabled + .toggle-slider {
+    opacity: 0.5;
+    cursor: not-allowed;
+  }
+</style>
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-<style>
-    .stats-card {
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
-
-    .status-select {
-        padding: 5px 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        background: #fff;
-        cursor: pointer;
-        transition: all 0.3s;
-        font-size: 13px;
-    }
-
-    .status-select:hover {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    }
-
-    .table-hover tbody tr:hover {
-        background-color: #f8f9fa;
-    }
-</style>
-
-{% block content %}
 <section id="main-content">
-    <section class="wrapper main-wrapper">
-        <div class="col-lg-12">
-            <section class="box">
-                <header class="panel_header">
-                    <h2 class="title">Waste Sales Management</h2>
-                </header>
-                <div class="content-body">
-                    <!-- Statistics Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">📦</h1>
-                                    <h5 class="mt-2">Total Orders</h5>
-                                    <h2>{{ total_orders }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">💰</h1>
-                                    <h5 class="mt-2">Total Revenue</h5>
-                                    <h2>₹{{ total_revenue }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">⏳</h1>
-                                    <h5 class="mt-2">Pending</h5>
-                                    <h2>{{ pending_orders }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">✅</h1>
-                                    <h5 class="mt-2">Completed</h5>
-                                    <h2>{{ completed_orders }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <form method="get" class="row g-3" id="filterForm">
-                                <div class="col-md-3">
-                                    <label class="form-label">Period</label>
-                                    <select name="period" class="form-select" id="periodSelect" onchange="toggleCustomDate()">
-                                        <option value="7" {% if request.GET.period == '7' %}selected{% endif %}>Last 7 Days</option>
-                                        <option value="30" {% if request.GET.period == '30' %}selected{% endif %}>Last 30 Days</option>
-                                        <option value="90" {% if request.GET.period == '90' %}selected{% endif %}>Last 90 Days</option>
-                                        <option value="all" {% if request.GET.period == 'all' %}selected{% endif %}>All Time</option>
-                                        <option value="custom" {% if request.GET.period == 'custom' %}selected{% endif %}>Custom Range</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="col-md-4 d-none" id="customDateRange">
-                                    <label class="form-label">Custom Range</label>
-                                    <div class="input-group">
-                                        <input type="date" name="start_date" value="{{ request.GET.start_date }}" class="form-control">
-                                        <span class="input-group-text">-</span>
-                                        <input type="date" name="end_date" value="{{ request.GET.end_date }}" class="form-control">
-                                    </div>
-                                </div>
-
-                                <div class="col-md-3">
-                                    <label class="form-label">Status</label>
-                                    <select name="status" class="form-select" onchange="document.getElementById('filterForm').submit()">
-                                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Orders</option>
-                                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>Pending</option>
-                                        <option value="Paid" {% if status_filter == 'Paid' %}selected{% endif %}>Paid</option>
-                                    </select>
-                                </div>
-                                
-                                <div class="col-md-2 d-flex align-items-end">
-                                    <button type="submit" class="btn btn-primary w-100">Filter</button>
-                                </div>
-                                
-                                <div class="col-12 text-end mt-3">
-                                    <button type="submit" name="export" value="excel" class="btn btn-success text-white">
-                                        <i class="fa fa-file-excel-o"></i> Export to Excel
-                                    </button>
-                                </div>
-                            </form>
-                            
-                            <script>
-                                function toggleCustomDate(shouldSubmit) {
-                                    var select = document.getElementById('periodSelect');
-                                    var customRange = document.getElementById('customDateRange');
-                                    if (select.value === 'custom') {
-                                        customRange.classList.remove('d-none');
-                                    } else {
-                                        customRange.classList.add('d-none');
-                                        if (shouldSubmit) {
-                                            document.getElementById('filterForm').submit();
-                                        }
-                                    }
-                                }
-                                // Run on load to set initial state WITHOUT submitting
-                                document.addEventListener('DOMContentLoaded', function() {
-                                    toggleCustomDate(false);
-                                });
-                            </script>
-                        </div>
-                    </div>
-
-                    <!-- Orders Table -->
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Farmer</th>
-                                    <th>Quantity (kg)</th>
-                                    <th>Amount</th>
-                                    <th>Payment Status</th>
-                                    <th>Assignment Status</th>
-                                    <th>Delivery Status</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for order in orders %}
-                                <tr>
-                                    <td>#{{ order.Order_id }}</td>
-                                    <td>{{ order.Buyer_id.farmer_name }}</td>
-                                    <td>
-                                        {{ order.total_quantity }} kg
-                                    </td>
-                                    <td>₹{{ order.Total_Amount }}</td>
-                                    <td>
-                                        <span
-                                            class="badge bg-{% if order.Payment_Status == 'Paid' %}success{% else %}warning{% endif %}">
-                                            {{ order.Payment_Status }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {% if order.assignment_status == 'Assigned' %}
-                                            <span class="badge bg-success">
-                                                Assigned
-                                            </span>
-                                        {% else %}
-                                            <span class="badge bg-warning">
-                                                Unassigned
-                                            </span>
-                                        {% endif %}
-                                    </td>
-                                    <td>
-                                        {% with order.tbl_orderitem_set.first as item %}
-                                        <span
-                                            class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'Dispatched' %}info{% else %}secondary{% endif %}">
-                                            {{ item.Delivery_Status }}
-                                        </span>
-                                        {% endwith %}
-                                    </td>
-                                    <td>{{ order.Order_Date|date:"d M Y" }}</td>
-                                    <td>
-                                        {% if order.assignment_status == 'Unassigned' %}
-                                            <button class="btn btn-sm btn-primary" onclick="showAssignModal('{{ order.Order_id }}')">
-                                                <i class="fa fa-user-plus"></i> Assign
-                                            </button>
-                                        {% else %}
-                                            <small class="text-muted">
-                                                <i class="fa fa-truck"></i> {{ order.assigned_collector.collector_name }}
-                                            </small>
-                                        {% endif %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="8" class="text-center">No waste orders found</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+  <section class="wrapper main-wrapper">
+    <div class="col-lg-12">
+      <section class="box">
+        <header class="panel_header">
+          <h2 class="title">Waste Sales Management</h2>
+        </header>
+        <div class="content-body">
+          <!-- Statistics Cards -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">📦</h1>
+                  <h5 class="mt-2">Total Orders</h5>
+                  <h2>{{ total_orders }}</h2>
                 </div>
-            </section>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">💰</h1>
+                  <h5 class="mt-2">Total Revenue</h5>
+                  <h2>₹{{ total_revenue }}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">⏳</h1>
+                  <h5 class="mt-2">Pending</h5>
+                  <h2>{{ pending_orders }}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">✅</h1>
+                  <h5 class="mt-2">Completed</h5>
+                  <h2>{{ completed_orders }}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Today's Collector Info Banner with Toggle -->
+          <div
+            class="alert alert-info mb-4"
+            style="border-left: 4px solid #0dcaf0"
+          >
+            <div class="d-flex align-items-center justify-content-between">
+              <div class="flex-grow-1">
+                <h5 class="mb-1">
+                  <i class="fa fa-calendar"></i> {{ day_name }}'s Assigned
+                  Collector
+                </h5>
+                <p class="mb-0">
+                  <strong>{{ todays_collector_name }}</strong> is assigned to
+                  handle all farmer waste orders placed today. <br /><small
+                    class="text-muted"
+                    >Auto-assignment rotates daily through all verified
+                    collectors.</small
+                  >
+                </p>
+              </div>
+              <div class="text-end">
+                <div class="d-flex align-items-center gap-2">
+                  <small class="text-muted">Auto-Assignment</small>
+                  <label class="toggle-switch">
+                    <input
+                      type="checkbox"
+                      id="autoAssignToggle"
+                      onchange="toggleAutoAssignment(this)"
+                      {%
+                      if
+                      auto_assign_enabled
+                      %}checked{%
+                      endif
+                      %}
+                    />
+                    <span class="toggle-slider"></span>
+                  </label>
+                  <strong id="toggleLabel"
+                    >{% if auto_assign_enabled %}ON{% else %}OFF{% endif %}</strong
+                  >
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <form method="get" class="row g-3" id="filterForm">
+                <div class="col-md-3">
+                  <label class="form-label">Period</label>
+                  <select
+                    name="period"
+                    class="form-select"
+                    id="periodSelect"
+                    onchange="toggleCustomDate()"
+                  >
+                    <option
+                      value="7"
+                      {%
+                      if
+                      request.GET.period=""
+                      ="7"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Last 7 Days
+                    </option>
+                    <option
+                      value="30"
+                      {%
+                      if
+                      request.GET.period=""
+                      ="30"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Last 30 Days
+                    </option>
+                    <option
+                      value="90"
+                      {%
+                      if
+                      request.GET.period=""
+                      ="90"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Last 90 Days
+                    </option>
+                    <option
+                      value="all"
+                      {%
+                      if
+                      request.GET.period=""
+                      ="all"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      All Time
+                    </option>
+                    <option
+                      value="custom"
+                      {%
+                      if
+                      request.GET.period=""
+                      ="custom"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Custom Range
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-4 d-none" id="customDateRange">
+                  <label class="form-label">Custom Range</label>
+                  <div class="input-group">
+                    <input
+                      type="date"
+                      name="start_date"
+                      value="{{ request.GET.start_date }}"
+                      class="form-control"
+                    />
+                    <span class="input-group-text">-</span>
+                    <input
+                      type="date"
+                      name="end_date"
+                      value="{{ request.GET.end_date }}"
+                      class="form-control"
+                    />
+                  </div>
+                </div>
+
+                <div class="col-md-3">
+                  <label class="form-label">Status</label>
+                  <select
+                    name="status"
+                    class="form-select"
+                    onchange="document.getElementById('filterForm').submit()"
+                  >
+                    <option
+                      value="all"
+                      {%
+                      if
+                      status_filter=""
+                      ="all"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      All Orders
+                    </option>
+                    <option
+                      value="Pending"
+                      {%
+                      if
+                      status_filter=""
+                      ="Pending"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Pending
+                    </option>
+                    <option
+                      value="Paid"
+                      {%
+                      if
+                      status_filter=""
+                      ="Paid"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Paid
+                    </option>
+                  </select>
+                </div>
+
+                <div class="col-md-2 d-flex align-items-end">
+                  <button type="submit" class="btn btn-primary w-100">
+                    Filter
+                  </button>
+                </div>
+
+                <div class="col-12 text-end mt-3">
+                  <button
+                    type="submit"
+                    name="export"
+                    value="excel"
+                    class="btn btn-success text-white"
+                  >
+                    <i class="fa fa-file-excel-o"></i> Export to Excel
+                  </button>
+                </div>
+              </form>
+
+              <script>
+                function toggleCustomDate(shouldSubmit) {
+                  var select = document.getElementById("periodSelect");
+                  var customRange = document.getElementById("customDateRange");
+                  if (select.value === "custom") {
+                    customRange.classList.remove("d-none");
+                  } else {
+                    customRange.classList.add("d-none");
+                    if (shouldSubmit) {
+                      document.getElementById("filterForm").submit();
+                    }
+                  }
+                }
+                // Run on load to set initial state WITHOUT submitting
+                document.addEventListener("DOMContentLoaded", function () {
+                  toggleCustomDate(false);
+                });
+              </script>
+            </div>
+          </div>
+
+          <!-- Orders Table -->
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>Order ID</th>
+                  <th>Farmer</th>
+                  <th>Quantity (kg)</th>
+                  <th>Amount</th>
+                  <th>Payment Status</th>
+                  <th>Assignment Status</th>
+                  <th>Delivery Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td>#{{ order.Order_id }}</td>
+                  <td>{{ order.Buyer_id.farmer_name }}</td>
+                  <td>{{ order.total_quantity }} kg</td>
+                  <td>₹{{ order.Total_Amount }}</td>
+                  <td>
+                    <span
+                      class="badge bg-{% if order.Payment_Status == 'Paid' %}success{% else %}warning{% endif %}"
+                    >
+                      {{ order.Payment_Status }}
+                    </span>
+                  </td>
+                  <td>
+                    {% if order.assignment_status == 'Assigned' %}
+                    <span class="badge bg-success"> Assigned </span>
+                    {% else %}
+                    <span class="badge bg-warning"> Unassigned </span>
+                    {% endif %}
+                  </td>
+                  <td>
+                    {% with order.tbl_orderitem_set.first as item %}
+                    <span
+                      class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'Dispatched' %}info{% else %}secondary{% endif %}"
+                    >
+                      {{ item.Delivery_Status }}
+                    </span>
+                    {% endwith %}
+                  </td>
+                  <td>{{ order.Order_Date|date:"d M Y" }}</td>
+                  <td>
+                    {% if order.assignment_status == 'Unassigned' %}
+                    <div class="btn-group" role="group">
+                      <button
+                        class="btn btn-sm btn-success"
+                        onclick="autoAssignCollector('{{ order.Order_id }}')"
+                        title="Auto-assign today's collector"
+                      >
+                        <i class="fa fa-magic"></i> Auto
+                      </button>
+                      <button
+                        class="btn btn-sm btn-primary"
+                        onclick="showAssignModal('{{ order.Order_id }}')"
+                        title="Manually select collector"
+                      >
+                        <i class="fa fa-user-plus"></i> Manual
+                      </button>
+                    </div>
+                    {% else %}
+                    <small class="text-muted">
+                      <i class="fa fa-truck"></i> {{ order.assigned_collector.collector_name }}
+                    </small>
+                    {% endif %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="8" class="text-center">No waste orders found</td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
-    </section>
+      </section>
+    </div>
+  </section>
 </section>
 
 <!-- Assign Collector Modal -->
 <div class="modal fade" id="assignCollectorModal" tabindex="-1">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header bg-primary text-white">
-                <h5 class="modal-title"><i class="fa fa-user-plus"></i> Assign Collector</h5>
-                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal"></button>
-            </div>
-            <form id="assignForm" method="POST">
-                {% csrf_token %}
-                <div class="modal-body">
-                    <div class="mb-3">
-                        <label for="collectorSelect" class="form-label">Select Collector</label>
-                        <select class="form-select" id="collectorSelect" name="collector_id" required>
-                            <option value="">Choose a collector...</option>
-                            {% for collector in collectors %}
-                            <option value="{{ collector.pk }}">{{ collector.collector_name }}</option>
-                            {% endfor %}
-                        </select>
-                    </div>
-                    <p class="text-muted small"><i class="fa fa-info-circle"></i> This collector will be responsible for delivering the order</p>
-                </div>
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancel</button>
-                    <button type="submit" class="btn btn-primary">Assign Collector</button>
-                </div>
-            </form>
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-primary text-white">
+        <h5 class="modal-title">
+          <i class="fa fa-user-plus"></i> Assign Collector
+        </h5>
+        <button
+          type="button"
+          class="btn-close btn-close-white"
+          data-bs-dismiss="modal"
+        ></button>
+      </div>
+      <form id="assignForm" method="POST">
+        {% csrf_token %}
+        <div class="modal-body">
+          <div class="mb-3">
+            <label for="collectorSelect" class="form-label"
+              >Select Collector</label
+            >
+            <select
+              class="form-select"
+              id="collectorSelect"
+              name="collector_id"
+              required
+            >
+              <option value="">Choose a collector...</option>
+              {% for collector in collectors %}
+              <option value="{{ collector.pk }}">
+                {{ collector.collector_name }}
+              </option>
+              {% endfor %}
+            </select>
+          </div>
+          <p class="text-muted small">
+            <i class="fa fa-info-circle"></i> This collector will be responsible
+            for delivering the order
+          </p>
         </div>
+        <div class="modal-footer">
+          <button
+            type="button"
+            class="btn btn-secondary"
+            data-bs-dismiss="modal"
+          >
+            Cancel
+          </button>
+          <button type="submit" class="btn btn-primary">
+            Assign Collector
+          </button>
+        </div>
+      </form>
     </div>
+  </div>
 </div>
 
 <!-- Output Django Messages as JSON -->
 <script id="django-messages" type="application/json">
-[
-    {% for message in messages %}
-    {
-        "tags": "{{ message.tags }}",
-        "text": "{{ message }}"
-    }{% if not forloop.last %},{% endif %}
-    {% endfor %}
-]
+  [
+      {% for message in messages %}
+      {
+          "tags": "{{ message.tags }}",
+          "text": "{{ message }}"
+      }{% if not forloop.last %},{% endif %}
+      {% endfor %}
+  ]
 </script>
 
 <script>
-    let currentOrderId = null;
-    
-    function showAssignModal(orderId) {
-        currentOrderId = orderId;
-        const form = document.getElementById('assignForm');
-        form.action = `/admin/assign-collector/${orderId}/`;
-        const modal = new bootstrap.Modal(document.getElementById('assignCollectorModal'));
-        modal.show();
-    }
+  let currentOrderId = null;
 
-    function updateStatus(orderId, newStatus, selectElement) {
-        if (!newStatus) return;
+  function showAssignModal(orderId) {
+    currentOrderId = orderId;
+    const form = document.getElementById("assignForm");
+    form.action = `/admin/assign-collector/${orderId}/`;
+    const modal = new bootstrap.Modal(
+      document.getElementById("assignCollectorModal"),
+    );
+    modal.show();
+  }
 
-        Swal.fire({
-            title: 'Update Delivery Status?',
-            html: `Change status to <strong>${newStatus}</strong>?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, update it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Create and submit form
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/admin/update-delivery/${orderId}/`;
+  function updateStatus(orderId, newStatus, selectElement) {
+    if (!newStatus) return;
 
-                const csrfToken = '{{ csrf_token }}';
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = 'csrfmiddlewaretoken';
-                csrfInput.value = csrfToken;
+    Swal.fire({
+      title: "Update Delivery Status?",
+      html: `Change status to <strong>${newStatus}</strong>?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#28a745",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, update it!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Create and submit form
+        const form = document.createElement("form");
+        form.method = "POST";
+        form.action = `/admin/update-delivery/${orderId}/`;
 
-                const statusInput = document.createElement('input');
-                statusInput.type = 'hidden';
-                statusInput.name = 'delivery_status';
-                statusInput.value = newStatus;
+        const csrfToken = "{{ csrf_token }}";
+        const csrfInput = document.createElement("input");
+        csrfInput.type = "hidden";
+        csrfInput.name = "csrfmiddlewaretoken";
+        csrfInput.value = csrfToken;
 
-                form.appendChild(csrfInput);
-                form.appendChild(statusInput);
-                document.body.appendChild(form);
-                form.submit();
-            } else {
-                // Reset select
-                selectElement.value = '';
-            }
-        });
-    }
+        const statusInput = document.createElement("input");
+        statusInput.type = "hidden";
+        statusInput.name = "delivery_status";
+        statusInput.value = newStatus;
 
-    // Process Django Messages
-    document.addEventListener('DOMContentLoaded', function() {
-        try {
-            const messages = JSON.parse(document.getElementById('django-messages').textContent);
-            if (messages && messages.length > 0) {
-                messages.forEach(msg => {
-                    Swal.fire({
-                        icon: msg.tags.includes('success') ? 'success' : 'info',
-                        title: msg.tags.charAt(0).toUpperCase() + msg.tags.slice(1),
-                        text: msg.text,
-                        timer: 2000,
-                        showConfirmButton: false
-                    });
-                });
-            }
-        } catch (e) {
-            console.error('Error parsing messages:', e);
-        }
+        form.appendChild(csrfInput);
+        form.appendChild(statusInput);
+        document.body.appendChild(form);
+        form.submit();
+      } else {
+        // Reset select
+        selectElement.value = "";
+      }
     });
+  }
+
+  // Auto-assign collector function
+  function autoAssignCollector(orderId) {
+    Swal.fire({
+      title: "Auto-Assign Collector?",
+      html: `Assign <strong>{{ todays_collector_name }}</strong> ({{ day_name }}'s collector) to this order?`,
+      icon: "question",
+      showCancelButton: true,
+      confirmButtonColor: "#28a745",
+      cancelButtonColor: "#6c757d",
+      confirmButtonText: "Yes, auto-assign!",
+      cancelButtonText: "Cancel",
+    }).then((result) => {
+      if (result.isConfirmed) {
+        // Show loading
+        Swal.fire({
+          title: "Assigning...",
+          text: "Please wait",
+          allowOutsideClick: false,
+          didOpen: () => {
+            Swal.showLoading();
+          },
+        });
+
+        // Make AJAX request
+        fetch(`/admin/auto-assign-collector/${orderId}/`, {
+          method: "POST",
+          headers: {
+            "X-CSRFToken": "{{ csrf_token }}",
+            "Content-Type": "application/json",
+          },
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            if (data.success) {
+              Swal.fire({
+                icon: "success",
+                title: "Success!",
+                html: data.message,
+                timer: 2000,
+                showConfirmButton: false,
+              }).then(() => {
+                location.reload();
+              });
+            } else {
+              Swal.fire({
+                icon: "error",
+                title: "Error",
+                text: data.error,
+              });
+            }
+          })
+          .catch((error) => {
+            Swal.fire({
+              icon: "error",
+              title: "Error",
+              text: "Failed to auto-assign collector",
+            });
+          });
+      }
+    });
+  }
+
+  // Toggle auto-assignment function
+  function toggleAutoAssignment(checkbox) {
+    const enabled = checkbox.checked;
+    const label = document.getElementById("toggleLabel");
+
+    // Show loading state
+    label.textContent = "...";
+    checkbox.disabled = true;
+
+    // Get CSRF token from cookie
+    function getCookie(name) {
+      let cookieValue = null;
+      if (document.cookie && document.cookie !== "") {
+        const cookies = document.cookie.split(";");
+        for (let i = 0; i < cookies.length; i++) {
+          const cookie = cookies[i].trim();
+          if (cookie.substring(0, name.length + 1) === name + "=") {
+            cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+            break;
+          }
+        }
+      }
+      return cookieValue;
+    }
+
+    const csrftoken = getCookie("csrftoken");
+
+    fetch("/admin/toggle-auto-assignment/", {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrftoken,
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({ enabled: enabled }),
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          label.textContent = enabled ? "ON" : "OFF";
+          Swal.fire({
+            icon: "success",
+            title: "Success!",
+            text: data.message,
+            timer: 1500,
+            showConfirmButton: false,
+          });
+        } else {
+          // Revert checkbox on error
+          checkbox.checked = !enabled;
+          label.textContent = !enabled ? "ON" : "OFF";
+          Swal.fire({
+            icon: "error",
+            title: "Error",
+            text: data.error,
+          });
+        }
+      })
+      .catch((error) => {
+        console.error("Toggle error:", error);
+        // Revert checkbox on error
+        checkbox.checked = !enabled;
+        label.textContent = !enabled ? "ON" : "OFF";
+        Swal.fire({
+          icon: "error",
+          title: "Error",
+          text: "Failed to toggle auto-assignment: " + error.message,
+        });
+      })
+      .finally(() => {
+        checkbox.disabled = false;
+      });
+  }
+
+  // Process Django Messages
+  document.addEventListener("DOMContentLoaded", function () {
+    try {
+      const messages = JSON.parse(
+        document.getElementById("django-messages").textContent,
+      );
+      if (messages && messages.length > 0) {
+        messages.forEach((msg) => {
+          Swal.fire({
+            icon: msg.tags.includes("success") ? "success" : "info",
+            title: msg.tags.charAt(0).toUpperCase() + msg.tags.slice(1),
+            text: msg.text,
+            timer: 2000,
+            showConfirmButton: false,
+          });
+        });
+      }
+    } catch (e) {
+      console.error("Error parsing messages:", e);
+    }
+  });
 </script>
 
 {% endblock %}

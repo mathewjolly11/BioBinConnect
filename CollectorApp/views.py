@@ -50,7 +50,7 @@ def collector_dashboard(request):
     # Waste inventory (available for farmers)
     available_waste = tbl_WasteInventory.objects.filter(
         collector=collector,
-        is_available=True
+        status='Available'
     ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
     
     # Pending deliveries
@@ -186,7 +186,6 @@ def log_collection(request, pickup_id):
                 available_quantity_kg=collection.total_quantity_kg,
                 price_per_kg=default_price,  # Get price from system settings
                 collection_date=timezone.now(),
-                is_available=True,
                 status='Available'
             )
             
@@ -321,7 +320,6 @@ def log_collection_ajax(request, pickup_id):
                 available_quantity_kg=collection.total_quantity_kg,
                 price_per_kg=default_price,  # Get price from system settings
                 collection_date=timezone.now(),
-                is_available=True,
                 status='Available'
             )
             

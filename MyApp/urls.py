@@ -31,12 +31,17 @@ urlpatterns = [
     path('payment_report/', views.payment_report, name='payment_report'),
     path('export_payment_report/', views.export_payment_report, name='export_payment_report'),
     
+    
     # Admin sales management
     path('waste-sales/', sales_views.admin_waste_sales, name='admin_waste_sales'),
     path('assign-collector/<int:order_id>/', sales_views.assign_waste_collector, name='assign_waste_collector'),
+    path('auto-assign-collector/<int:order_id>/', sales_views.auto_assign_waste_collector, name='auto_assign_waste_collector'),
+    path('toggle-auto-assignment/', sales_views.toggle_auto_assignment, name='toggle_auto_assignment'),
     path('compost-sales/', sales_views.admin_compost_sales, name='admin_compost_sales'),
     path('update-delivery/<int:order_id>/', sales_views.admin_update_delivery_status, name='admin_update_delivery'),
     path('stock-management/', sales_views.admin_stock_management, name='admin_stock_management'),
+
+
     
     # Salary management
     path('salaries/', salary_views.admin_salary_management, name='admin_salary_management'),

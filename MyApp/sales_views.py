@@ -102,9 +102,22 @@ def admin_waste_sales(request):
     # Get all collectors for assignment dropdown
     collectors = Collector.objects.filter(user__is_active=True)
     
+    # Get today's assigned collector for auto-assignment display
+    todays_collector = get_todays_collector()
+    from datetime import datetime
+    day_name = datetime.now().strftime('%A')
+    
+    # Check if auto-assignment is enabled
+    from MyApp.models import SystemSettings
+    auto_assign_enabled = SystemSettings.get_setting('auto_assign_collectors', 'true').lower() == 'true'
+    
     context = {
         'orders': waste_orders_list,
         'collectors': collectors,
+        'todays_collector': todays_collector,
+        'todays_collector_name': todays_collector.collector_name if todays_collector else 'None',
+        'day_name': day_name,
+        'auto_assign_enabled': auto_assign_enabled,
         'status_filter': status_filter,
         'total_orders': total_orders,
         'total_revenue': total_revenue,
@@ -207,6 +220,168 @@ def admin_compost_sales(request):
     return render(request, 'Admin/compost_sales.html', context)
 
 
+
+
+def get_todays_collector():
+    """
+    Get today's assigned collector based on day-of-week rotation.
+    Rotates through all verified collectors automatically.
+    Includes all 7 days (Monday-Sunday).
+    """
+    from datetime import datetime
+    
+    # Get all verified collectors in consistent order
+    collectors = list(Collector.objects.filter(
+        user__is_verified=True
+    ).order_by('id'))
+    
+    if not collectors:
+        return None
+    
+    # Get day of week (0=Monday, 6=Sunday)
+    day_of_week = datetime.now().weekday()
+    
+    # Rotate through collectors based on day
+    collector_index = day_of_week % len(collectors)
+    
+    return collectors[collector_index]
+
+
+@login_required(login_url='login')
+@never_cache
+def auto_assign_waste_collector(request, order_id):
+    """
+    Auto-assign collector to farmer waste order using day-based rotation.
+    All orders on the same day go to the same collector.
+    """
+    if request.method == 'POST':
+        try:
+            from datetime import datetime
+            from django.http import JsonResponse
+            
+            order = tbl_Order.objects.get(Order_id=order_id)
+            
+            # Check if already assigned
+            if order.assigned_collector:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'Order already has an assigned collector'
+                })
+            
+            # Get today's assigned collector
+            collector = get_todays_collector()
+            
+            if not collector:
+                return JsonResponse({
+                    'success': False,
+                    'error': 'No verified collectors available'
+                })
+            
+            # Get order item
+            order_item = order.tbl_orderitem_set.first()
+            quantity = order_item.Quantity_kg
+            unit_price = order_item.Unit_Price
+            
+            # Get any available inventory from this collector (just for linking)
+            inventory = tbl_WasteInventory.objects.filter(
+                collector=collector,
+                status='Available'
+            ).first()
+            
+            # Allow assignment even without inventory
+            collection_request = inventory.collection_request if inventory else None
+            
+            # Create FarmerSupply (links farmer to collector)
+            supply = tbl_FarmerSupply.objects.create(
+                Farmer_id=order.Buyer_id,
+                Collection_id=collection_request,
+                Quantity=quantity,
+                unit_price=unit_price,
+                total_amount=order.Total_Amount,
+                delivery_address=order.Delivery_Address,
+                payment_status='Paid',
+                delivery_status='Pending'
+            )
+            
+            # Link to order item
+            order_item.FarmerSupply_id = supply
+            order_item.save()
+            
+            # Update order assignment
+            order.assigned_collector = collector
+            order.assignment_status = 'Assigned'
+            order.save()
+            
+            # Create payment transaction for the collector
+            tbl_PaymentTransaction.objects.create(
+                Payer_id=order.Buyer_id.user,
+                Receiver_id=collector.user,
+                Amount=order.Total_Amount,
+                transaction_type='WasteSale',
+                Reference_id=order.Order_id,
+                status='Success'
+            )
+            
+            # Get day name for message
+            day_name = datetime.now().strftime('%A')
+            
+            return JsonResponse({
+                'success': True,
+                'collector_name': collector.collector_name,
+                'day': day_name,
+                'message': f'Auto-assigned to {collector.collector_name} ({day_name}\'s collector)'
+            })
+            
+        except tbl_Order.DoesNotExist:
+            return JsonResponse({
+                'success': False,
+                'error': 'Order not found'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': f'Error: {str(e)}'
+            })
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
+@login_required(login_url='login')
+@never_cache
+def toggle_auto_assignment(request):
+    """
+    Toggle automatic collector assignment on/off.
+    """
+    if request.method == 'POST':
+        from django.http import JsonResponse
+        from MyApp.models import SystemSettings
+        import json
+        
+        try:
+            data = json.loads(request.body)
+            enabled = data.get('enabled', False)
+            
+            # Update system setting
+            SystemSettings.set_setting(
+                'auto_assign_collectors',
+                'true' if enabled else 'false',
+                'Automatically assign collectors to farmer waste orders based on day rotation'
+            )
+            
+            return JsonResponse({
+                'success': True,
+                'enabled': enabled,
+                'message': f'Auto-assignment {"enabled" if enabled else "disabled"}'
+            })
+        except Exception as e:
+            return JsonResponse({
+                'success': False,
+                'error': str(e)
+            })
+    
+    return JsonResponse({'success': False, 'error': 'Invalid request method'})
+
+
 @login_required(login_url='login')
 @never_cache
 def assign_waste_collector(request, order_id):
@@ -225,7 +400,7 @@ def assign_waste_collector(request, order_id):
             # Get any available inventory from this collector (just for linking)
             inventory = tbl_WasteInventory.objects.filter(
                 collector=collector,
-                is_available=True
+                status='Available'
             ).first()
             
             # Allow assignment even without inventory
@@ -390,9 +565,11 @@ def admin_stock_management(request):
             total=Sum('Stock_kg'))['total'] or 0,
         'premium_stock_floored': int(compost_batches.filter(Grade='Premium', Status__in=['Active', 'Ready']).aggregate(
             total=Sum('Stock_kg'))['total'] or 0),
-        'standard_stock': compost_batches.filter(Grade='Standard', Status__in=['Active', 'Ready']).aggregate(
+        'grade_a_stock': compost_batches.filter(Grade='A', Status__in=['Active', 'Ready']).aggregate(
             total=Sum('Stock_kg'))['total'] or 0,
-        'basic_stock': compost_batches.filter(Grade='Basic', Status__in=['Active', 'Ready']).aggregate(
+        'grade_b_stock': compost_batches.filter(Grade='B', Status__in=['Active', 'Ready']).aggregate(
+            total=Sum('Stock_kg'))['total'] or 0,
+        'grade_c_stock': compost_batches.filter(Grade='C', Status__in=['Active', 'Ready']).aggregate(
             total=Sum('Stock_kg'))['total'] or 0,
     }
     

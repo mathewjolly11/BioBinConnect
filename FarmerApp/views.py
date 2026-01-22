@@ -34,7 +34,6 @@ def farmer_dashboard(request):
     
     # Available inventory
     available_waste = tbl_WasteInventory.objects.filter(
-        is_available=True,
         status='Available'
     ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
     
@@ -124,9 +123,8 @@ def farmer_browse_waste(request):
     
     # Get all available waste and aggregate
     available_waste = tbl_WasteInventory.objects.filter(
-        is_available=True,
-        available_quantity_kg__gt=0,
-        status='Available'
+        status='Available',
+        available_quantity_kg__gt=0
     )
     
     # Calculate totals
@@ -200,9 +198,8 @@ def farmer_place_order(request):
                     # Combined waste from all collectors
                     from django.db.models import Sum
                     available_waste = tbl_WasteInventory.objects.filter(
-                        is_available=True,
-                        available_quantity_kg__gt=0,
-                        status='Available'
+                        status='Available',
+                        available_quantity_kg__gt=0
                     )
                     total_stock = available_waste.aggregate(total=Sum('available_quantity_kg'))['total'] or 0
                     
@@ -302,9 +299,8 @@ def farmer_place_order(request):
             # Combined waste from all collections
             from django.db.models import Sum
             available_waste = tbl_WasteInventory.objects.filter(
-                is_available=True,
-                available_quantity_kg__gt=0,
-                status='Available'
+                status='Available',
+                available_quantity_kg__gt=0
             )
             total_stock = available_waste.aggregate(total=Sum('available_quantity_kg'))['total'] or 0
             
@@ -458,7 +454,7 @@ def farmer_payment(request):
                     )
                     
                     # Create single Order Item (no collector assignment yet)
-                    tbl_OrderItem.objects.create(
+                    order_item = tbl_OrderItem.objects.create(
                         Order_id=order,
                         Item_Type='Waste',
                         Quantity_kg=quantity,
@@ -467,14 +463,62 @@ def farmer_payment(request):
                         # FarmerSupply_id will be set when Admin assigns collector
                     )
                     
+                    # AUTO-ASSIGNMENT: Check if auto-assignment is enabled
+                    from MyApp.models import SystemSettings
+                    auto_assign_enabled = SystemSettings.get_setting('auto_assign_collectors', 'true')
+                    
+                    if auto_assign_enabled.lower() == 'true':
+                        # Automatically assign today's collector
+                        from MyApp.sales_views import get_todays_collector
+                        collector = get_todays_collector()
+                        
+                        if collector:
+                            # Get any available inventory from this collector (just for linking)
+                            inventory = tbl_WasteInventory.objects.filter(
+                                collector=collector,
+                                status='Available'
+                            ).first()
+                            
+                            collection_request = inventory.collection_request if inventory else None
+                            
+                            # Create FarmerSupply (links farmer to collector)
+                            supply = tbl_FarmerSupply.objects.create(
+                                Farmer_id=farmer,
+                                Collection_id=collection_request,
+                                Quantity=quantity,
+                                unit_price=unit_price,
+                                total_amount=total_amount,
+                                delivery_address=delivery_address,
+                                payment_status='Paid',
+                                delivery_status='Pending'
+                            )
+                            
+                            # Link to order item
+                            order_item.FarmerSupply_id = supply
+                            order_item.save()
+                            
+                            # Update order assignment
+                            order.assigned_collector = collector
+                            order.assignment_status = 'Assigned'
+                            order.save()
+                            
+                            # Create payment transaction for the collector
+                            tbl_PaymentTransaction.objects.create(
+                                Payer_id=request.user,
+                                Receiver_id=collector.user,
+                                Amount=total_amount,
+                                transaction_type='WasteSale',
+                                Reference_id=order.Order_id,
+                                status='Success'
+                            )
+                    
                     # Deduct from available inventory (FIFO) to reserve the stock
                     # This reduces available display for other farmers
                     remaining_qty = quantity
                     from django.db.models import F
                     inventories = tbl_WasteInventory.objects.filter(
-                        is_available=True,
-                        available_quantity_kg__gt=0,
-                        status='Available'
+                        status='Available',
+                        available_quantity_kg__gt=0
                     ).order_by('Inventory_id')
                     
                     for inventory in inventories:
@@ -486,7 +530,7 @@ def farmer_payment(request):
                         # Deduct from available quantity
                         inventory.available_quantity_kg -= take_qty
                         if inventory.available_quantity_kg == 0:
-                            inventory.is_available = False
+                            inventory.status = 'Sold'
                         inventory.save()
                         
                         remaining_qty -= take_qty

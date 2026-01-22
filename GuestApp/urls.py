@@ -2,8 +2,6 @@ from django.urls import path
 from GuestApp import views
 from GuestApp import api_views
 
-
-from GuestApp import views
 urlpatterns = [
     path('', views.index, name='guest_index'),
     path('booking/', views.about, name='booking'),

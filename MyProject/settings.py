@@ -37,12 +37,15 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/6.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-o*jznn_0tazerka_gm$qv4-z@-+wsg9e1&p&833mymmiaatdk6'
+# SECRET_KEY is now loaded from environment variables for security
+SECRET_KEY = os.environ.get('SECRET_KEY', 'django-insecure-fallback-key-for-dev-only')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+# DEBUG mode controlled via environment variable
+DEBUG = os.environ.get('DEBUG', 'False') == 'True'
 
-ALLOWED_HOSTS = []
+# ALLOWED_HOSTS - comma-separated list from environment
+ALLOWED_HOSTS = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1').split(',')
 
 
 # Application definition
@@ -100,7 +103,7 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_biobinconnect',
         'USER': 'root',
-        'PASSWORD': '',
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),  # Load from environment
         'HOST': 'localhost',
     }
 }

@@ -65,7 +65,6 @@ def admin_reports(request):
     
     # Inventory Stats
     total_waste_stock = tbl_WasteInventory.objects.filter(
-        is_available=True,
         status='Available'
     ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
     total_compost_stock = tbl_CompostBatch.objects.filter(Status='Ready').aggregate(total=Sum('Stock_kg'))['total'] or 0

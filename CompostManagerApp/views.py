@@ -19,7 +19,6 @@ def compost_manager_dashboard(request):
     
     # Get statistics
     total_available_waste = tbl_WasteInventory.objects.filter(
-        is_available=True, 
         status='Available'
     ).aggregate(total=Sum('available_quantity_kg'))['total'] or 0
     
@@ -56,9 +55,9 @@ def view_waste_inventory(request):
     # Filter by availability if requested
     status_filter = request.GET.get('status', 'all')
     if status_filter == 'available':
-        all_waste = all_waste.filter(is_available=True, status='Available')
+        all_waste = all_waste.filter(status='Available')
     elif status_filter == 'used':
-        all_waste = all_waste.filter(Q(is_available=False) | Q(status='Used'))
+        all_waste = all_waste.filter(status='Used')
     
     context = {
         'waste_inventory': all_waste,
@@ -74,7 +73,6 @@ def create_compost_batch(request):
     
     # Get available waste
     available_waste = tbl_WasteInventory.objects.filter(
-        is_available=True,
         status='Available'
     ).select_related('collector')
     
@@ -107,7 +105,7 @@ def create_compost_batch(request):
             batch.save()
             
             # Update waste inventory - mark as used
-            selected_waste.update(is_available=False, status='Used')
+            selected_waste.update(status='Used')
             
             messages.success(request, f'Compost batch "{batch.Batch_name}" created successfully!')
             return redirect('manage_batches')

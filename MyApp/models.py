@@ -1,4 +1,12 @@
 from django.db import models
+from MyApp.constants import (
+    PAYMENT_STATUS_CHOICES, PAYMENT_STATUS_SIMPLE,
+    DELIVERY_STATUS_CHOICES, PICKUP_STATUS_CHOICES,
+    PAYMENT_METHOD_CHOICES, COMPOST_GRADE_CHOICES,
+    COMPOST_STATUS_CHOICES, WASTE_STATUS_CHOICES,
+    TRANSACTION_TYPE_CHOICES, TRANSACTION_STATUS_CHOICES,
+    ORDER_ITEM_TYPE_CHOICES, ASSIGNMENT_STATUS_CHOICES
+)
 
 
 # System Settings Model
@@ -179,11 +187,7 @@ class tbl_CollectionRequest(models.Model):
 # NEW: Waste Inventory for Farmer Purchasing
 class tbl_WasteInventory(models.Model):
     """Track available waste for farmer purchase before composting"""
-    STATUS_CHOICES = [
-        ('Available', 'Available'),
-        ('Sold', 'Sold to Farmer'),
-        ('Composting', 'Sent to Composting'),
-    ]
+    # Using imported WASTE_STATUS_CHOICES from constants.py
     
     Inventory_id = models.AutoField(primary_key=True)
     collection_request = models.ForeignKey(tbl_CollectionRequest, on_delete=models.CASCADE)
@@ -191,8 +195,8 @@ class tbl_WasteInventory(models.Model):
     available_quantity_kg = models.DecimalField(max_digits=10, decimal_places=2)
     price_per_kg = models.DecimalField(max_digits=10, decimal_places=2, default=10.00)
     collection_date = models.DateTimeField()
-    is_available = models.BooleanField(default=True)
-    status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Available')
+    expiry_date = models.DateTimeField(null=True, blank=True)  # Auto-calculated: collection_date + 30 days
+    status = models.CharField(max_length=20, choices=WASTE_STATUS_CHOICES, default='Available')
     salary_paid = models.BooleanField(default=False)  # Track if collector salary paid for this date
     
     class Meta:
@@ -240,25 +244,18 @@ class tbl_FarmerSupply(models.Model):
 # MODIFIED: Compost Batch with pricing
 class tbl_CompostBatch(models.Model):
     """Compost batches from processed waste"""
-    STATUS_CHOICES = [
-        ('Active', 'Active'),
-        ('Ready', 'Ready'),
-        ('Sold', 'Sold'),
-    ]
+    # Using imported COMPOST_STATUS_CHOICES from constants.py
     
-    GRADE_CHOICES = [
-        ('Premium', 'Premium'),
-        ('Standard', 'Standard'),
-        ('Basic', 'Basic'),
-    ]
+    # Using imported COMPOST_GRADE_CHOICES from constants.py
+    # Matches actual database data: Premium, A, B, C
     
     Batch_id = models.AutoField(primary_key=True)
     CompostManager_id = models.ForeignKey('GuestApp.CompostManager', on_delete=models.CASCADE)
     Batch_name = models.CharField(max_length=100)
     Source_Waste_kg = models.DecimalField(max_digits=10, decimal_places=2)
     Date_Created = models.DateField()
-    Status = models.CharField(max_length=20, choices=STATUS_CHOICES, default='Active')
-    Grade = models.CharField(max_length=20, choices=GRADE_CHOICES, default='Standard')
+    Status = models.CharField(max_length=20, choices=COMPOST_STATUS_CHOICES, default='Processing')
+    Grade = models.CharField(max_length=20, choices=COMPOST_GRADE_CHOICES, default='A')
     Stock_kg = models.DecimalField(max_digits=10, decimal_places=2)
     
     # NEW FIELD
