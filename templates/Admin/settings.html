@@ -83,10 +83,14 @@
 
           <hr />
 
-          <form method="post" class="mt-3">
+          <form method="post" class="mt-3" id="settingsForm">
             {% csrf_token %} {{ form.as_p }}
             <div class="mt-3">
-              <button type="submit" class="btn btn-success">
+              <button
+                type="button"
+                class="btn btn-success"
+                onclick="confirmSave()"
+              >
                 <i class="fa fa-save me-2"></i>Save Settings
               </button>
               <a href="{% url 'admin_index' %}" class="btn btn-secondary">
@@ -95,10 +99,20 @@
             </div>
           </form>
 
-          <div class="alert alert-warning mt-4">
+          <div
+            class="alert alert-warning mt-4"
+            style="
+              color: #664d03 !important;
+              background-color: #fff3cd !important;
+              border-color: #ffecb5 !important;
+            "
+          >
             <i class="fa fa-exclamation-triangle me-2"></i>
-            <strong>Note:</strong> Changing this ratio will only affect new
-            compost batches created after the update.
+            <strong style="color: #664d03 !important">Note:</strong> Changes to
+            these system settings (Price, Thresholds, etc.) will apply
+            immediately to all
+            <strong style="color: #664d03 !important">future</strong>
+            transactions and alerts. Historical records will remain unchanged.
           </div>
         </div>
       </div>
@@ -108,6 +122,23 @@
 
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 <script>
+  function confirmSave() {
+    Swal.fire({
+        title: 'Save System Settings?',
+        text: "This will update global variables affecting operations and pricing. Are you sure?",
+        icon: 'warning',
+        showCancelButton: true,
+        confirmButtonColor: '#10b981', // BioBin Green
+        cancelButtonColor: '#d33',
+        confirmButtonText: 'Yes, Save Changes',
+        cancelButtonText: 'Cancel'
+    }).then((result) => {
+        if (result.isConfirmed) {
+            document.getElementById('settingsForm').submit();
+        }
+    });
+  }
+
   {% if messages %}
     {% for message in messages %}
       {% if message.tags == 'success' %}

@@ -1,230 +1,307 @@
-{% extends 'Admin/base.html' %}
-{% load static %}
+{% extends 'Admin/base.html' %} {% load static %}
 
 <!-- SweetAlert2 -->
 <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
 <style>
-    .stats-card {
-        border-radius: 10px;
-        padding: 20px;
-        margin-bottom: 20px;
-        box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    }
+  .stats-card {
+    border-radius: 10px;
+    padding: 20px;
+    margin-bottom: 20px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  }
 
-    .status-select {
-        padding: 5px 10px;
-        border-radius: 5px;
-        border: 1px solid #ddd;
-        background: #fff;
-        cursor: pointer;
-        transition: all 0.3s;
-        font-size: 13px;
-    }
+  .status-select {
+    padding: 5px 10px;
+    border-radius: 5px;
+    border: 1px solid #ddd;
+    background: #fff;
+    cursor: pointer;
+    transition: all 0.3s;
+    font-size: 13px;
+  }
 
-    .status-select:hover {
-        border-color: #007bff;
-        box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
-    }
+  .status-select:hover {
+    border-color: #007bff;
+    box-shadow: 0 0 5px rgba(0, 123, 255, 0.3);
+  }
 
-    .table-hover tbody tr:hover {
-        background-color: #f8f9fa;
-    }
+  .table-hover tbody tr:hover {
+    background-color: #f8f9fa;
+  }
 </style>
 
 {% block content %}
 <section id="main-content">
-    <section class="wrapper main-wrapper">
-        <div class="col-lg-12">
-            <section class="box">
-                <header class="panel_header">
-                    <h2 class="title">Compost Sales Management</h2>
-                </header>
-                <div class="content-body">
-                    <!-- Statistics Cards -->
-                    <div class="row mb-4">
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #8B5CF6 0%, #7C3AED 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">🌱</h1>
-                                    <h5 class="mt-2">Total Orders</h5>
-                                    <h2>{{ total_orders }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #10B981 0%, #059669 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">💰</h1>
-                                    <h5 class="mt-2">Total Revenue</h5>
-                                    <h2>₹{{ total_revenue }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #F59E0B 0%, #D97706 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">⏳</h1>
-                                    <h5 class="mt-2">Pending</h5>
-                                    <h2>{{ pending_orders }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                        <div class="col-md-3">
-                            <div class="card text-white stats-card" style="background: linear-gradient(135deg, #3B82F6 0%, #2563EB 100%);">
-                                <div class="card-body text-center">
-                                    <h1 style="font-size: 3rem;">✅</h1>
-                                    <h5 class="mt-2">Completed</h5>
-                                    <h2>{{ completed_orders }}</h2>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <!-- Filters -->
-                    <div class="card mb-4">
-                        <div class="card-body">
-                            <form method="get" class="row g-3">
-                                <div class="col-md-4">
-                                    <label class="form-label">Filter by Status</label>
-                                    <select name="status" class="form-select" onchange="this.form.submit()">
-                                        <option value="all" {% if status_filter == 'all' %}selected{% endif %}>All Orders
-                                        </option>
-                                        <option value="Pending" {% if status_filter == 'Pending' %}selected{% endif %}>
-                                            Pending</option>
-                                        <option value="Paid" {% if status_filter == 'Paid' %}selected{% endif %}>Paid
-                                        </option>
-                                    </select>
-                                </div>
-                            </form>
-                        </div>
-                    </div>
-
-                    <!-- Orders Table -->
-                    <div class="table-responsive">
-                        <table class="table table-hover">
-                            <thead class="table-light">
-                                <tr>
-                                    <th>Order ID</th>
-                                    <th>Farmer</th>
-                                    <th>Quantity (kg)</th>
-                                    <th>Amount</th>
-                                    <th>Payment Status</th>
-                                    <th>Delivery Status</th>
-                                    <th>Date</th>
-                                    <th>Actions</th>
-                                </tr>
-                            </thead>
-                            <tbody>
-                                {% for order in orders %}
-                                <tr>
-                                    <td>#{{ order.Order_id }}</td>
-                                    <td>{{ order.Buyer_id.farmer_name }}</td>
-                                    <td>
-                                        {{ order.total_quantity }} kg
-                                    </td>
-                                    <td>₹{{ order.Total_Amount }}</td>
-                                    <td>
-                                        <span
-                                            class="badge bg-{% if order.Payment_Status == 'Paid' %}success{% else %}warning{% endif %}">
-                                            {{ order.Payment_Status }}
-                                        </span>
-                                    </td>
-                                    <td>
-                                        {% with order.tbl_orderitem_set.first as item %}
-                                        <span
-                                            class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'Dispatched' %}info{% else %}secondary{% endif %}">
-                                            {{ item.Delivery_Status }}
-                                        </span>
-                                        {% endwith %}
-                                    </td>
-                                    <td>{{ order.Order_Date|date:"d M Y" }}</td>
-                                    <td>
-                                        {% with order.tbl_orderitem_set.first as item %}
-                                        {% if item.Delivery_Status == 'Delivered' %}
-                                        <span class="badge bg-success" style="font-size: 0.9rem;">
-                                            ✅ Order Complete
-                                        </span>
-                                        {% else %}
-                                        <select class="status-select"
-                                            onchange="updateStatus({{ order.Order_id }}, this.value, this)">
-                                            <option value="">Update Status</option>
-                                            <option value="Pending" {% if item.Delivery_Status == 'Pending' %}selected{% endif %}>📦 Pending</option>
-                                            <option value="Dispatched" {% if item.Delivery_Status == 'Dispatched' %}selected{% endif %}>🚚 Dispatched</option>
-                                            <option value="Delivered">✅ Delivered</option>
-                                        </select>
-                                        {% endif %}
-                                        {% endwith %}
-                                    </td>
-                                </tr>
-                                {% empty %}
-                                <tr>
-                                    <td colspan="8" class="text-center">No compost orders found</td>
-                                </tr>
-                                {% endfor %}
-                            </tbody>
-                        </table>
-                    </div>
+  <section class="wrapper main-wrapper">
+    <div class="col-lg-12">
+      <section class="box">
+        <header class="panel_header">
+          <h2 class="title">Compost Sales Management</h2>
+        </header>
+        <div class="content-body">
+          <!-- Statistics Cards -->
+          <div class="row mb-4">
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #8b5cf6 0%, #7c3aed 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">🌱</h1>
+                  <h5 class="mt-2">Total Orders</h5>
+                  <h2>{{ total_orders }}</h2>
                 </div>
-            </section>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #10b981 0%, #059669 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">💰</h1>
+                  <h5 class="mt-2">Total Revenue</h5>
+                  <h2>₹{{ total_revenue }}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">⏳</h1>
+                  <h5 class="mt-2">Pending</h5>
+                  <h2>{{ pending_orders }}</h2>
+                </div>
+              </div>
+            </div>
+            <div class="col-md-3">
+              <div
+                class="card text-white stats-card"
+                style="
+                  background: linear-gradient(135deg, #3b82f6 0%, #2563eb 100%);
+                "
+              >
+                <div class="card-body text-center">
+                  <h1 style="font-size: 3rem">✅</h1>
+                  <h5 class="mt-2">Completed</h5>
+                  <h2>{{ completed_orders }}</h2>
+                </div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Filters -->
+          <div class="card mb-4">
+            <div class="card-body">
+              <form method="get" class="row g-3">
+                <div class="col-md-4">
+                  <label class="form-label">Filter by Status</label>
+                  <select
+                    name="status"
+                    class="form-select"
+                    onchange="this.form.submit()"
+                  >
+                    <option
+                      value="all"
+                      {%
+                      if
+                      status_filter=""
+                      ="all"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      All Orders
+                    </option>
+                    <option
+                      value="Pending"
+                      {%
+                      if
+                      status_filter=""
+                      ="Pending"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Pending
+                    </option>
+                    <option
+                      value="Paid"
+                      {%
+                      if
+                      status_filter=""
+                      ="Paid"
+                      %}selected{%
+                      endif
+                      %}
+                    >
+                      Paid
+                    </option>
+                  </select>
+                </div>
+              </form>
+            </div>
+          </div>
+
+          <!-- Orders Table -->
+          <div class="table-responsive">
+            <table class="table table-hover">
+              <thead class="table-light">
+                <tr>
+                  <th>Order ID</th>
+                  <th>Farmer</th>
+                  <th>Quantity (kg)</th>
+                  <th>Amount</th>
+                  <th>Payment Status</th>
+                  <th>Delivery Status</th>
+                  <th>Date</th>
+                  <th>Actions</th>
+                </tr>
+              </thead>
+              <tbody>
+                {% for order in orders %}
+                <tr>
+                  <td>#{{ order.Order_id }}</td>
+                  <td>{{ order.Buyer_id.farmer_name }}</td>
+                  <td>{{ order.total_quantity }} kg</td>
+                  <td>₹{{ order.Total_Amount }}</td>
+                  <td>
+                    <span
+                      class="badge bg-{% if order.Payment_Status == 'Paid' %}success{% else %}warning{% endif %}"
+                    >
+                      {{ order.Payment_Status }}
+                    </span>
+                  </td>
+                  <td>
+                    {% with order.tbl_orderitem_set.first as item %}
+                    <span
+                      class="badge bg-{% if item.Delivery_Status == 'Delivered' %}primary{% elif item.Delivery_Status == 'Dispatched' %}info{% elif item.Delivery_Status == 'Pending' %}warning{% else %}secondary{% endif %}"
+                    >
+                      {{ item.Delivery_Status }}
+                    </span>
+                    {% endwith %}
+                  </td>
+                  <td>{{ order.Order_Date|date:"d M Y" }}</td>
+                  <td>
+                    {% with order.tbl_orderitem_set.first as item %} {% if item.Delivery_Status == 'Delivered' %}
+                    <span class="badge bg-success" style="font-size: 0.9rem">
+                      ✅ Order Complete
+                    </span>
+                    {% else %}
+                    <select
+                      class="status-select"
+                      onchange="updateStatus({{ order.Order_id }}, this.value, this)"
+                    >
+                      <option value="">Update Status</option>
+                      <option
+                        value="Pending"
+                        {%
+                        if
+                        item.Delivery_Status=""
+                        ="Pending"
+                        %}selected{%
+                        endif
+                        %}
+                      >
+                        📦 Pending
+                      </option>
+                      <option
+                        value="Dispatched"
+                        {%
+                        if
+                        item.Delivery_Status=""
+                        ="Dispatched"
+                        %}selected{%
+                        endif
+                        %}
+                      >
+                        🚚 Dispatched
+                      </option>
+                      <option value="Delivered">✅ Delivered</option>
+                    </select>
+                    {% endif %} {% endwith %}
+                  </td>
+                </tr>
+                {% empty %}
+                <tr>
+                  <td colspan="8" class="text-center">
+                    No compost orders found
+                  </td>
+                </tr>
+                {% endfor %}
+              </tbody>
+            </table>
+          </div>
         </div>
-    </section>
+      </section>
+    </div>
+  </section>
 </section>
 
 <script>
-    function updateStatus(orderId, newStatus, selectElement) {
-        if (!newStatus) return;
+  function updateStatus(orderId, newStatus, selectElement) {
+      if (!newStatus) return;
 
-        Swal.fire({
-            title: 'Update Delivery Status?',
-            html: `Change status to <strong>${newStatus}</strong>?`,
-            icon: 'question',
-            showCancelButton: true,
-            confirmButtonColor: '#28a745',
-            cancelButtonColor: '#6c757d',
-            confirmButtonText: 'Yes, update it!',
-            cancelButtonText: 'Cancel'
-        }).then((result) => {
-            if (result.isConfirmed) {
-                // Create and submit form
-                const form = document.createElement('form');
-                form.method = 'POST';
-                form.action = `/admin/update-delivery/${orderId}/`;
+      Swal.fire({
+          title: 'Update Delivery Status?',
+          html: `Change status to <strong>${newStatus}</strong>?`,
+          icon: 'question',
+          showCancelButton: true,
+          confirmButtonColor: '#28a745',
+          cancelButtonColor: '#6c757d',
+          confirmButtonText: 'Yes, update it!',
+          cancelButtonText: 'Cancel'
+      }).then((result) => {
+          if (result.isConfirmed) {
+              // Create and submit form
+              const form = document.createElement('form');
+              form.method = 'POST';
+              form.action = `/admin/update-delivery/${orderId}/`;
 
-                const csrfToken = '{{ csrf_token }}';
-                const csrfInput = document.createElement('input');
-                csrfInput.type = 'hidden';
-                csrfInput.name = 'csrfmiddlewaretoken';
-                csrfInput.value = csrfToken;
+              const csrfToken = '{{ csrf_token }}';
+              const csrfInput = document.createElement('input');
+              csrfInput.type = 'hidden';
+              csrfInput.name = 'csrfmiddlewaretoken';
+              csrfInput.value = csrfToken;
 
-                const statusInput = document.createElement('input');
-                statusInput.type = 'hidden';
-                statusInput.name = 'delivery_status';
-                statusInput.value = newStatus;
+              const statusInput = document.createElement('input');
+              statusInput.type = 'hidden';
+              statusInput.name = 'delivery_status';
+              statusInput.value = newStatus;
 
-                form.appendChild(csrfInput);
-                form.appendChild(statusInput);
-                document.body.appendChild(form);
-                form.submit();
-            } else {
-                // Reset select
-                selectElement.value = '';
-            }
-        });
-    }
+              form.appendChild(csrfInput);
+              form.appendChild(statusInput);
+              document.body.appendChild(form);
+              form.submit();
+          } else {
+              // Reset select
+              selectElement.value = '';
+          }
+      });
+  }
 
-    // Show success message if redirected after update
-    {% if messages %}
-    {% for message in messages %}
-    Swal.fire({
-        icon: '{% if message.tags == "success" %}success{% else %}info{% endif %}',
-        title: '{{ message.tags|title }}',
-        text: '{{ message }}',
-        timer: 2000,
-        showConfirmButton: false
-    });
-    {% endfor %}
-    {% endif %}
+  // Show success message if redirected after update
+  {% if messages %}
+  {% for message in messages %}
+  Swal.fire({
+      icon: '{% if message.tags == "success" %}success{% else %}info{% endif %}',
+      title: '{{ message.tags|title }}',
+      text: '{{ message }}',
+      timer: 2000,
+      showConfirmButton: false
+  });
+  {% endfor %}
+  {% endif %}
 </script>
 
 {% endblock %}

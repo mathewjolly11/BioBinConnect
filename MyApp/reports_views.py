@@ -248,6 +248,8 @@ def admin_reports(request):
         
         'total_collectors': total_collectors,
         'total_compost_managers': total_compost_managers,
+        'total_households': total_households,
+        'total_farmers_count': total_farmers_count,
         
         'total_salary_expense': total_salary_expense,
         'collector_salary_expense': collector_salary_expense,

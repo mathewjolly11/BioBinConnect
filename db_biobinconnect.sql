@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Jan 21, 2026 at 06:27 PM
+-- Generation Time: Jan 22, 2026 at 05:21 AM
 -- Server version: 9.1.0
 -- PHP Version: 8.3.14
 
@@ -260,7 +260,7 @@ CREATE TABLE IF NOT EXISTS `django_migrations` (
   `name` varchar(255) NOT NULL,
   `applied` datetime(6) NOT NULL,
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM AUTO_INCREMENT=28 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=29 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `django_migrations`
@@ -293,7 +293,8 @@ INSERT INTO `django_migrations` (`id`, `app`, `name`, `applied`) VALUES
 (24, 'MyApp', '0004_tbl_compostbatch_salary_paid', '2025-12-31 16:22:19.702670'),
 (25, 'MyApp', '0005_systemsettings', '2026-01-04 11:50:24.359107'),
 (26, 'GuestApp', '0003_customuser_account_status', '2026-01-04 13:50:55.859071'),
-(27, 'MyApp', '0006_alter_tbl_farmersupply_collection_id', '2026-01-12 11:42:45.327742');
+(27, 'MyApp', '0006_alter_tbl_farmersupply_collection_id', '2026-01-12 11:42:45.327742'),
+(28, 'MyApp', '0007_fix_grade_system_and_cleanup', '2026-01-22 01:47:25.403358');
 
 -- --------------------------------------------------------
 
@@ -321,7 +322,6 @@ INSERT INTO `django_session` (`session_key`, `session_data`, `expire_date`) VALU
 ('brrg44i94hp1q6w7dt4xa89b8bd7rnhe', '.eJxVjDsOwjAQBe_iGll2vP5R0nMGa9cfHEC2FCcV4u4QKQW0b2beiwXc1hq2kZcwJ3Zmk2Gn35EwPnLbSbpju3Uee1uXmfiu8IMOfu0pPy-H-3dQcdRv7SA5aVMsXvkcLYJwQGoirbTRpkTwPjmTQUhbjCteKIWy-EgCyWUC9v4A_MQ39A:1vayUF:HpdpVpxMrR--RCnWveKAmtzQUj4mYqcCuZeL9nq-UGg', '2026-01-14 15:51:47.168645'),
 ('qtzjewrpvx1l5lcoa6s17faha7vi6wnp', '.eJxVjMsOwiAQRf-FtSFAGR4u3fsNZIaHVA0kpV0Z_12bdKHbe865LxZwW2vYRl7CnNiZKctOvyNhfOS2k3THdus89rYuM_Fd4Qcd_NpTfl4O9--g4qjfmpRzfhIwWRF9RO2icZo0KC-VJYeTLUVkMEQWrDKmJEDwWaH0CEIm9v4A5L83Vg:1vcML0:UY237ukFqdnpa2U3AkBfkIVyCMAr8SjHXKvCOAmw5Ms', '2026-01-18 11:31:58.058481'),
 ('yvnnmazhfack7tpi49pv3q85yb6niudh', '.eJxVjDsOwjAQBe_iGllef1ibkj5nsNbrDQmgRIqTCnF3iJQC2jcz76UybeuQtyZLHqu6KAjq9DsW4odMO6l3mm6z5nlal7HoXdEHbbqbqzyvh_t3MFAbvjVjQSMIQi5yIPHeRyfV-TMYtpCklx4jYCzOVgSuydjAkHprMLho1PsDB843eQ:1vcOoC:jxgXokVcFvoi_VpsoBPI1lqRLrR1jETpzvy0G3r0ccU', '2026-01-18 14:10:16.434486'),
-('pmgm7i1mb8fc0t583eg084tjt2wy26lo', '.eJxVjEEOwiAQRe_C2pARChWX7j0DGWYYqRpISrsy3l2bdKHb_977LxVxXUpce57jxOqsjFGH3zEhPXLdCN-x3pqmVpd5SnpT9E67vjbOz8vu_h0U7OVbE8MojinYZAwjELqTFeAhOeO9EAg5lCwUSEYmgIw-myMDBDvYROr9ATwxOWo:1vfGP3:epP6QQD47MoZaIW0ZN35eUgwCvG-zic2D2GxBqcF-DU', '2026-01-26 11:48:09.215680'),
 ('w6bww4ha5zsypvwzyr6cm7voh60kro3f', '.eJxVjDsOwjAQBe_iGll28CdLSZ8zWLveNQ6gRIqTCnF3iJQC2jcz76USbmtNW5MljawuykZ1-h0J80OmnfAdp9us8zyty0h6V_RBmx5mluf1cP8OKrb6rVFC7yxAjiTRgiPxPRfKpZyDt-zRMQBjMBINdRaQwBnocoDQoQej3h8eZzgg:1vb0xI:kgPCXLr-kGj3NbzafyVsX3FV2d4HJFIWVf08i3k7er4', '2026-01-14 18:29:56.178486');
 
 -- --------------------------------------------------------
@@ -413,9 +413,9 @@ CREATE TABLE IF NOT EXISTS `guestapp_customuser` (
 --
 
 INSERT INTO `guestapp_customuser` (`id`, `password`, `last_login`, `is_superuser`, `name`, `email`, `phone`, `role`, `is_verified`, `is_active`, `is_staff`, `date_joined`, `account_status`) VALUES
-(1, 'pbkdf2_sha256$1200000$HBxxLE9XKZEU3Y9s7ppCDQ$/wHCKwfOegPlId72UMox0lFwW9u5vcw/KsIzkyMYbM0=', '2026-01-21 14:51:21.962007', 1, 'Admin', 'admin@gmail.com', NULL, 'admin', 1, 1, 1, '2025-12-28 04:46:53.683344', 'Pending'),
-(2, 'pbkdf2_sha256$1200000$KqvOPclePyLoRM3Ndp9zJC$ZHt+pYZDxE2zOiwipYAmNaq+7rCRyZ1klzq52VzBnXg=', '2026-01-21 14:51:49.373806', 0, 'Sonit Jolly', 'sonitjollyavj@gmail.com', '9447984821', 'household', 1, 1, 0, '2025-12-28 04:52:33.900886', 'Approved'),
-(3, 'pbkdf2_sha256$1200000$h9GRuVsfUIPJ9p6xX9u9Ls$K166tMPTrLFWnf56rJCl1k3HwDnFEXWE5TXzh3OEkb8=', '2026-01-21 14:53:11.426675', 0, 'Maria Jolly', 'maria@gmail.com', '9447568542', 'household', 1, 1, 0, '2025-12-28 04:56:23.335834', 'Approved'),
+(1, 'pbkdf2_sha256$1000000$T8KzO4jrb0XNonpO2XiXM5$Om22/SjUBihKOw9Ydvzzpx+HnmVx/Oui9wK4ipgz1cg=', '2026-01-22 04:04:37.559668', 1, 'Admin', 'admin@gmail.com', NULL, 'admin', 1, 1, 1, '2025-12-28 04:46:53.683344', 'Pending'),
+(2, 'pbkdf2_sha256$1000000$0E1Afc0YQFKkYqOsuU15o9$gd+EErmPC+PKKkg2ShgYstbQuE/Za8iuIFPdM2vodVg=', '2026-01-22 04:16:52.025752', 0, 'Sonit Jolly', 'sonitjollyavj@gmail.com', '9447984821', 'household', 1, 1, 0, '2025-12-28 04:52:33.900886', 'Approved'),
+(3, 'pbkdf2_sha256$1000000$jZn1E8Dg1lkPbO7ga1b2D7$+xGizFpbMUl6E92Wlp6e6lmoOZffymAqUpVo1JT09kA=', '2026-01-22 04:25:53.898988', 0, 'Maria Jolly', 'maria@gmail.com', '9447568542', 'household', 1, 1, 0, '2025-12-28 04:56:23.335834', 'Approved'),
 (4, 'pbkdf2_sha256$1200000$xpGcF901fXJckIRTfrfn6o$eIUOJBaz1wwbdYNiJmUKRebtJEixDFI4NqU6kP93Trk=', '2026-01-21 14:54:05.969118', 0, 'Henna Maria Jiju', 'henna@gmail.com', '9685457512', 'household', 1, 1, 0, '2025-12-28 04:57:20.780667', 'Approved'),
 (5, 'pbkdf2_sha256$1200000$U058kJLTb8IaV1B2arKVsv$XyKBcR7BFrJojtjxpmrLuGkZIuglwMKTI9MJPU5RZRo=', '2026-01-21 14:55:01.360036', 0, 'Joseph Sojan', 'joseph@gmail.com', '9685214152', 'household', 1, 1, 0, '2025-12-28 04:58:25.870305', 'Approved'),
 (6, 'pbkdf2_sha256$1200000$z8PDPZqTRcpsBhygu2KJDJ$c4x0DA6NbK+2Fr8jC28md4fZCBlM7zb1lK+qbHGGMAM=', '2026-01-21 14:55:50.304729', 0, 'Nebin Reji', 'nebin@gmail.com', '9652634512', 'household', 1, 1, 0, '2025-12-29 02:29:02.978122', 'Approved'),
@@ -427,15 +427,15 @@ INSERT INTO `guestapp_customuser` (`id`, `password`, `last_login`, `is_superuser
 (12, 'pbkdf2_sha256$1200000$mnN6JMaSAdxopjMhPbpKgy$8CCigYGqyZdYHU1XLPT2M6CjZDBVJE6Td6E/riE7a+E=', '2026-01-21 15:01:52.114644', 0, 'Sani Tomy', 'sani@gmail.com', '9685745125', 'household', 1, 1, 0, '2025-12-29 06:00:21.628529', 'Approved'),
 (13, 'pbkdf2_sha256$1200000$vlQeoGcW55yQdKS9QL1kbz$m2DmInt+dp7eeorDUZPQZ3oFM6XOdTaDXDCONpJB4Wg=', '2026-01-21 15:02:55.579338', 0, 'Mejo John', 'mejo@gmail.com', '9685854156', 'household', 1, 1, 0, '2025-12-29 06:01:15.426499', 'Approved'),
 (14, 'pbkdf2_sha256$1200000$jnj3jUwHJhyfiplnGOXaHD$RMKguQjgjJak0O6WC6kqQ3XpZAp5s/wj06QosWTeI0E=', '2026-01-21 15:03:52.257355', 0, 'Antony Jose', 'antonyjose@gmail.com', '7451531312', 'household', 1, 1, 0, '2025-12-29 06:02:26.773984', 'Approved'),
-(15, 'pbkdf2_sha256$1200000$bC77XXIUHlLcH1H79oMuLy$IBeLsCX/47MxSWpPRdEzwv96sICZ30UDKs0tB8K+Lsg=', '2026-01-21 15:04:36.005335', 0, 'Ashin Aji', 'ashin@gmail.com', '9788578554', 'collector', 1, 1, 0, '2025-12-29 06:51:16.104682', 'Approved'),
+(15, 'pbkdf2_sha256$1000000$0zvoLAnsVNcCD1yqZcXfuy$MKCB1DiLFBoZArVzsTR0TLT1PT5T3MslRt75/CXvmsc=', '2026-01-22 04:17:53.778502', 0, 'Ashin Aji', 'ashin@gmail.com', '9788578554', 'collector', 1, 1, 0, '2025-12-29 06:51:16.104682', 'Approved'),
 (16, 'pbkdf2_sha256$1200000$XW9zRKMNfk4LIM2s3iP0lf$Kf0vDAG9dzhkOBsw//1COederMQzWMldrd6rarBz+cA=', '2026-01-21 15:14:21.213578', 0, 'Nikhil Biby', 'nikhil@gmail.com', '9685745125', 'collector', 1, 1, 0, '2025-12-30 05:08:01.755887', 'Approved'),
-(17, 'pbkdf2_sha256$1200000$W1tiwewYmq8dP4FIKMxgzf$NK8oscZkAZmgHQ+TtEhvKg6+BUKOvOsQEH4+156SCVw=', '2026-01-21 15:47:52.760770', 0, 'Nikitha Biby', 'nikitha@gmail.com', '8585745968', 'collector', 1, 1, 0, '2025-12-30 05:09:26.180019', 'Approved'),
-(18, 'pbkdf2_sha256$1200000$vds1biE44l3WWFFnX7cswf$C32geBxq9rS1OfgCo7H0vJ7nh7kLOuqw8saDIcn3eYA=', '2026-01-21 16:17:09.400930', 0, 'Jobin Jose', 'jobin@gmail.com', '9685748574', 'collector', 1, 1, 0, '2025-12-30 05:14:46.961708', 'Approved'),
+(17, 'pbkdf2_sha256$1000000$nt8Ffi4iZWyawJkq35aimK$foXKYE8J1wNwiYgi4dRUDPKkURGH+zD0zayVw8KQkRI=', '2026-01-22 04:32:28.719239', 0, 'Nikitha Biby', 'nikitha@gmail.com', '8585745968', 'collector', 1, 1, 0, '2025-12-30 05:09:26.180019', 'Approved'),
+(18, 'pbkdf2_sha256$1000000$iKFXx8wJ71CSG18tIsAoj7$cAM+H2q4s7e/ciayd1C2vg7NcQdTH+jelHQ7QEdbLks=', '2026-01-22 04:32:48.412704', 0, 'Jobin Jose', 'jobin@gmail.com', '9685748574', 'collector', 1, 1, 0, '2025-12-30 05:14:46.961708', 'Approved'),
 (19, 'pbkdf2_sha256$1200000$MV2rG31fEo31s0u7bc2P0p$/IeCyZzwng014EhE/wQbv4dBGqPFvS3vz1vTIlcCeIA=', '2026-01-21 16:04:00.748184', 0, 'Aashish Shoby', 'aashish@gmail.com', '9685857487', 'collector', 1, 1, 0, '2025-12-30 05:16:21.609354', 'Approved'),
 (20, 'pbkdf2_sha256$1200000$adWz5XyQDDMXqyZPPQQHrc$ZJn9WQZa/S3MOSKPDKJH2N32IjpLa+8/Pj6jpzipq8I=', '2026-01-21 16:06:40.033780', 0, 'Jacob Suni', 'jacob@gmail.com', '9685214152', 'collector', 1, 1, 0, '2025-12-30 05:46:35.774110', 'Approved'),
-(21, 'pbkdf2_sha256$1200000$uvm1N1SRfuFL0tyuMkR3Hm$0iw/BSjPKHav4lQzwGlZENChrCiUN74pmYw7B5S9tco=', '2026-01-21 16:13:57.531381', 0, 'Mathew Jolly', 'mathewjollyavj11@gmail.com', '9685748596', 'farmer', 1, 1, 0, '2025-12-31 09:23:42.161926', 'Approved'),
+(21, 'pbkdf2_sha256$1000000$vBzAvfSZzZ8vjRoqJDak3I$cIBQonQU7VqZwSqK+KJ3oXUE3cFVUnZrZBaaFbEAl/E=', '2026-01-22 04:27:58.584119', 0, 'Mathew Jolly', 'mathewjollyavj11@gmail.com', '9685748596', 'farmer', 1, 1, 0, '2025-12-31 09:23:42.161926', 'Approved'),
 (22, 'pbkdf2_sha256$1200000$eYXrCyHacMlk1yEBn9aZSd$pcuOV+HxS7s5zFy4N3IsRrfMp2QDFe9xtvaomf+39Lg=', '2026-01-21 16:16:00.061241', 0, 'Edwin Jose', 'edwin@gmail.com', '9685748578', 'farmer', 1, 1, 0, '2025-12-31 09:26:54.401725', 'Approved'),
-(23, 'pbkdf2_sha256$1000000$9Zakrd3zboGEyrpwSeYQQx$AIWKcNmrph6JFocOK2jB9h5qM+shDV97YQRN3n4V3gY=', '2026-01-21 18:14:14.019877', 0, 'Jeevan Johnson', 'jeevan@gmail.com', '9685748574', 'farmer', 1, 1, 0, '2025-12-31 09:30:38.615286', 'Approved'),
+(23, 'pbkdf2_sha256$1000000$9Zakrd3zboGEyrpwSeYQQx$AIWKcNmrph6JFocOK2jB9h5qM+shDV97YQRN3n4V3gY=', '2026-01-22 04:18:51.184116', 0, 'Jeevan Johnson', 'jeevan@gmail.com', '9685748574', 'farmer', 1, 1, 0, '2025-12-31 09:30:38.615286', 'Approved'),
 (25, 'pbkdf2_sha256$1200000$x9hOef6pdmGaoHlST8qOiB$KBZg0whI/U5/B+Y73SVp3iQJLm1zHdt/1gC1uNoJ97A=', '2026-01-12 11:24:43.048746', 0, 'Jees Johnson', 'mathewiqoocam1@gmail.com', '9685747474', 'farmer', 1, 1, 0, '2025-12-31 10:44:26.727897', 'Approved'),
 (26, 'pbkdf2_sha256$1000000$1Nit1ZhNBpAupAgllQfM2q$lRo2BWBZUIuk+FMG+LUyDxhK2HWPyAEeev+gJtKA5q0=', '2026-01-21 18:01:47.125747', 0, 'Soorya Sunil', 'soorya@gmail.com', '9685441412', 'compost_manager', 1, 1, 0, '2025-12-31 15:50:45.033615', 'Approved'),
 (27, 'pbkdf2_sha256$1200000$kfWdEKfqyoPdIdN4TPXoiz$Zt3xEytbF3mR0tVXCnLTQ5E1100w6KFhfSPBpZoFVWA=', '2026-01-21 16:28:58.311100', 0, 'Gibin Jose', 'gibin@gmail.com', '9685748596', 'compost_manager', 1, 1, 0, '2026-01-02 10:38:11.772618', 'Approved');
@@ -568,11 +568,12 @@ CREATE TABLE IF NOT EXISTS `myapp_systemsettings` (
 --
 
 INSERT INTO `myapp_systemsettings` (`setting_key`, `setting_value`, `description`, `last_updated`) VALUES
-('compost_conversion_ratio', '4', 'Waste to compost conversion ratio (kg waste per 1kg compost)', '2026-01-21 18:11:04.364130'),
-('low_stock_threshold', '50', 'Low stock warning threshold in kg', '2026-01-21 18:11:04.366878'),
-('expiry_warning_days', '7', 'Days before expiry to show warning', '2026-01-21 18:11:04.374092'),
-('auto_unavailable_days', '30', 'Days after which waste is automatically marked unavailable', '2026-01-21 18:11:04.377773'),
-('waste_price_per_kg', '10.00', 'Default price for waste sold to farmers per kilogram (in ₹)', '2026-01-21 18:11:04.380092');
+('compost_conversion_ratio', '4', 'Waste to compost conversion ratio (kg waste per 1kg compost)', '2026-01-22 04:57:50.203218'),
+('low_stock_threshold', '50', 'Low stock warning threshold in kg', '2026-01-22 04:57:50.208611'),
+('expiry_warning_days', '7', 'Days before expiry to show warning', '2026-01-22 04:57:50.210709'),
+('auto_unavailable_days', '30', 'Days after which waste is automatically marked unavailable', '2026-01-22 04:57:50.214397'),
+('waste_price_per_kg', '10.00', 'Default price for waste sold to farmers per kilogram (in ₹)', '2026-01-22 04:57:50.217681'),
+('auto_assign_collectors', 'false', 'Automatically assign collectors to farmer waste orders based on day rotation', '2026-01-22 04:31:43.794931');
 
 -- --------------------------------------------------------
 
@@ -616,7 +617,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_collectionrequest` (
   PRIMARY KEY (`Request_id`),
   KEY `MyApp_tbl_collectionrequest_collector_id_88ddd704` (`collector_id`),
   KEY `MyApp_tbl_collectionrequest_household_id_5b80e140` (`household_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_collectionrequest`
@@ -675,7 +676,9 @@ INSERT INTO `myapp_tbl_collectionrequest` (`Request_id`, `total_quantity_kg`, `f
 (53, 50.00, 0.00, 0.00, '2026-01-21 17:16:02.992783', 'Collected', 4, 12),
 (54, 50.00, 0.00, 0.00, '2026-01-21 17:16:16.494750', 'Collected', 4, 13),
 (55, 50.00, 0.00, 0.00, '2026-01-21 17:16:26.909577', 'Collected', 4, 12),
-(56, 50.00, 0.00, 0.00, '2026-01-21 17:16:36.955865', 'Collected', 4, 13);
+(56, 50.00, 0.00, 0.00, '2026-01-21 17:16:36.955865', 'Collected', 4, 13),
+(57, 50.00, 0.00, 0.00, '2026-01-22 04:18:04.890195', 'Collected', 1, 1),
+(58, 50.00, 0.00, 0.00, '2026-01-22 04:27:38.678120', 'Collected', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -835,7 +838,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_farmersupply` (
   KEY `MyApp_tbl_farmersupply_Collection_id_id_aca48a68` (`Collection_id_id`),
   KEY `MyApp_tbl_farmersupply_Farmer_id_id_1ea4de25` (`Farmer_id_id`),
   KEY `MyApp_tbl_farmersupply_Payment_id_id_d523fbbd` (`Payment_id_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=15 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=17 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_farmersupply`
@@ -848,7 +851,9 @@ INSERT INTO `myapp_tbl_farmersupply` (`Supply_id`, `Quantity`, `Supply_Date`, `u
 (11, 150.00, '2026-01-12 11:43:12.223717', 10.00, 1500.00, 'Paid', 'tdpa', 'Delivered', NULL, 5, NULL),
 (12, 50.00, '2026-01-21 16:14:39.150618', 10.00, 500.00, 'Paid', 'Thodupuzha', 'Delivered', NULL, 1, NULL),
 (13, 70.00, '2026-01-21 16:16:31.195561', 10.00, 700.00, 'Paid', 'Thodupuzha', 'Delivered', NULL, 2, NULL),
-(14, 120.00, '2026-01-21 16:25:23.471365', 10.00, 1200.00, 'Paid', 'Thodpuzha', 'Delivered', NULL, 3, NULL);
+(14, 120.00, '2026-01-21 16:25:23.471365', 10.00, 1200.00, 'Paid', 'Thodpuzha', 'Delivered', NULL, 3, NULL),
+(15, 50.00, '2026-01-22 04:23:30.128896', 10.00, 500.00, 'Paid', 'Thodpuzha', 'Delivered', 26, 3, NULL),
+(16, 20.00, '2026-01-22 04:28:13.193739', 10.00, 200.00, 'Paid', 'Thodupuzha', 'Delivered', 26, 1, NULL);
 
 -- --------------------------------------------------------
 
@@ -869,7 +874,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_householdpayment` (
   PRIMARY KEY (`Payment_id`),
   KEY `MyApp_tbl_householdpayment_bin_type_id_3cafb6d7` (`bin_type_id`),
   KEY `MyApp_tbl_householdpayment_household_id_b64e5a6c` (`household_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_householdpayment`
@@ -930,7 +935,9 @@ INSERT INTO `myapp_tbl_householdpayment` (`Payment_id`, `amount`, `payment_date`
 (54, 50.00, '2026-01-21 15:01:18.942857', '2026-01-21', 'Completed', 'TXN1769007678398', 4, 9),
 (55, 100.00, '2026-01-21 15:02:12.955043', '2026-01-21', 'Completed', 'TXN1769007732483', 3, 11),
 (56, 100.00, '2026-01-21 15:03:17.063014', '2026-01-21', 'Completed', 'TXN1769007797615', 3, 12),
-(57, 100.00, '2026-01-21 15:04:13.962614', '2026-01-21', 'Completed', 'TXN1769007853817', 3, 13);
+(57, 100.00, '2026-01-21 15:04:13.962614', '2026-01-21', 'Completed', 'TXN1769007853817', 3, 13),
+(58, 100.00, '2026-01-22 04:17:21.387645', '2026-01-22', 'Completed', 'TXN1769055441632', 3, 1),
+(59, 100.00, '2026-01-22 04:26:15.130197', '2026-01-22', 'Completed', 'TXN1769055975510', 3, 2);
 
 -- --------------------------------------------------------
 
@@ -974,7 +981,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_order` (
   PRIMARY KEY (`Order_id`),
   KEY `MyApp_tbl_order_Buyer_id_id_b41f89ef` (`Buyer_id_id`),
   KEY `MyApp_tbl_order_assigned_collector_id_27e539fb` (`assigned_collector_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=20 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=22 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_order`
@@ -995,7 +1002,9 @@ INSERT INTO `myapp_tbl_order` (`Order_id`, `Order_Date`, `Total_Amount`, `Delive
 (16, '2026-01-21 16:14:20.402603', 500.00, 'Thodupuzha', 'Paid', 1, 4, 'Assigned'),
 (17, '2026-01-21 16:16:15.509755', 700.00, 'Thodupuzha', 'Paid', 2, 4, 'Assigned'),
 (18, '2026-01-21 16:18:13.979543', 1200.00, 'Thodpuzha', 'Paid', 3, 4, 'Assigned'),
-(19, '2026-01-21 18:16:03.391225', 35000.00, 'Thodpuzha', 'Paid', 3, NULL, 'Unassigned');
+(19, '2026-01-21 18:16:03.391225', 35000.00, 'Thodpuzha', 'Paid', 3, NULL, 'Unassigned'),
+(20, '2026-01-22 04:19:27.549898', 500.00, 'Thodpuzha', 'Paid', 3, 4, 'Assigned'),
+(21, '2026-01-22 04:28:13.182388', 200.00, 'Thodupuzha', 'Paid', 1, 4, 'Assigned');
 
 -- --------------------------------------------------------
 
@@ -1017,7 +1026,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_orderitem` (
   KEY `MyApp_tbl_orderitem_Batch_id_id_8f85e1a6` (`Batch_id_id`),
   KEY `MyApp_tbl_orderitem_FarmerSupply_id_id_b271a2ac` (`FarmerSupply_id_id`),
   KEY `MyApp_tbl_orderitem_Order_id_id_95f4d1a6` (`Order_id_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=30 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=32 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_orderitem`
@@ -1044,7 +1053,9 @@ INSERT INTO `myapp_tbl_orderitem` (`Item_id`, `Item_Type`, `Quantity_kg`, `Unit_
 (26, 'Waste', 120.00, 10.00, 'Delivered', NULL, 14, 18),
 (27, 'Compost', 0.50, 200.00, 'Delivered', 6, NULL, 19),
 (28, 'Compost', 81.25, 200.00, 'Delivered', 7, NULL, 19),
-(29, 'Compost', 93.25, 200.00, 'Delivered', 8, NULL, 19);
+(29, 'Compost', 93.25, 200.00, 'Delivered', 8, NULL, 19),
+(30, 'Waste', 50.00, 10.00, 'Delivered', NULL, 15, 20),
+(31, 'Waste', 20.00, 10.00, 'Delivered', NULL, 16, 21);
 
 -- --------------------------------------------------------
 
@@ -1065,7 +1076,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_paymenttransaction` (
   PRIMARY KEY (`Transaction_id`),
   KEY `MyApp_tbl_paymenttransaction_Payer_id_id_76eabc0d` (`Payer_id_id`),
   KEY `MyApp_tbl_paymenttransaction_Receiver_id_id_bcd281c9` (`Receiver_id_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=51 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=53 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_paymenttransaction`
@@ -1114,7 +1125,9 @@ INSERT INTO `myapp_tbl_paymenttransaction` (`Transaction_id`, `Amount`, `transac
 (47, 1000.00, 'CollectorSalary', NULL, '2026-01-21 18:26:24.473236', 'Success', 1, 19),
 (48, 1000.00, 'CollectorSalary', NULL, '2026-01-21 18:26:28.310908', 'Success', 1, 20),
 (49, 1000.00, 'ManagerSalary', NULL, '2026-01-21 18:26:32.646273', 'Success', 1, 26),
-(50, 1000.00, 'ManagerSalary', NULL, '2026-01-21 18:26:37.008761', 'Success', 1, 27);
+(50, 1000.00, 'ManagerSalary', NULL, '2026-01-21 18:26:37.008761', 'Success', 1, 27),
+(51, 500.00, 'WasteSale', 20, '2026-01-22 04:23:30.134834', 'Success', 23, 18),
+(52, 200.00, 'WasteSale', 21, '2026-01-22 04:28:13.201138', 'Success', 21, 18);
 
 -- --------------------------------------------------------
 
@@ -1143,7 +1156,7 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_pickuprequest` (
   KEY `MyApp_tbl_pickuprequest_bin_type_id_94b84ff5` (`bin_type_id`),
   KEY `MyApp_tbl_pickuprequest_household_id_071f0928` (`household_id`),
   KEY `MyApp_tbl_pickuprequest_payment_id_74a31eed` (`payment_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=58 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=60 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_pickuprequest`
@@ -1204,7 +1217,9 @@ INSERT INTO `myapp_tbl_pickuprequest` (`Pickup_id`, `scheduled_date`, `request_t
 (54, '2026-01-21', '21:00:00.000000', 'Completed', 25.00, 'UPI', 50.00, 'Completed', 'TXN1769007678398', '2026-01-21 15:01:18.945801', 2, 4, 9, 54),
 (55, '2026-01-21', '21:00:00.000000', 'Completed', 50.00, 'UPI', 100.00, 'Completed', 'TXN1769007732483', '2026-01-21 15:02:12.963076', 3, 3, 11, 55),
 (56, '2026-01-21', '21:00:00.000000', 'Completed', 50.00, 'COD', 100.00, 'Completed', 'TXN1769007797615', '2026-01-21 15:03:17.063399', 4, 3, 12, 56),
-(57, '2026-01-21', '21:00:00.000000', 'Completed', 50.00, 'COD', 100.00, 'Completed', 'TXN1769007853817', '2026-01-21 15:04:13.963429', 4, 3, 13, 57);
+(57, '2026-01-21', '21:00:00.000000', 'Completed', 50.00, 'COD', 100.00, 'Completed', 'TXN1769007853817', '2026-01-21 15:04:13.963429', 4, 3, 13, 57),
+(58, '2026-01-22', '11:00:00.000000', 'Completed', 50.00, 'UPI', 100.00, 'Completed', 'TXN1769055441632', '2026-01-22 04:17:21.389658', 1, 3, 1, 58),
+(59, '2026-01-22', '23:00:00.000000', 'Completed', 50.00, 'UPI', 100.00, 'Completed', 'TXN1769055975510', '2026-01-22 04:26:15.131519', 3, 3, 2, 59);
 
 -- --------------------------------------------------------
 
@@ -1274,68 +1289,70 @@ CREATE TABLE IF NOT EXISTS `myapp_tbl_wasteinventory` (
   `available_quantity_kg` decimal(10,2) NOT NULL,
   `price_per_kg` decimal(10,2) NOT NULL,
   `collection_date` datetime(6) NOT NULL,
-  `is_available` tinyint(1) NOT NULL,
   `status` varchar(20) NOT NULL,
   `collection_request_id` int NOT NULL,
   `collector_id` bigint NOT NULL,
   `salary_paid` tinyint(1) NOT NULL,
+  `expiry_date` datetime(6) DEFAULT NULL,
   PRIMARY KEY (`Inventory_id`),
   KEY `MyApp_tbl_wasteinventory_collection_request_id_55fad03c` (`collection_request_id`),
   KEY `MyApp_tbl_wasteinventory_collector_id_b3275b51` (`collector_id`)
-) ENGINE=MyISAM AUTO_INCREMENT=57 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+) ENGINE=MyISAM AUTO_INCREMENT=59 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 
 --
 -- Dumping data for table `myapp_tbl_wasteinventory`
 --
 
-INSERT INTO `myapp_tbl_wasteinventory` (`Inventory_id`, `available_quantity_kg`, `price_per_kg`, `collection_date`, `is_available`, `status`, `collection_request_id`, `collector_id`, `salary_paid`) VALUES
-(10, 37.00, 10.00, '2025-12-31 09:15:24.676404', 0, 'Used', 10, 5, 1),
-(11, 23.00, 10.00, '2025-12-31 09:15:32.076181', 0, 'Used', 11, 5, 1),
-(12, 50.00, 10.00, '2025-12-31 09:16:04.067852', 0, 'Used', 12, 6, 1),
-(13, 50.00, 10.00, '2025-12-31 09:16:09.890196', 0, 'Used', 13, 6, 1),
-(14, 50.00, 10.00, '2026-01-01 04:05:17.590083', 0, 'Used', 14, 1, 1),
-(15, 50.00, 10.00, '2026-01-01 04:05:27.158231', 0, 'Used', 15, 1, 1),
-(16, 50.00, 10.00, '2026-01-01 04:08:33.049065', 0, 'Used', 16, 6, 1),
-(17, 45.00, 10.00, '2026-01-01 04:09:46.162583', 0, 'Used', 17, 6, 1),
-(18, 50.00, 10.00, '2026-01-01 04:10:59.510387', 0, 'Used', 18, 5, 1),
-(19, 25.00, 10.00, '2026-01-02 09:53:19.060147', 0, 'Used', 19, 6, 1),
-(20, 50.00, 10.00, '2026-01-02 09:53:37.513822', 0, 'Used', 20, 6, 1),
-(21, 50.00, 10.00, '2026-01-04 14:10:32.519652', 0, 'Used', 21, 1, 1),
-(22, 0.00, 10.00, '2026-01-12 10:53:32.290822', 0, 'Available', 22, 6, 1),
-(23, 0.00, 10.00, '2026-01-12 10:53:47.858318', 0, 'Available', 23, 6, 1),
-(24, 0.00, 10.00, '2026-01-12 10:54:21.989563', 0, 'Available', 24, 5, 1),
-(25, 0.00, 10.00, '2026-01-12 10:55:29.035789', 0, 'Available', 25, 4, 1),
-(26, 0.00, 10.00, '2026-01-12 10:55:43.628611', 0, 'Available', 26, 4, 1),
-(27, 0.00, 10.00, '2026-01-12 10:56:13.668733', 0, 'Available', 27, 3, 1),
-(28, 0.00, 10.00, '2026-01-12 10:56:31.815048', 0, 'Available', 28, 3, 1),
-(29, 25.00, 10.00, '2026-01-12 10:57:10.562595', 0, 'Used', 29, 2, 1),
-(30, 24.00, 10.00, '2026-01-12 10:57:25.429935', 0, 'Used', 30, 2, 1),
-(31, 50.00, 10.00, '2026-01-17 09:20:57.199509', 0, 'Used', 31, 1, 1),
-(32, 25.00, 10.00, '2026-01-17 09:23:30.635252', 0, 'Used', 32, 1, 1),
-(33, 25.00, 10.00, '2026-01-17 09:29:22.932920', 0, 'Used', 33, 2, 1),
-(34, 50.00, 10.00, '2026-01-17 09:34:10.701942', 0, 'Used', 34, 2, 1),
-(35, 25.00, 10.00, '2026-01-17 09:38:09.599542', 0, 'Used', 35, 3, 1),
-(36, 0.00, 10.00, '2026-01-21 15:04:48.744083', 0, 'Available', 36, 1, 1),
-(37, 0.00, 10.00, '2026-01-21 15:12:34.830630', 0, 'Available', 37, 1, 1),
-(38, 0.00, 10.00, '2026-01-21 15:21:25.191279', 0, 'Available', 38, 2, 1),
-(39, 0.00, 10.00, '2026-01-21 15:24:22.106540', 0, 'Available', 39, 2, 1),
-(40, 0.00, 10.00, '2026-01-21 15:27:52.187351', 0, 'Available', 40, 3, 1),
-(41, 0.00, 10.00, '2026-01-21 15:29:11.737121', 0, 'Available', 41, 3, 1),
-(42, 25.00, 10.00, '2026-01-21 15:48:39.078291', 0, 'Used', 42, 3, 1),
-(43, 50.00, 10.00, '2026-01-21 16:04:57.213329', 0, 'Used', 43, 5, 1),
-(44, 50.00, 10.00, '2026-01-21 16:05:14.655733', 0, 'Used', 44, 5, 1),
-(45, 50.00, 10.00, '2026-01-21 16:05:36.401965', 0, 'Used', 45, 5, 1),
-(46, 50.00, 10.00, '2026-01-21 16:05:51.073007', 0, 'Used', 46, 5, 1),
-(47, 50.00, 10.00, '2026-01-21 16:06:07.423693', 0, 'Used', 47, 5, 1),
-(48, 25.00, 10.00, '2026-01-21 16:06:25.939932', 0, 'Used', 48, 5, 1),
-(49, 50.00, 10.00, '2026-01-21 16:07:39.786969', 0, 'Used', 49, 6, 1),
-(50, 50.00, 10.00, '2026-01-21 16:07:53.451773', 0, 'Used', 50, 6, 1),
-(51, 50.00, 10.00, '2026-01-21 16:08:09.155271', 0, 'Used', 51, 6, 1),
-(52, 50.00, 10.00, '2026-01-21 16:13:22.602238', 0, 'Used', 52, 6, 1),
-(53, 50.00, 10.00, '2026-01-21 17:16:03.034678', 0, 'Used', 53, 4, 1),
-(54, 50.00, 10.00, '2026-01-21 17:16:16.503124', 0, 'Used', 54, 4, 1),
-(55, 50.00, 10.00, '2026-01-21 17:16:26.917969', 0, 'Used', 55, 4, 1),
-(56, 50.00, 10.00, '2026-01-21 17:16:36.968088', 0, 'Used', 56, 4, 1);
+INSERT INTO `myapp_tbl_wasteinventory` (`Inventory_id`, `available_quantity_kg`, `price_per_kg`, `collection_date`, `status`, `collection_request_id`, `collector_id`, `salary_paid`, `expiry_date`) VALUES
+(10, 37.00, 10.00, '2025-12-31 09:15:24.676404', 'Used', 10, 5, 1, NULL),
+(11, 23.00, 10.00, '2025-12-31 09:15:32.076181', 'Used', 11, 5, 1, NULL),
+(12, 50.00, 10.00, '2025-12-31 09:16:04.067852', 'Used', 12, 6, 1, NULL),
+(13, 50.00, 10.00, '2025-12-31 09:16:09.890196', 'Used', 13, 6, 1, NULL),
+(14, 50.00, 10.00, '2026-01-01 04:05:17.590083', 'Used', 14, 1, 1, NULL),
+(15, 50.00, 10.00, '2026-01-01 04:05:27.158231', 'Used', 15, 1, 1, NULL),
+(16, 50.00, 10.00, '2026-01-01 04:08:33.049065', 'Used', 16, 6, 1, NULL),
+(17, 45.00, 10.00, '2026-01-01 04:09:46.162583', 'Used', 17, 6, 1, NULL),
+(18, 50.00, 10.00, '2026-01-01 04:10:59.510387', 'Used', 18, 5, 1, NULL),
+(19, 25.00, 10.00, '2026-01-02 09:53:19.060147', 'Used', 19, 6, 1, NULL),
+(20, 50.00, 10.00, '2026-01-02 09:53:37.513822', 'Used', 20, 6, 1, NULL),
+(21, 50.00, 10.00, '2026-01-04 14:10:32.519652', 'Used', 21, 1, 1, NULL),
+(22, 0.00, 10.00, '2026-01-12 10:53:32.290822', 'Available', 22, 6, 1, NULL),
+(23, 0.00, 10.00, '2026-01-12 10:53:47.858318', 'Available', 23, 6, 1, NULL),
+(24, 0.00, 10.00, '2026-01-12 10:54:21.989563', 'Available', 24, 5, 1, NULL),
+(25, 0.00, 10.00, '2026-01-12 10:55:29.035789', 'Available', 25, 4, 1, NULL),
+(26, 0.00, 10.00, '2026-01-12 10:55:43.628611', 'Available', 26, 4, 1, NULL),
+(27, 0.00, 10.00, '2026-01-12 10:56:13.668733', 'Available', 27, 3, 1, NULL),
+(28, 0.00, 10.00, '2026-01-12 10:56:31.815048', 'Available', 28, 3, 1, NULL),
+(29, 25.00, 10.00, '2026-01-12 10:57:10.562595', 'Used', 29, 2, 1, NULL),
+(30, 24.00, 10.00, '2026-01-12 10:57:25.429935', 'Used', 30, 2, 1, NULL),
+(31, 50.00, 10.00, '2026-01-17 09:20:57.199509', 'Used', 31, 1, 1, NULL),
+(32, 25.00, 10.00, '2026-01-17 09:23:30.635252', 'Used', 32, 1, 1, NULL),
+(33, 25.00, 10.00, '2026-01-17 09:29:22.932920', 'Used', 33, 2, 1, NULL),
+(34, 50.00, 10.00, '2026-01-17 09:34:10.701942', 'Used', 34, 2, 1, NULL),
+(35, 25.00, 10.00, '2026-01-17 09:38:09.599542', 'Used', 35, 3, 1, NULL),
+(36, 0.00, 10.00, '2026-01-21 15:04:48.744083', 'Available', 36, 1, 1, NULL),
+(37, 0.00, 10.00, '2026-01-21 15:12:34.830630', 'Available', 37, 1, 1, NULL),
+(38, 0.00, 10.00, '2026-01-21 15:21:25.191279', 'Available', 38, 2, 1, NULL),
+(39, 0.00, 10.00, '2026-01-21 15:24:22.106540', 'Available', 39, 2, 1, NULL),
+(40, 0.00, 10.00, '2026-01-21 15:27:52.187351', 'Available', 40, 3, 1, NULL),
+(41, 0.00, 10.00, '2026-01-21 15:29:11.737121', 'Available', 41, 3, 1, NULL),
+(42, 25.00, 10.00, '2026-01-21 15:48:39.078291', 'Used', 42, 3, 1, NULL),
+(43, 50.00, 10.00, '2026-01-21 16:04:57.213329', 'Used', 43, 5, 1, NULL),
+(44, 50.00, 10.00, '2026-01-21 16:05:14.655733', 'Used', 44, 5, 1, NULL),
+(45, 50.00, 10.00, '2026-01-21 16:05:36.401965', 'Used', 45, 5, 1, NULL),
+(46, 50.00, 10.00, '2026-01-21 16:05:51.073007', 'Used', 46, 5, 1, NULL),
+(47, 50.00, 10.00, '2026-01-21 16:06:07.423693', 'Used', 47, 5, 1, NULL),
+(48, 25.00, 10.00, '2026-01-21 16:06:25.939932', 'Used', 48, 5, 1, NULL),
+(49, 50.00, 10.00, '2026-01-21 16:07:39.786969', 'Used', 49, 6, 1, NULL),
+(50, 50.00, 10.00, '2026-01-21 16:07:53.451773', 'Used', 50, 6, 1, NULL),
+(51, 50.00, 10.00, '2026-01-21 16:08:09.155271', 'Used', 51, 6, 1, NULL),
+(52, 50.00, 10.00, '2026-01-21 16:13:22.602238', 'Used', 52, 6, 1, NULL),
+(53, 50.00, 10.00, '2026-01-21 17:16:03.034678', 'Used', 53, 4, 1, NULL),
+(54, 50.00, 10.00, '2026-01-21 17:16:16.503124', 'Used', 54, 4, 1, NULL),
+(55, 50.00, 10.00, '2026-01-21 17:16:26.917969', 'Used', 55, 4, 1, NULL),
+(56, 50.00, 10.00, '2026-01-21 17:16:36.968088', 'Used', 56, 4, 1, NULL),
+(57, 0.00, 10.00, '2026-01-22 04:18:04.895502', 'Sold', 57, 1, 0, NULL),
+(58, 30.00, 10.00, '2026-01-22 04:27:38.679640', 'Available', 58, 3, 0, NULL);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

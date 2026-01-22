@@ -177,12 +177,7 @@
                       type="checkbox"
                       id="autoAssignToggle"
                       onchange="toggleAutoAssignment(this)"
-                      {%
-                      if
-                      auto_assign_enabled
-                      %}checked{%
-                      endif
-                      %}
+                      {% if auto_assign_enabled %}checked{% endif %}
                     />
                     <span class="toggle-slider"></span>
                   </label>
@@ -405,15 +400,15 @@
                   </td>
                   <td>
                     {% if order.assignment_status == 'Assigned' %}
-                    <span class="badge bg-success"> Assigned </span>
+                    <span class="badge bg-warning"> Assigned </span>
                     {% else %}
-                    <span class="badge bg-warning"> Unassigned </span>
+                    <span class="badge bg-secondary"> Unassigned </span>
                     {% endif %}
                   </td>
                   <td>
                     {% with order.tbl_orderitem_set.first as item %}
                     <span
-                      class="badge bg-{% if item.Delivery_Status == 'Delivered' %}success{% elif item.Delivery_Status == 'Dispatched' %}info{% else %}secondary{% endif %}"
+                      class="badge bg-{% if item.Delivery_Status == 'Delivered' %}primary{% elif item.Delivery_Status == 'Dispatched' %}info{% elif item.Delivery_Status == 'Pending' %}warning{% else %}secondary{% endif %}"
                     >
                       {{ item.Delivery_Status }}
                     </span>
@@ -467,10 +462,9 @@
         <h5 class="modal-title">
           <i class="fa fa-user-plus"></i> Assign Collector
         </h5>
-        <button
           type="button"
           class="btn-close btn-close-white"
-          data-bs-dismiss="modal"
+          onclick="closeAssignModal()"
         ></button>
       </div>
       <form id="assignForm" method="POST">
@@ -503,7 +497,7 @@
           <button
             type="button"
             class="btn btn-secondary"
-            data-bs-dismiss="modal"
+            onclick="closeAssignModal()"
           >
             Cancel
           </button>
@@ -530,15 +524,25 @@
 
 <script>
   let currentOrderId = null;
+  let assignModal = null;
 
   function showAssignModal(orderId) {
     currentOrderId = orderId;
     const form = document.getElementById("assignForm");
     form.action = `/admin/assign-collector/${orderId}/`;
-    const modal = new bootstrap.Modal(
-      document.getElementById("assignCollectorModal"),
-    );
-    modal.show();
+
+    if (!assignModal) {
+      assignModal = new bootstrap.Modal(
+        document.getElementById("assignCollectorModal"),
+      );
+    }
+    assignModal.show();
+  }
+
+  function closeAssignModal() {
+    if (assignModal) {
+      assignModal.hide();
+    }
   }
 
   function updateStatus(orderId, newStatus, selectElement) {

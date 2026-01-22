@@ -20,8 +20,7 @@
             <div class="col-md-8">
               <h5>Order #{{ order.Order_id }}</h5>
               <p class="mb-2">
-                <strong>📅 Date:</strong> {{ order.Order_Date|date:"M d, Y
-                H:i"}}
+                <strong>📅 Date:</strong> {{ order.Order_Date|date:"M d, Y H:i"}}
               </p>
               <p class="mb-2">
                 <strong>📍 Delivery:</strong> {{ order.Delivery_Address }}
@@ -33,8 +32,7 @@
                 <ul class="mt-2">
                   {% if order.waste_total > 0 %}
                   <li>
-                    🌾 Direct Waste - {{ order.waste_total }} kg @ ₹{{
-                    order.waste_unit_price }}/kg
+                    🌾 Direct Waste - {{ order.waste_total }} kg @ ₹{{ order.waste_unit_price }}/kg
                     <br />
                     <small class="text-muted">
                       Delivery Status: 

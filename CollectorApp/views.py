@@ -13,7 +13,7 @@ from django.db.models import Q
 @login_required(login_url='login')
 @never_cache
 def collector_dashboard(request):
-    from MyApp.models import tbl_PickupRequest, tbl_CollectionRequest, tbl_WasteInventory, tbl_FarmerSupply
+    from MyApp.models import tbl_PickupRequest, tbl_CollectionRequest, tbl_WasteInventory, tbl_FarmerSupply, tbl_Order
     from django.db.models import Sum
     from django.utils import timezone
     from datetime import timedelta
@@ -66,10 +66,18 @@ def collector_dashboard(request):
         collector=collector
     ).order_by('-collection_date')[:5]
     
+    # Assigned waste delivery orders (Sales)
+    assigned_sales_orders = tbl_Order.objects.filter(
+        assigned_collector=collector,
+        assignment_status='Assigned',
+        tbl_orderitem__Delivery_Status__in=['Pending', 'Dispatched']
+    ).distinct().order_by('Order_Date')
+    
     context = {
         'collector': collector,
         'today_pickups': today_pickups,
         'today_pickups_count': today_pickups_count,
+        'assigned_sales_orders': assigned_sales_orders, # Added this
         'collections_this_month': collections_this_month,
         'waste_collected': waste_collected,
         'total_collections': total_collections,
