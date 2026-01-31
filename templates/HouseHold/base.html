@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 {% load static %}
 <html lang="en">
   <head>
@@ -44,7 +44,10 @@
     />
 
     <!-- BoxIcons for password toggle icons -->
-    <link href='https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css' rel='stylesheet'>
+    <link
+      href="https://unpkg.com/boxicons@2.1.4/css/boxicons.min.css"
+      rel="stylesheet"
+    />
 
     <!-- color scheme -->
     <link
@@ -65,6 +68,13 @@
     <link
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
       rel="stylesheet"
+    />
+
+    <!-- Voice Accessibility CSS -->
+    <link
+      href="{% static 'css/voice-accessibility.css' %}"
+      rel="stylesheet"
+      type="text/css"
     />
   </head>
 
@@ -173,7 +183,7 @@
                         >Services</a
                       >
                       <!-- <ul> -->
-                        <!-- <li><a href="services.html">All Services Style 1</a></li>
+                      <!-- <li><a href="services.html">All Services Style 1</a></li>
                                             <li><a href="services-2.html">All Services Style 2</a></li>
                                             <li><a href="service-single.html">Service Single</a></li>
                                             <li><a href="pricing-table.html">Pricing Table</a></li>
@@ -423,6 +433,13 @@
 
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Voice Accessibility System -->
+    <script src="{% static 'js/voice-accessibility.js' %}?v=4.13"></script>
+    <script src="{% static 'js/accessibility-toolbar.js' %}?v=4.13"></script>
+    <script src="{% static 'js/voice-commands.js' %}?v=4.13"></script>
+    <script src="{% static 'js/mic-level-monitor.js' %}?v=4.13"></script>
+
     <script>
       // Prevent back button after logout
       window.history.pushState(null, "", window.location.href);

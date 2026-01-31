@@ -17,6 +17,9 @@ urlpatterns = [
     # Demo page for testing validations
     path('validation-demo/', views.validation_demo, name='validation_demo'),
     
+    # Voice accessibility test page
+    path('test-voice/', views.test_voice, name='test_voice'),
+    
     # API endpoints
     path('api/validate-house-number/', api_views.validate_house_number, name='validate_house_number'),
     path('api/get-next-house-number/', api_views.get_next_house_number, name='get_next_house_number'),

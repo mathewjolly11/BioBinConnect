@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+<!doctype html>
 {% load static %}
 <html lang="en">
   <head>
@@ -55,6 +55,13 @@
     <link
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
       rel="stylesheet"
+    />
+
+    <!-- Voice Accessibility CSS -->
+    <link
+      href="{% static 'css/voice-accessibility.css' %}"
+      rel="stylesheet"
+      type="text/css"
     />
   </head>
 
@@ -402,6 +409,12 @@
 
     <!-- SweetAlert2 JS -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+
+    <!-- Voice Accessibility System -->
+    <script src="{% static 'js/voice-accessibility.js' %}?v=4.13"></script>
+    <script src="{% static 'js/accessibility-toolbar.js' %}?v=4.13"></script>
+    <script src="{% static 'js/voice-commands.js' %}?v=4.13"></script>
+    <script src="{% static 'js/mic-level-monitor.js' %}?v=4.13"></script>
 
     <script>
       // Prevent back button after logout

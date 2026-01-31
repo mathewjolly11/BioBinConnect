@@ -328,3 +328,7 @@ def how_it_works(request):
 def validation_demo(request):
     """Display validation demonstration page"""
     return render(request, 'Guest/validation_demo.html')
+
+def test_voice(request):
+    """Test page for voice accessibility features"""
+    return render(request, 'test_voice.html')
