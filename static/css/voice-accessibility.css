@@ -1,0 +1,485 @@
+/**
+ * Voice Accessibility Styles
+ * Styling for voice input buttons, accessibility toolbar, and visual feedback
+ * Theme: Blue (#03A9F4)
+ */
+
+/* Accessibility Toolbar */
+.accessibility-toolbar {
+  position: fixed;
+  bottom: 20px;
+  right: 20px;
+  width: 320px;
+  background: #ffffff;
+  border-radius: 12px;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+  z-index: 9999;
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  overflow: hidden;
+  transition: all 0.3s ease;
+}
+
+.accessibility-toolbar:hover {
+  box-shadow: 0 12px 48px rgba(0, 0, 0, 0.2);
+}
+
+/* Toolbar Header */
+.toolbar-header {
+  background: linear-gradient(135deg, #4FC3F7 0%, #03A9F4 100%);
+  color: white;
+  padding: 12px 16px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  cursor: grab;
+  user-select: none;
+}
+
+.toolbar-header h6 {
+  margin: 0;
+  font-size: 14px;
+  font-weight: 600;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.toolbar-header button {
+  background: transparent;
+  border: none;
+  color: white;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s;
+}
+
+.toolbar-header button:hover {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+/* Toolbar Content */
+.toolbar-content {
+  padding: 16px;
+  max-height: 500px;
+  overflow-y: auto;
+}
+
+.toolbar-section {
+  margin-bottom: 16px;
+  padding-bottom: 16px;
+  border-bottom: 1px solid #e0e0e0;
+}
+
+.toolbar-section:last-child {
+  border-bottom: none;
+  margin-bottom: 0;
+}
+
+.toolbar-section h6 {
+  font-size: 12px;
+  font-weight: 600;
+  color: #666;
+  margin: 0 0 12px 0;
+  text-transform: uppercase;
+  letter-spacing: 0.5px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+/* Toolbar Buttons */
+.toolbar-btn {
+  width: 100%;
+  padding: 10px 12px;
+  background: #f5f5f5;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 13px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s;
+  margin-bottom: 8px;
+}
+
+.toolbar-btn:hover {
+  background: #e1f5fe;
+  border-color: #03A9F4;
+  transform: translateY(-1px);
+}
+
+.toolbar-btn.active {
+  background: #03A9F4;
+  color: white;
+  border-color: #03A9F4;
+}
+
+.toolbar-btn i {
+  font-size: 16px;
+}
+
+/* Toolbar Controls */
+.toolbar-control {
+  margin-top: 12px;
+}
+
+.toolbar-control label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.toolbar-control input[type="range"] {
+  width: 100%;
+  margin-bottom: 4px;
+}
+
+.toolbar-control #speechRateValue {
+  font-size: 12px;
+  color: #03A9F4;
+  font-weight: 600;
+}
+
+/* Toolbar Select */
+.toolbar-select {
+  width: 100%;
+  padding: 8px 12px;
+  border: 1px solid #e0e0e0;
+  border-radius: 6px;
+  font-size: 13px;
+  background: white;
+  cursor: pointer;
+  transition: border-color 0.2s;
+}
+
+.toolbar-select:focus {
+  outline: none;
+  border-color: #03A9F4;
+}
+
+/* Shortcuts Info */
+.shortcuts-info {
+  background: #f9f9f9;
+  padding: 10px;
+  border-radius: 6px;
+  font-size: 11px;
+  line-height: 1.6;
+}
+
+.shortcuts-info strong {
+  color: #03A9F4;
+}
+
+/* Toolbar Footer */
+.toolbar-footer {
+  background: #f5f5f5;
+  padding: 8px 16px;
+  text-align: center;
+  border-top: 1px solid #e0e0e0;
+}
+
+.toolbar-footer small {
+  font-size: 10px;
+  color: #999;
+}
+
+/* Microphone Level Indicator */
+.mic-level-container {
+  margin-top: 12px;
+  padding: 10px;
+  background: #f9f9f9;
+  border-radius: 6px;
+}
+
+.mic-level-container label {
+  display: block;
+  font-size: 12px;
+  color: #666;
+  margin-bottom: 6px;
+  font-weight: 500;
+}
+
+.mic-level-bar {
+  width: 100%;
+  height: 20px;
+  background: #e0e0e0;
+  border-radius: 10px;
+  overflow: hidden;
+  position: relative;
+}
+
+.mic-level-fill {
+  height: 100%;
+  background: linear-gradient(90deg, #03A9F4 0%, #0288D1 50%, #4FC3F7 75%, #03A9F4 100%);
+  width: 0%;
+  transition: width 0.1s ease;
+  border-radius: 10px;
+}
+
+.mic-level-text {
+  display: inline-block;
+  font-size: 11px;
+  color: #03A9F4;
+  font-weight: 600;
+  margin-top: 4px;
+}
+
+/* Voice Input Wrapper */
+.voice-input-wrapper {
+  position: relative;
+  display: inline-block;
+  width: 100%;
+}
+
+.voice-input-wrapper input,
+.voice-input-wrapper textarea {
+  padding-right: 45px !important;
+}
+
+/* Voice Microphone Button */
+.voice-mic-btn {
+  position: absolute;
+  right: 5px;
+  top: 50%;
+  transform: translateY(-50%);
+  background: #03A9F4;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 36px;
+  height: 36px;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s ease;
+  z-index: 10;
+  box-shadow: 0 2px 8px rgba(3, 169, 244, 0.3);
+}
+
+.voice-mic-btn:hover {
+  background: #0288D1;
+  transform: translateY(-50%) scale(1.1);
+  box-shadow: 0 4px 12px rgba(3, 169, 244, 0.4);
+}
+
+.voice-mic-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+/* Listening State */
+.voice-mic-btn.listening {
+  background: #dc3545;
+  animation: pulse 1.5s infinite;
+}
+
+@keyframes pulse {
+  0%,
+  100% {
+    box-shadow: 0 0 0 0 rgba(220, 53, 69, 0.7);
+  }
+  50% {
+    box-shadow: 0 0 0 10px rgba(220, 53, 69, 0);
+  }
+}
+
+/* Voice Filled Animation */
+.voice-filled {
+  animation: voiceFillFlash 0.5s ease;
+}
+
+@keyframes voiceFillFlash {
+  0%,
+  100% {
+    background-color: white;
+  }
+  50% {
+    background-color: #e1f5fe;
+  }
+}
+
+/* For textarea voice buttons */
+.voice-input-wrapper textarea ~ .voice-mic-btn {
+  top: 15px;
+  transform: none;
+}
+
+/* Commands List */
+.commands-list {
+  list-style: none;
+  padding: 0;
+  margin: 16px 0;
+}
+
+.commands-list li {
+  padding: 8px 12px;
+  background: #f5f5f5;
+  border-radius: 6px;
+  margin-bottom: 8px;
+  font-size: 13px;
+}
+
+.commands-list strong {
+  color: #03A9F4;
+  font-weight: 600;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .accessibility-toolbar {
+    width: 280px;
+    top: 10px;
+    right: 10px;
+  }
+
+  .toolbar-content {
+    max-height: 400px;
+  }
+}
+
+/* High Contrast Mode Support */
+@media (prefers-contrast: high) {
+  .accessibility-toolbar {
+    border: 2px solid #000;
+  }
+
+  .toolbar-btn {
+    border: 2px solid #000;
+  }
+}
+
+/* Reduced Motion Support */
+@media (prefers-reduced-motion: reduce) {
+  .accessibility-toolbar,
+  .toolbar-btn,
+  .voice-mic-btn {
+    transition: none;
+  }
+
+  .voice-mic-btn.listening {
+    animation: none;
+  }
+}
+
+/* Focus Styles for Accessibility */
+.toolbar-btn:focus,
+.toolbar-select:focus,
+.voice-mic-btn:focus {
+  outline: 3px solid #03A9F4;
+  outline-offset: 2px;
+}
+
+/* Dark Mode Support (if needed) */
+@media (prefers-color-scheme: dark) {
+  .accessibility-toolbar {
+    background: #2d2d2d;
+    color: #ffffff;
+  }
+
+  .toolbar-content {
+    background: #2d2d2d;
+  }
+
+  .toolbar-section {
+    border-bottom-color: #444;
+  }
+
+  .toolbar-btn {
+    background: #3d3d3d;
+    border-color: #555;
+    color: #fff;
+  }
+
+  .toolbar-btn:hover {
+    background: #4d4d4d;
+  }
+
+  .toolbar-select {
+    background: #3d3d3d;
+    border-color: #555;
+    color: #fff;
+  }
+
+  .shortcuts-info {
+    background: #3d3d3d;
+  }
+
+  .toolbar-footer {
+    background: #3d3d3d;
+    border-top-color: #444;
+  }
+}
+
+/* Print Styles - Hide toolbar when printing */
+@media print {
+  .accessibility-toolbar,
+  .voice-mic-btn {
+    display: none !important;
+  }
+}
+
+/* Scrollbar Styling for Toolbar */
+.toolbar-content::-webkit-scrollbar {
+  width: 6px;
+}
+
+.toolbar-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+  border-radius: 10px;
+}
+
+.toolbar-content::-webkit-scrollbar-thumb {
+  background: #03A9F4;
+  border-radius: 10px;
+}
+
+.toolbar-content::-webkit-scrollbar-thumb:hover {
+  background: #0288D1;
+}
+
+/* Reopen Button (appears when toolbar is closed) */
+.accessibility-reopen-btn {
+  position: fixed;
+  bottom: 20px;
+  left: 20px;
+  width: 60px;
+  height: 60px;
+  background: linear-gradient(135deg, #4FC3F7 0%, #03A9F4 100%);
+  color: white;
+  border: none;
+  border-radius: 50%;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 24px;
+  box-shadow: 0 4px 16px rgba(3, 169, 244, 0.4);
+  z-index: 9998;
+  transition: all 0.3s ease;
+}
+
+.accessibility-reopen-btn:hover {
+  transform: scale(1.1);
+  box-shadow: 0 6px 24px rgba(3, 169, 244, 0.6);
+}
+
+.accessibility-reopen-btn:active {
+  transform: scale(0.95);
+}
+
+.accessibility-reopen-btn i {
+  animation: pulse-icon 2s infinite;
+}
+
+@keyframes pulse-icon {
+  0%, 100% {
+    transform: scale(1);
+  }
+  50% {
+    transform: scale(1.1);
+  }
+}
