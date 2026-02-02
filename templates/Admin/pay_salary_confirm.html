@@ -166,7 +166,7 @@
 
   function processPayment() {
     const selectedChecboxes = document.querySelectorAll(
-      ".date-checkbox:checked"
+      ".date-checkbox:checked",
     );
     const selectedDates = Array.from(selectedChecboxes).map((cb) => cb.value);
 
@@ -177,68 +177,134 @@
 
     const total = selectedDates.length * parseFloat("{{ daily_rate }}");
 
+    // First Confirmation
     Swal.fire({
       title: "Confirm Payment",
-      html: `Are you sure you want to pay <strong>₹${total.toLocaleString()}</strong> for <strong>${
-        selectedDates.length
-      } days</strong>?`,
-      icon: "question",
+      html: `Total Payable: <span class="text-success" style="font-size: 1.2em; font-weight: bold;">₹${total.toLocaleString()}</span><br>
+             For <strong>${selectedDates.length} days</strong>`,
+      icon: "info",
       showCancelButton: true,
       confirmButtonColor: "#28a745",
-      confirmButtonText: "Yes, Pay Now",
+      confirmButtonText: "Proceed to Pay",
+      cancelButtonText: "Cancel",
     }).then((result) => {
       if (result.isConfirmed) {
-        // Prepare form data
-        const formData = new FormData();
-        formData.append("user_type", "{{ user_type }}");
-        formData.append("user_id", "{{ user_id }}");
-
-        selectedDates.forEach((date) => {
-          formData.append("selected_dates[]", date);
-        });
-
-        // CSRF Token
-        const csrfToken = "{{ csrf_token }}";
-
-        // Show loading
+        // UPI PIN Prompt
         Swal.fire({
-          title: "Processing...",
-          text: "Please wait while payment is processed",
-          allowOutsideClick: false,
-          didOpen: () => {
-            Swal.showLoading();
+          title: "Enter UPI PIN",
+          text: "Authorize transaction with your 4-6 digit PIN",
+          input: "password",
+          inputAttributes: {
+            minlength: 4,
+            maxlength: 6,
+            autocapitalize: "off",
+            autocorrect: "off",
+            placeholder: "• • • • • •",
           },
-        });
-
-        // Send request
-        fetch('{% url "admin_pay_salary" %}', {
-          method: "POST",
-          headers: {
-            "X-CSRFToken": csrfToken,
-          },
-          body: formData,
-        })
-          .then((response) => response.json())
-          .then((data) => {
-            if (data.success) {
-              Swal.fire({
-                title: "Success!",
-                text: data.message,
-                icon: "success",
-                confirmButtonColor: "#28a745",
-              }).then(() => {
-                window.location.href = "{% url 'admin_salary_management' %}";
-              });
-            } else {
-              Swal.fire("Error", data.error || "Payment failed", "error");
+          showCancelButton: true,
+          confirmButtonText: "Pay Securely",
+          confirmButtonColor: "#28a745",
+          showLoaderOnConfirm: true,
+          backdrop: `
+            rgba(0,0,123,0.4)
+            left top
+            no-repeat
+          `,
+          preConfirm: (pin) => {
+            if (!pin || pin.length < 4 || pin.length > 6 || isNaN(pin)) {
+              Swal.showValidationMessage(
+                "Invalid PIN. Please enter 4-6 digits.",
+              );
+              return false;
             }
-          })
-          .catch((error) => {
-            console.error("Error:", error);
-            Swal.fire("Error", "Network error occurred", "error");
-          });
+
+            // Artificial delay for realism (1.5s)
+            return new Promise((resolve) => {
+              setTimeout(() => {
+                resolve(pin);
+              }, 1500);
+            });
+          },
+          allowOutsideClick: () => !Swal.isLoading(),
+        }).then((pinResult) => {
+          if (pinResult.isConfirmed) {
+            submitPaymentContext(selectedDates, pinResult.value);
+          }
+        });
       }
     });
+  }
+
+  function submitPaymentContext(selectedDates, pin) {
+    // Show Processing State
+    Swal.fire({
+      title: "Processing Transaction...",
+      html: "Contacting Bank Server...<br><span style='font-size:0.8em; color:#666'>Do not close this window</span>",
+      timer: 2000, // Extra fake delay
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    }).then(() => {
+      // Actually send the request after the fake loading finishes
+      performServerRequest(selectedDates, pin);
+    });
+  }
+
+  function performServerRequest(selectedDates, pin) {
+    // Prepare form data
+    const formData = new FormData();
+    formData.append("user_type", "{{ user_type }}");
+    formData.append("user_id", "{{ user_id }}");
+    formData.append("upi_pin", pin); // Send PIN to server (even if just for logging/validation)
+
+    selectedDates.forEach((date) => {
+      formData.append("selected_dates[]", date);
+    });
+
+    const csrfToken = "{{ csrf_token }}";
+
+    // Show a "Finalizing" state while waiting for real server response
+    Swal.fire({
+      title: "Finalizing...",
+      allowOutsideClick: false,
+      didOpen: () => {
+        Swal.showLoading();
+      },
+    });
+
+    // Send request
+    fetch('{% url "admin_pay_salary" %}', {
+      method: "POST",
+      headers: {
+        "X-CSRFToken": csrfToken,
+      },
+      body: formData,
+    })
+      .then((response) => response.json())
+      .then((data) => {
+        if (data.success) {
+          Swal.fire({
+            title: "Payment Successful!",
+            html: `<div style="font-size: 1.1em">Transaction ID: <strong>#${data.transaction_id || "TRX" + Math.floor(Math.random() * 100000)}</strong></div>`,
+            icon: "success",
+            confirmButtonColor: "#28a745",
+            timer: 3000,
+          }).then(() => {
+            window.location.href = "{% url 'admin_salary_management' %}";
+          });
+        } else {
+          Swal.fire(
+            "Transaction Failed",
+            data.error || "Payment failed",
+            "error",
+          );
+        }
+      })
+      .catch((error) => {
+        console.error("Error:", error);
+        Swal.fire("Error", "Network error occurred", "error");
+      });
   }
 </script>
 {% endblock %}

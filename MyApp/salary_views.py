@@ -192,10 +192,14 @@ def admin_pay_salary(request):
         try:
             user_type = request.POST.get('user_type')  # 'collector' or 'manager'
             user_id = request.POST.get('user_id')
+            upi_pin = request.POST.get('upi_pin')
             selected_dates = request.POST.getlist('selected_dates[]')  # List of dates as strings
             
             if not selected_dates:
                 return JsonResponse({'success': False, 'error': 'No dates selected'})
+                
+            if not upi_pin or len(upi_pin) < 4:
+                return JsonResponse({'success': False, 'error': 'Invalid UPI Authorization'})
             
             # Calculate total amount
             total_days = len(selected_dates)
