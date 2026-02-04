@@ -121,8 +121,8 @@ During Day: Visit households, collect waste, log immediately
 Evening: Review inventory, check sales orders
 
 EARNINGS:
-- Rate: ₹5 per kg of waste collected
-- Example: Collect 250kg → Earn ₹1,250
+- Rate: ₹1,000 per day worked
+- Example: Work 5 days → Earn ₹5,000
 - Payment processed by admin
 - Track unpaid and paid earnings
 
@@ -171,8 +171,8 @@ CONVERSION RATIO:
 - Configurable by admin
 
 EARNINGS:
-- Rate: ₹10 per kg of compost produced
-- Example: Produce 50kg compost → Earn ₹500
+- Rate: ₹1,000 per day worked
+- Example: Work 5 days → Earn ₹5,000
 - Payment processed by admin
 
 GRADING & PRICING:
@@ -281,8 +281,8 @@ REVENUE SOURCES:
 2. Farmer purchases (waste + compost sales)
 
 EXPENSE SOURCES:
-1. Collector salaries (₹5/kg collected)
-2. Compost Manager salaries (₹10/kg produced)
+1. Collector salaries (₹1,000/day worked)
+2. Compost Manager salaries (₹1,000/day worked)
 
 PAYMENT METHODS:
 - UPI (Unified Payments Interface)
@@ -331,8 +331,8 @@ Locations:
 - All collectors assigned
 
 Earnings (Estimated):
-- Collector earnings: ~₹12,500 (2,500kg × ₹5)
-- Manager earnings: ~₹3,635 (363.5kg × ₹10)
+- Collector earnings: Based on days worked (₹1,000/day)
+- Manager earnings: Based on days worked (₹1,000/day)
 
 ================================================================================
                         KEY FEATURES

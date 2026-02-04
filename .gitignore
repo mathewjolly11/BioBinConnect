@@ -1,2 +1,42 @@
-.env
-.env.local
+# BioBinConnect .gitignore
+
+# Python cache (safe to ignore)
+*.py[cod]
+*$py.class
+*.so
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+
+# Django (safe to ignore)
+*.log
+db.sqlite3
+db.sqlite3-journal
+
+# Virtual environment (safe to ignore - can be recreated)
+env11/
+
+# IDE files (safe to ignore)
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# OS files (safe to ignore)
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# Backup files (safe to ignore)
+*.bak
+*.tmp
+
+# Keep important files
+!.gitignore
+!.env
+!db_biobinconnect.sql
+!STAKEHOLDER_SUMMARY.txt
+!SYSTEM_IMPROVEMENTS.txt
+!workflow_analysis_report.txt

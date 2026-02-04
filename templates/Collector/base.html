@@ -2,7 +2,7 @@
 {% load static %}
 <html lang="en">
   <head>
-    <title>BioBinConect</title>
+    <title>BioBinConnect</title>
     <link
       rel="icon"
       href="{% static 'frontend/images/icon.webp' %}"
@@ -11,7 +11,7 @@
     />
     <meta content="text/html;charset=utf-8" http-equiv="Content-Type" />
     <meta content="width=device-width, initial-scale=1.0" name="viewport" />
-    <meta content="BioBinConect " name="description" />
+    <meta content="BioBinConnect - Smart Biodegradable Waste Management Platform" name="description" />
     <meta content="" name="keywords" />
     <meta content="" name="author" />
     <!-- CSS Files
@@ -113,8 +113,7 @@
                   <div class="d-flex">
                     <div class="topbar-widget me-3">
                       <a href="#"
-                        ><i class="icofont-clock-time"></i>Monday - Friday 08.00
-                        - 18.00</a
+                        ><i class="icofont-clock-time"></i>Monday - Friday: 08:00 AM - 06:00 PM</a
                       >
                     </div>
                     <div class="topbar-widget me-3">
@@ -125,7 +124,7 @@
                     </div>
                     <div class="topbar-widget me-3">
                       <a href="#"
-                        ><i class="icofont-phone"></i>+1 123 456 789</a
+                         <i class="icofont-phone"></i>+91 9746573645</a
                       >
                     </div>
                   </div>
@@ -384,39 +383,35 @@
 
         <div class="spacer-30-line"></div>
 
-        <h5>Our Services</h5>
-        <ul class="no-style">
-          <li><a href="service-single.html">Waste Collection</a></li>
-          <li><a href="service-single.html">Commercial Recycling</a></li>
-          <li><a href="service-single.html">Dumpster Rental</a></li>
-          <li><a href="service-single.html">Organic Waste</a></li>
-          <li><a href="service-single.html">E-waste Disposal</a></li>
-          <li><a href="service-single.html">Medical Waste</a></li>
-        </ul>
+          <h5>Our Services</h5>
+          <ul class="no-style">
+            <li><a href="{% url 'collector_services' %}">Household Waste Pickup</a></li>
+            <li><a href="{% url 'collector_services' %}">Biodegradable Waste Collection</a></li>
+            <li><a href="{% url 'collector_services' %}">Compost Production</a></li>
+            <li><a href="{% url 'collector_services' %}">Direct Waste Sales to Farmers</a></li>
+            <li><a href="{% url 'collector_services' %}">Waste-to-Compost Processing</a></li>
+            <li><a href="{% url 'collector_services' %}">Sustainable Waste Management</a></li>
+          </ul>
 
         <div class="spacer-30-line"></div>
 
-        <h5>Contact Us</h5>
-        <div>
-          <i class="icofont-clock-time me-2 op-5"></i>Monday - Friday 08.00 -
-          18.00
-        </div>
-        <div>
-          <i class="icofont-location-pin me-2 op-5"></i>100 S Main St, New York,
-        </div>
-        <div>
-          <i class="icofont-envelope me-2 op-5"></i>contact@wastewise.com
-        </div>
+          <h5>Contact Us</h5>
+          <div>
+            <i class="icofont-clock-time me-2 op-5"></i>Monday - Friday: 08:00 AM - 06:00 PM
+          </div>
+          <div>
+            <i class="icofont-location-pin me-2 op-5"></i>Green Valley, Eco District, Kerala
+          </div>
+          <div>
+            <i class="icofont-envelope me-2 op-5"></i>contact@biobinconnect.com
+          </div>
 
         <div class="spacer-30-line"></div>
 
-        <h5>About Us</h5>
-        <p>
-          We provide reliable, eco-conscious waste management solutions for
-          homes, businesses, and industries. With a focus on sustainability and
-          innovation, we help communities reduce waste, recycle more, and create
-          a cleaner, greener future.
-        </p>
+          <h5>About Us</h5>
+          <p>
+            BioBinConnect is a web-based biodegradable waste management platform that coordinates households, collectors, compost managers, and farmers. It reduces manual errors, improves transparency, and supports a zero-waste, circular economy for local communities.
+          </p>
 
         <div class="social-icons">
           <a href="#"><i class="fa-brands fa-facebook-f"></i></a>

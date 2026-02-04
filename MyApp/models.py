@@ -259,7 +259,7 @@ class tbl_CompostBatch(models.Model):
     Stock_kg = models.DecimalField(max_digits=10, decimal_places=2)
     
     # NEW FIELD
-    price_per_kg = models.DecimalField(max_digits=10, decimal_places=2, default=15.00)
+    price_per_kg = models.DecimalField(max_digits=10, decimal_places=2, default=200.00)
     salary_paid = models.BooleanField(default=False)  # Track if manager salary paid for this batch date
     
     class Meta:
