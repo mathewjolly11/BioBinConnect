@@ -1,0 +1,67 @@
+FARMER USER GUIDE
+
+WHO ARE FARMERS?
+Agricultural users who purchase organic waste and compost for farming.
+
+HOW TO REGISTER:
+1. Visit website, click "Sign Up"
+2. Select "Farmer" role
+3. Fill form: Name, Aadhaar, Farm Name, Land Size, Phone, Email, Password
+4. Upload Aadhaar photo
+5. Wait for admin approval
+
+PRODUCTS AVAILABLE:
+
+A. ORGANIC WASTE:
+   - Raw biodegradable waste from households
+   - Price: ₹10 per kg
+   - Use: Direct fertilizer, soil amendment
+   - Delivered by collectors
+
+B. COMPOST:
+   - Processed organic fertilizer
+   - Quality grades:
+     * Premium: ₹250-300/kg (highest quality)
+     * Grade A: ₹200-250/kg
+     * Grade B: ₹150-200/kg
+     * Grade C: ₹100-150/kg
+   - Average: ₹200/kg
+   - Delivered by managers
+
+HOW TO ORDER:
+1. Login to dashboard
+2. Browse "Waste" or "Compost"
+3. Select product
+4. Enter quantity needed
+5. Enter delivery address
+6. Select payment method (UPI/Cash/Card)
+7. Review total amount
+8. Place order
+9. Wait for admin to assign delivery
+10. Receive product
+11. Make payment
+
+FEATURES:
+- Browse waste inventory
+- Browse compost batches
+- Place orders
+- View order history
+- Track order status
+- Payment processing
+
+ORDER STATUS:
+- Pending: Order placed
+- Processing: Admin assigned delivery
+- Shipped: Out for delivery
+- Delivered: Product received
+- Completed: Payment done
+
+COMMON QUESTIONS:
+Q: What's difference between waste and compost?
+A: Waste is raw material. Compost is processed, high-quality fertilizer.
+
+Q: How long does delivery take?
+A: Typically 1-3 days after admin assigns.
+
+Q: Can I return products?
+A: Contact admin for quality issues.

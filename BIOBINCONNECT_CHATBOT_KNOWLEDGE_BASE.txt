@@ -1,0 +1,1401 @@
+# BIOBINCONNECT - COMPLETE KNOWLEDGE BASE FOR AI CHATBOT
+# This file contains all information about BioBinConnect for training an AI chatbot
+
+================================================================================
+                          PLATFORM OVERVIEW
+================================================================================
+
+WHAT IS BIOBINCONNECT?
+BioBinConnect is a comprehensive web-based biodegradable waste management platform that connects households, waste collectors, compost managers, and farmers in a circular economy ecosystem. The platform digitizes and automates the entire waste management lifecycle from collection to composting to agricultural use.
+
+MISSION:
+To create a sustainable, zero-waste circular economy by connecting waste generators with processors and end-users through technology.
+
+TECHNOLOGY STACK:
+- Framework: Django 6.0 (Python)
+- Database: MySQL 8.0
+- Frontend: HTML5, CSS3, JavaScript (Vanilla)
+- Email: SMTP (Gmail)
+- Operating System: Cross-platform (Windows, Linux, macOS)
+
+CONTACT INFORMATION:
+- Email: contact@biobinconnect.com
+- Phone: +91 9746573645
+- Location: Green Valley, Eco District, Kerala, India
+- Operating Hours: Monday - Friday: 08:00 AM - 06:00 PM
+
+WEBSITE URL: http://127.0.0.1:8000 (local development)
+
+================================================================================
+                          SYSTEM STATISTICS
+================================================================================
+
+CURRENT SCALE:
+- Total Users: 27 active users
+- Households: 13 registered households
+- Collectors: 6 licensed collectors
+- Compost Managers: 2 certified managers
+- Farmers: 4 registered farmers
+- Admin: 1 system administrator
+
+WASTE MANAGEMENT METRICS:
+- Total Pickups Completed: 56 collections
+- Total Waste Collected: ~2,500 kg
+- Average per Pickup: ~45 kg
+- Completion Rate: 100%
+
+COMPOST PRODUCTION:
+- Total Batches Created: 8 batches
+- Source Waste Used: 1,454 kg
+- Compost Produced: ~363.5 kg
+- Conversion Ratio: 4:1 (4kg waste = 1kg compost)
+- Batches Sold: 7
+- Batches Ready: 1
+
+INFRASTRUCTURE:
+- Districts Covered: 1 (Idukki, Kerala)
+- Active Routes: 6 collection routes
+- All Collectors Assigned: Yes
+
+================================================================================
+                          STAKEHOLDER TYPES
+================================================================================
+
+BioBinConnect serves 6 types of stakeholders:
+
+1. GUEST (Public/Unauthenticated Users)
+2. HOUSEHOLD (Waste Generators)
+3. COLLECTOR (Waste Collection Agents)
+4. FARMER (End Consumers)
+5. COMPOST MANAGER (Waste Processors)
+6. ADMIN (System Manager)
+
+================================================================================
+                    1. GUEST STAKEHOLDER
+================================================================================
+
+WHO ARE GUESTS?
+Guests are public visitors to the BioBinConnect platform who have not yet registered or logged in. They can learn about the platform and register for an account.
+
+WHAT CAN GUESTS DO?
+
+INFORMATION ACCESS:
+- View Home/Index page with platform overview
+- Read About Us page (mission, vision, how it works)
+- Browse Services offered
+- View Contact information
+- Read FAQ (Frequently Asked Questions)
+- Learn How It Works (step-by-step process)
+
+REGISTRATION:
+Guests can register as any of the following roles:
+
+A. HOUSEHOLD REGISTRATION:
+   Required Information:
+   - Full Name
+   - Aadhaar Number (Indian ID)
+   - House Number
+   - Phone Number
+   - Email Address
+   - Password
+   - Location/District
+   - Photo Upload
+
+B. COLLECTOR REGISTRATION:
+   Required Information:
+   - Full Name
+   - License Number
+   - Vehicle Registration Number
+   - Phone Number
+   - Email Address
+   - Password
+   - License Photo Upload
+
+C. COMPOST MANAGER REGISTRATION:
+   Required Information:
+   - Full Name
+   - License Number
+   - Facility Name
+   - Phone Number
+   - Email Address
+   - Password
+   - License Photo Upload
+
+D. FARMER REGISTRATION:
+   Required Information:
+   - Full Name
+   - Aadhaar Number
+   - Farm Name
+   - Land Size (in acres)
+   - Phone Number
+   - Email Address
+   - Password
+   - Aadhaar Photo Upload
+
+LOGIN:
+- Multi-role login system
+- Secure password authentication
+- Redirects to role-specific dashboard
+
+SPECIAL FEATURES:
+- Voice Accessibility features for navigation
+- Form validation demonstrations
+- Responsive design for all devices
+
+APPROVAL PROCESS:
+After registration, all users must wait for admin approval before accessing their accounts. Admin reviews documents and approves/rejects registrations.
+
+================================================================================
+                    2. HOUSEHOLD STAKEHOLDER
+================================================================================
+
+WHO ARE HOUSEHOLDS?
+Households are residential users who generate organic biodegradable waste and need regular pickup services. They are the primary waste generators in the system.
+
+DASHBOARD FEATURES:
+
+STATISTICS DISPLAYED:
+- Total pickup requests made
+- Completed pickups
+- Pending requests
+- Total amount paid (30-day and all-time)
+- Next scheduled pickup details
+- Recent request history
+- Quick action buttons
+
+WASTE PICKUP MANAGEMENT:
+
+REQUEST PICKUP:
+Step 1: Select bin type
+   - Medium Bin: 25kg capacity - ₹50
+   - Large Bin: 50kg capacity - ₹100
+
+Step 2: Enter estimated weight (in kg)
+
+Step 3: System automatically assigns collector based on:
+   - Household's route
+   - Current day of week
+   - Collector's schedule
+
+Step 4: Receive email confirmation with:
+   - Pickup request ID
+   - Assigned collector details
+   - Scheduled date
+   - Estimated weight
+
+VIEW REQUESTS:
+- Complete pickup history
+- Status tracking:
+  * Pending: Request submitted, awaiting collection
+  * Assigned: Collector assigned
+  * Collected: Waste collected and logged
+- Assigned collector information
+- Actual weight collected (after pickup)
+- Date and time details
+
+PAYMENT SYSTEM:
+
+MAKE PAYMENT:
+- Monthly service fee payment
+- Payment Methods:
+  * UPI (Unified Payments Interface)
+  * Cash on Delivery
+  * Card Payment
+- Transaction ID generated automatically
+- Payment confirmation displayed
+- Email receipt sent
+
+PAYMENT HISTORY:
+- Complete transaction records
+- Payment method tracking
+- Date and amount details
+- Transaction IDs
+- Payment status
+
+PROFILE MANAGEMENT:
+
+VIEW PROFILE:
+- Display all household information
+- Aadhaar details
+- House number
+- Contact information
+- Location details
+
+EDIT PROFILE:
+- Update personal details
+- Change contact information
+- Modify address
+- Update photo
+
+DELETE ACCOUNT:
+- Permanent account deletion
+- Confirmation required
+- All data removed
+
+INFORMATION PAGES:
+- Services: Available services for households
+- Contact: Contact support team
+- About: Platform information
+
+TYPICAL WORKFLOW:
+1. Login to dashboard
+2. Click "Request Pickup"
+3. Select bin type and enter estimated weight
+4. System auto-assigns collector
+5. Receive email confirmation
+6. Collector visits and collects waste
+7. Collector logs actual weight
+8. Household receives collection confirmation
+9. Make monthly payment for service
+
+PRICING:
+- Medium Bin (25kg): ₹50 per month
+- Large Bin (50kg): ₹100 per month
+- Payment frequency: Monthly
+
+================================================================================
+                    3. COLLECTOR STAKEHOLDER
+================================================================================
+
+WHO ARE COLLECTORS?
+Collectors are licensed professionals who collect biodegradable waste from households and deliver it to farmers or compost managers. They operate on assigned routes and schedules.
+
+DASHBOARD FEATURES:
+
+STATISTICS DISPLAYED:
+- Today's assigned pickups
+- Total collections completed
+- Total waste collected (kg)
+- Earnings (paid and unpaid)
+- Today's schedule
+- Earnings tracker
+
+COLLECTION MANAGEMENT:
+
+VIEW ASSIGNED PICKUPS:
+- Daily pickup schedule for current day
+- Household details:
+  * Name
+  * House number
+  * Location
+  * Phone number
+- Estimated weights
+- Route information
+- Pickup request IDs
+
+LOG COLLECTION:
+Step 1: Visit household
+Step 2: Collect waste
+Step 3: Log collection in system:
+   - Enter actual weight collected (kg)
+   - Add notes/comments (optional)
+   - Update status to "Collected"
+Step 4: System automatically:
+   - Sends email confirmation to household
+   - Updates inventory
+   - Calculates earnings
+   - Marks pickup as complete
+
+COLLECTION HISTORY:
+- Complete record of all collections
+- Date and time
+- Household details
+- Weight collected
+- Earnings per collection
+- Status
+
+INVENTORY MANAGEMENT:
+
+WASTE INVENTORY:
+- View all collected waste
+- Status tracking:
+  * Available: Ready for sale to farmers
+  * Sold: Purchased by farmers
+  * Expired: Auto-expired after 30 days
+- Farmer purchase tracking
+- Available quantity display
+- Collection date
+- Auto-expiry system (30 days)
+
+SALES & DELIVERY:
+
+SALES ORDERS:
+- View farmer orders for collector's waste
+- Order details:
+  * Farmer name
+  * Quantity ordered
+  * Price (₹10/kg)
+  * Delivery address
+  * Order date
+- Delivery status tracking
+
+UPDATE DELIVERY STATUS:
+- Mark orders as delivered
+- Update delivery timestamps
+- Email notifications sent to farmers
+- Payment tracking
+
+PROFILE MANAGEMENT:
+- View Profile: License, vehicle, contact details
+- Edit Profile: Update information
+- Delete Account: Account deletion with confirmation
+
+EARNINGS MODEL:
+
+SALARY STRUCTURE:
+- Rate: ₹1,000 per day worked
+- Example: Work 5 days → Earn ₹5,000
+- Payment: Processed by admin
+- Tracking: Unpaid vs. paid earnings
+
+PAYMENT PROCESS:
+1. Collector works and logs collections
+2. System tracks days worked
+3. Admin reviews earnings
+4. Admin processes payment (requires UPI PIN)
+5. Transaction recorded
+6. Collector receives payment confirmation
+
+DAILY ROUTINE:
+Morning:
+- Check assigned pickups for the day
+- Review route and schedule
+- Prepare vehicle and equipment
+
+During Day:
+- Visit households on route
+- Collect waste
+- Log collections immediately
+- Update delivery statuses
+
+Evening:
+- Review inventory
+- Check sales orders
+- Update any pending deliveries
+- Review earnings
+
+TECHNICAL FEATURES:
+- Route-based assignment system
+- Inventory auto-expiry (30 days)
+- Earnings calculation (₹1,000/day)
+- Delivery tracking system
+- Email notifications
+- AJAX-powered logging
+
+================================================================================
+                    4. FARMER STAKEHOLDER
+================================================================================
+
+WHO ARE FARMERS?
+Farmers are agricultural users who purchase organic waste and compost for farming purposes. They are the end consumers in the circular economy.
+
+DASHBOARD FEATURES:
+
+STATISTICS DISPLAYED:
+- Total orders placed
+- Pending orders
+- Completed orders
+- Total amount spent
+- Recent orders
+- Quick action buttons
+
+PRODUCT BROWSING:
+
+A. BROWSE ORGANIC WASTE:
+What is it?
+- Raw biodegradable waste from households
+- Collected by collectors
+- Can be used directly as fertilizer
+
+Details Shown:
+- Collector name
+- Quantity available (kg)
+- Collection date
+- Price: ₹10 per kg (default)
+- Status: Available/Sold
+
+Use Cases:
+- Direct fertilizer application
+- Soil amendment
+- Composting on farm
+
+B. BROWSE COMPOST:
+What is it?
+- Processed organic fertilizer
+- Created by compost managers
+- High-quality, graded product
+
+Details Shown:
+- Batch name
+- Compost manager name
+- Quality grade (Premium/A/B/C)
+- Quantity available (kg)
+- Price per kg (varies by grade)
+- Batch status: Ready/Sold
+
+Quality Grades & Pricing:
+- Premium: ₹250-300/kg (highest quality)
+- Grade A: ₹200-250/kg
+- Grade B: ₹150-200/kg
+- Grade C: ₹100-150/kg
+
+Current Average: ₹200/kg
+
+ORDER MANAGEMENT:
+
+PLACE ORDER:
+Step 1: Select product type
+   - Organic Waste OR Compost
+
+Step 2: Choose specific product
+   - Select from available inventory
+
+Step 3: Enter quantity needed (kg)
+
+Step 4: Enter delivery address
+   - Full address
+   - Landmark
+   - Contact number
+
+Step 5: Select payment method
+   - UPI
+   - Cash on Delivery
+   - Card Payment
+
+Step 6: Review total amount
+   - Quantity × Price per kg
+   - Delivery charges (if any)
+
+Step 7: Place order
+   - Order status: Pending
+   - Order ID generated
+   - Confirmation email sent
+
+VIEW ORDERS:
+- Complete order history
+- Status tracking:
+  * Pending: Order placed, awaiting admin assignment
+  * Processing: Admin assigned delivery
+  * Shipped: Out for delivery
+  * Delivered: Product delivered
+  * Completed: Payment received
+- Order details (items, quantities, prices)
+- Delivery address
+- Payment status
+- Order date
+
+PAYMENT PROCESSING:
+
+MAKE PAYMENT:
+- Pay for delivered orders
+- Multiple payment methods
+- Transaction ID generation
+- Payment confirmation
+- Email receipts
+
+PAYMENT HISTORY:
+- All transactions
+- Order references
+- Payment methods
+- Amounts paid
+- Dates
+
+PROFILE MANAGEMENT:
+- View Profile: Aadhaar, farm details, land size
+- Edit Profile: Update farm information
+- Delete Account: Account deletion
+
+SHOPPING WORKFLOW:
+1. Login to dashboard
+2. Browse waste or compost inventory
+3. Select products and quantities
+4. Review total amount
+5. Enter delivery address
+6. Choose payment method
+7. Place order (Status: Pending)
+8. Admin assigns delivery
+9. Receive product (Status: Delivered)
+10. Make payment
+11. Order complete
+
+PRODUCT OPTIONS SUMMARY:
+
+ORGANIC WASTE:
+- Source: Collector inventory
+- Price: ₹10/kg
+- Use: Direct fertilizer, soil amendment
+- Delivery: Assigned collector delivers
+
+COMPOST:
+- Source: Compost manager batches
+- Price: ₹100-300/kg (grade-based)
+- Quality: Premium/A/B/C grades
+- Use: High-quality organic fertilizer
+- Delivery: Compost manager or assigned delivery
+
+================================================================================
+                    5. COMPOST MANAGER STAKEHOLDER
+================================================================================
+
+WHO ARE COMPOST MANAGERS?
+Compost managers are licensed facilities that convert organic waste into high-quality compost through controlled decomposition processes.
+
+DASHBOARD FEATURES:
+
+STATISTICS DISPLAYED:
+- Total batches created
+- Total compost produced (kg)
+- Batches ready for sale
+- Batches sold
+- Earnings (paid and unpaid)
+- Quick stats and recent activity
+
+WASTE SOURCING:
+
+VIEW WASTE INVENTORY:
+- Browse available waste from collectors
+- Filter by status (Available/Sold)
+- View waste details:
+  * Collector name
+  * Weight available (kg)
+  * Collection date
+  * Status
+- Select waste for batch creation
+
+BATCH MANAGEMENT:
+
+CREATE COMPOST BATCH:
+
+Step 1: Select source waste
+   - Choose from available waste inventory
+   - Can select multiple waste items
+   - Total source waste calculated
+
+Step 2: Enter batch name
+   - Unique identifier for batch
+   - Example: "Batch AA", "Batch BB"
+
+Step 3: System auto-calculates compost output
+   - Conversion ratio: 4:1
+   - Formula: Source Waste ÷ 4 = Compost Output
+   - Example: 160kg waste → 40kg compost
+
+Step 4: Select quality grade
+   - Premium: Highest quality
+   - Grade A: High quality
+   - Grade B: Medium quality
+   - Grade C: Standard quality
+
+Step 5: Set price per kg
+   - Based on grade selected
+   - Suggested ranges:
+     * Premium: ₹250-300/kg
+     * Grade A: ₹200-250/kg
+     * Grade B: ₹150-200/kg
+     * Grade C: ₹100-150/kg
+
+Step 6: Create batch
+   - Initial status: Processing
+   - Batch ID generated
+   - Source waste marked as used
+
+MANAGE BATCHES:
+- View all batches
+- Filter by status:
+  * Processing: Currently composting
+  * Ready: Available for sale
+  * Sold: Purchased by farmers
+- Batch details displayed:
+  * Batch name
+  * Source waste amount
+  * Compost produced
+  * Quality grade
+  * Price per kg
+  * Stock remaining
+  * Creation date
+  * Status
+
+EDIT BATCH:
+- Modify quality grade
+- Update price per kg
+- Change batch status
+- Update batch information
+
+UPDATE STATUS:
+Status Flow:
+1. Processing → Composting in progress
+2. Ready → Composting complete, available for sale
+3. Sold → Automatically updated when farmer orders
+
+CONVERSION SYSTEM:
+
+DEFAULT RATIO: 4:1
+- 4 kg of waste produces 1 kg of compost
+- Configurable by admin
+- Examples:
+  * 160kg waste → 40kg compost
+  * 200kg waste → 50kg compost
+  * 80kg waste → 20kg compost
+
+QUALITY GRADING & PRICING:
+
+GRADING CRITERIA:
+- Premium: Perfect decomposition, rich nutrients, fine texture
+- Grade A: Excellent quality, good nutrients
+- Grade B: Good quality, adequate nutrients
+- Grade C: Standard quality, basic nutrients
+
+PRICING GUIDELINES:
+- Premium: ₹250-300/kg
+- Grade A: ₹200-250/kg
+- Grade B: ₹150-200/kg
+- Grade C: ₹100-150/kg
+
+Current Market Average: ₹200/kg
+
+PROFILE MANAGEMENT:
+- View Profile: License, facility details
+- Edit Profile: Update information
+- Delete Account: Account deletion
+
+EARNINGS MODEL:
+
+SALARY STRUCTURE:
+- Rate: ₹1,000 per day worked
+- Example: Work 5 days → Earn ₹5,000
+- Payment: Processed by admin
+- Tracking: Unpaid vs. paid earnings
+
+PAYMENT PROCESS:
+1. Manager creates batches
+2. System tracks days worked
+3. Admin reviews earnings
+4. Admin processes payment (requires UPI PIN)
+5. Transaction recorded
+6. Manager receives payment confirmation
+
+BATCH CREATION WORKFLOW:
+1. Select available waste (e.g., 160kg)
+2. Enter batch name (e.g., "Batch AA")
+3. System calculates: 160kg ÷ 4 = 40kg compost
+4. Select grade (e.g., Premium)
+5. Set price (e.g., ₹200/kg)
+6. Create with status "Processing"
+7. Monitor composting process
+8. Update to "Ready" when complete
+9. Farmers can now order
+10. Auto-updates to "Sold" when ordered
+
+TECHNICAL FEATURES:
+- Waste-to-compost conversion calculator
+- Quality grading system
+- Batch lifecycle management
+- Earnings tracking
+- Stock management
+- Email notifications
+
+================================================================================
+                    6. ADMIN STAKEHOLDER
+================================================================================
+
+WHO IS THE ADMIN?
+The admin is the system manager with complete oversight of all operations, user management, infrastructure setup, and financial control.
+
+DASHBOARD FEATURES:
+
+REAL-TIME STATISTICS:
+- Total users (by role)
+- Pending registrations
+- Active collections
+- Total waste collected
+- Total compost produced
+- Revenue tracking
+- Pending payments
+- System health
+
+SYSTEM ALERTS:
+- Low inventory warnings
+- Pending user approvals
+- Unassigned orders
+- Payment issues
+- Expired waste items
+- System errors
+
+RECENT ACTIVITIES:
+- Latest system events
+- User registrations
+- Collections logged
+- Orders placed
+- Payments processed
+
+USER MANAGEMENT:
+
+VIEW ALL USERS:
+- Filter by role:
+  * Household
+  * Collector
+  * Compost Manager
+  * Farmer
+- Filter by status:
+  * Pending: Awaiting approval
+  * Approved: Active users
+  * Rejected: Denied access
+- View user details
+- Aadhaar verification
+- Document review
+
+APPROVE USERS:
+- Individual approval
+- Bulk approve all pending
+- Email notifications sent automatically
+- User gains access to system
+
+REJECT USERS:
+- Individual rejection
+- Bulk reject all pending
+- Rejection email sent
+- User cannot access system
+
+EDIT USERS:
+- Modify user information
+- Update contact details
+- Change user status
+- Reset passwords
+
+CHANGE PASSWORD:
+- Reset user passwords
+- Security management
+- Email notification sent
+
+INFRASTRUCTURE SETUP:
+
+DISTRICT MANAGEMENT:
+- Add new districts
+- Edit district details
+- Delete districts
+- View all districts
+
+LOCATION MANAGEMENT:
+- Add locations within districts
+- Edit location details
+- Delete locations
+- Location hierarchy
+
+RESIDENTS ASSOCIATION (RA) MANAGEMENT:
+- Add RAs
+- Edit RA details
+- Delete RAs
+- Associate with locations
+
+ROUTE & ASSIGNMENT SYSTEM:
+
+ROUTE MANAGEMENT:
+- Create collection routes
+- Define house number ranges
+  * Start house number
+  * End house number
+- Assign routes to locations
+- View all routes
+- Edit route details
+- Delete routes
+
+COLLECTOR ASSIGNMENT:
+- Assign collectors to routes
+- Day-of-week scheduling:
+  * Monday
+  * Tuesday
+  * Wednesday
+  * Thursday
+  * Friday
+  * Saturday
+  * Sunday
+- Multiple assignments per collector
+- View all assignments
+- Delete assignments
+- Reassign routes
+
+AUTO-ASSIGNMENT SYSTEM:
+When household requests pickup:
+1. System checks household's route
+2. Checks current day of week
+3. Finds collector assigned to that route + day
+4. Automatically assigns collector
+5. Sends notifications
+
+BIN TYPE MANAGEMENT:
+- Add bin types
+- Edit bin specifications:
+  * Name
+  * Capacity (kg)
+  * Price (₹)
+- Delete bin types
+- View all bin types
+
+Current Bin Types:
+- Medium: 25kg - ₹50
+- Large: 50kg - ₹100
+
+SALES & ORDER MANAGEMENT:
+
+WASTE SALES:
+- View all farmer waste orders
+- Order details:
+  * Farmer name
+  * Waste quantity
+  * Collector
+  * Order date
+  * Status
+- Assign collectors to deliveries
+- Track order status:
+  * Pending: Order placed
+  * Assigned: Collector assigned for delivery
+  * Delivered: Product delivered
+  * Paid: Payment received
+- Update delivery status
+- Monitor payment status
+
+COMPOST SALES:
+- View all farmer compost orders
+- Order details:
+  * Farmer name
+  * Batch details
+  * Quantity
+  * Price
+  * Order date
+  * Status
+- Track order status:
+  * Pending: Order placed
+  * Dispatched: Out for delivery
+  * Delivered: Product delivered
+  * Order Complete: Payment received
+- Update statuses
+- Monitor delivery progress
+
+FINANCIAL MANAGEMENT:
+
+SALARY PROCESSING:
+
+A. COLLECTOR SALARIES:
+   - Auto-calculate based on days worked
+   - Rate: ₹1,000 per day
+   - Individual payments
+   - Bulk payment options
+   - Prevent duplicate payments
+   - Transaction tracking
+   - UPI PIN security for payments
+
+B. MANAGER SALARIES:
+   - Auto-calculate based on days worked
+   - Rate: ₹1,000 per day
+   - Individual payments
+   - Bulk payment options
+   - Transaction audit trail
+   - UPI PIN security for payments
+
+PAYMENT PROCESS:
+1. Admin views unpaid days
+2. Selects days to pay
+3. Enters UPI PIN for security
+4. System calculates: Days × ₹1,000
+5. Creates payment transaction
+6. Marks days as paid
+7. Email confirmation sent
+8. Transaction recorded
+
+PAYMENT REPORTS:
+- Complete transaction history
+- Filter by:
+  * Transaction type
+  * Payment method
+  * Date range
+  * User
+  * Status
+- Summary statistics:
+  * Total revenue
+  * Total expenses
+  * Net profit
+  * Payment method breakdown
+- Export to Excel
+- Visual charts and graphs
+
+TRANSACTION TRACKING:
+All payments recorded with:
+- Transaction ID (auto-generated)
+- Transaction type:
+  * HouseholdPayment
+  * CollectorSalary
+  * ManagerSalary
+  * WasteSale
+  * CompostSale
+- Amount
+- Payment method (UPI/Cash/Card)
+- User reference
+- Date and time
+- Status (Success/Pending/Failed)
+
+SYSTEM CONFIGURATION:
+
+SYSTEM SETTINGS:
+Configurable Parameters:
+1. Conversion Ratios:
+   - Waste-to-compost ratio (default: 4:1)
+
+2. Pricing Defaults:
+   - Default waste price (₹10/kg)
+   - Default compost price (₹200/kg)
+
+3. Expiry Thresholds:
+   - Waste expiry days (default: 30 days)
+
+4. Salary Rates:
+   - Collector daily rate (₹1,000)
+   - Manager daily rate (₹1,000)
+
+5. Email Settings:
+   - SMTP configuration
+   - Email templates
+
+6. Alert Thresholds:
+   - Low stock warning level
+   - Expiry warning days
+
+All configurable without code changes!
+
+REPORTS & ANALYTICS:
+
+PAYMENT REPORTS:
+- Revenue analysis
+- Payment method breakdown:
+  * UPI transactions
+  * Cash payments
+  * Card payments
+- User-wise transactions
+- Date range filtering
+- Excel export
+- Visual charts
+
+SYSTEM REPORTS:
+- Collection statistics
+- Production metrics
+- User activity
+- Financial summaries
+- Inventory levels
+- Order tracking
+
+ANALYTICS DASHBOARD:
+- 6-month trend analysis
+- Revenue vs expenses
+- Monthly comparisons
+- Net profit calculations
+- User growth metrics
+- Collection efficiency rates
+
+DAILY ADMIN TASKS:
+1. Review pending user registrations
+2. Approve/reject new users
+3. Assign collectors to farmer orders
+4. Process salary payments
+5. Monitor inventory levels
+6. Update delivery statuses
+7. Review financial reports
+8. Handle system alerts
+9. Respond to user inquiries
+10. Monitor system health
+
+TECHNICAL FEATURES:
+- Role-based access control
+- Real-time statistics
+- System alerts
+- Bulk operations
+- Excel export
+- Email notifications
+- Transaction audit trails
+- UPI PIN security
+- AJAX-powered interface
+
+================================================================================
+                          WORKFLOWS & PROCESSES
+================================================================================
+
+WORKFLOW 1: HOUSEHOLD → COLLECTOR → ADMIN
+
+1. Household requests pickup
+2. System auto-assigns collector based on route + day
+3. Email sent to household and collector
+4. Collector visits household
+5. Collector collects waste
+6. Collector logs collection in system
+7. Inventory updated automatically
+8. Email confirmation sent to household
+9. Household pays monthly fee
+10. Admin tracks payment
+
+WORKFLOW 2: COLLECTOR → COMPOST MANAGER → FARMER
+
+1. Collector has waste in inventory
+2. Compost manager browses available waste
+3. Manager creates compost batch from waste
+4. Waste marked as "used"
+5. Manager processes waste into compost
+6. Manager marks batch as "Ready"
+7. Farmer browses available compost
+8. Farmer places order
+9. Admin assigns delivery
+10. Manager delivers compost
+11. Farmer receives product
+12. Farmer makes payment
+13. Admin pays manager salary
+
+WORKFLOW 3: COLLECTOR → FARMER (DIRECT WASTE SALE)
+
+1. Collector collects waste from households
+2. Waste added to inventory (status: Available)
+3. Farmer browses waste inventory
+4. Farmer places order for waste
+5. Admin assigns collector for delivery
+6. Collector delivers waste to farmer
+7. Farmer receives product
+8. Farmer makes payment
+9. Admin pays collector salary
+
+WORKFLOW 4: USER REGISTRATION & APPROVAL
+
+1. Guest visits BioBinConnect website
+2. Guest clicks "Sign Up"
+3. Guest selects role (Household/Collector/Manager/Farmer)
+4. Guest fills registration form
+5. Guest uploads required documents
+6. Guest submits registration
+7. System sends email to admin
+8. Admin reviews registration
+9. Admin verifies documents
+10. Admin approves or rejects
+11. Email sent to user
+12. If approved, user can login
+13. User redirected to role-specific dashboard
+
+WORKFLOW 5: SALARY PAYMENT PROCESS
+
+1. Collector/Manager works and logs activities
+2. System tracks days worked
+3. Admin opens salary management
+4. Admin views unpaid days for each worker
+5. Admin selects days to pay
+6. System calculates: Days × ₹1,000
+7. Admin enters UPI PIN for security
+8. System creates payment transaction
+9. Days marked as paid
+10. Email confirmation sent to worker
+11. Transaction recorded in database
+
+================================================================================
+                          PRICING & PAYMENTS
+================================================================================
+
+REVENUE SOURCES:
+
+1. HOUSEHOLD PAYMENTS:
+   - Monthly service fees
+   - Medium Bin: ₹50/month
+   - Large Bin: ₹100/month
+
+2. FARMER PURCHASES:
+   A. Waste Sales:
+      - Price: ₹10 per kg
+      - Direct from collectors
+   
+   B. Compost Sales:
+      - Premium: ₹250-300/kg
+      - Grade A: ₹200-250/kg
+      - Grade B: ₹150-200/kg
+      - Grade C: ₹100-150/kg
+      - Average: ₹200/kg
+
+EXPENSE SOURCES:
+
+1. COLLECTOR SALARIES:
+   - Rate: ₹1,000 per day worked
+   - Payment: Processed by admin
+   - Example: 5 days = ₹5,000
+
+2. COMPOST MANAGER SALARIES:
+   - Rate: ₹1,000 per day worked
+   - Payment: Processed by admin
+   - Example: 5 days = ₹5,000
+
+PAYMENT METHODS:
+
+All stakeholders can use:
+- UPI (Unified Payments Interface)
+- Cash on Delivery
+- Card Payment
+
+TRANSACTION TRACKING:
+
+Every transaction includes:
+- Transaction ID (auto-generated)
+- Transaction type
+- Amount
+- Payment method
+- Date and time
+- User reference
+- Status
+
+FINANCIAL SUMMARY:
+
+Current Metrics:
+- Total Revenue: From household fees + farmer purchases
+- Total Expenses: Collector + manager salaries
+- Net Profit: Revenue - Expenses
+- All tracked in real-time
+
+================================================================================
+                          KEY FEATURES
+================================================================================
+
+1. AUTOMATIC COLLECTOR ASSIGNMENT:
+   - Based on household's route
+   - Based on current day of week
+   - No manual selection needed
+   - Smart routing algorithm
+   - Instant assignment
+
+2. INVENTORY MANAGEMENT:
+   - Auto-expiry after 30 days
+   - Status tracking (Available/Sold/Expired)
+   - Real-time stock levels
+   - Low stock alerts
+   - Automatic updates
+
+3. SALARY AUTOMATION:
+   - Auto-calculation based on days worked
+   - Prevents duplicate payments
+   - Complete audit trail
+   - UPI PIN security
+   - Email confirmations
+
+4. EMAIL NOTIFICATIONS:
+   - Pickup confirmations
+   - Collection updates
+   - Delivery notifications
+   - Payment receipts
+   - Registration approvals
+   - Graceful fallback to console (dev mode)
+
+5. PAYMENT TRACKING:
+   - Multiple payment methods
+   - Transaction ID recording
+   - Complete payment history
+   - Status tracking
+   - Excel export
+
+6. SYSTEM CONFIGURATION:
+   - Conversion ratios
+   - Pricing defaults
+   - Expiry thresholds
+   - Salary rates
+   - All configurable without code changes
+
+7. VOICE ACCESSIBILITY:
+   - Voice navigation features
+   - Accessibility support
+   - Inclusive design
+
+8. AJAX-POWERED UX:
+   - Real-time updates
+   - Smooth user experience
+   - No page reloads for key actions
+   - Fast and responsive
+
+9. ANALYTICS & REPORTS:
+   - Payment revenue analytics
+   - 6-month trend analysis
+   - Revenue vs expenses
+   - Export to Excel/PDF
+   - Visual charts and graphs
+
+10. SECURITY FEATURES:
+    - CSRF protection
+    - Password hashing
+    - Role-based access control
+    - UPI PIN for payments
+    - Environment variables for secrets
+
+================================================================================
+                          FREQUENTLY ASKED QUESTIONS
+================================================================================
+
+GENERAL QUESTIONS:
+
+Q: What is BioBinConnect?
+A: BioBinConnect is a web-based platform that connects households, waste collectors, compost managers, and farmers to create a circular economy for biodegradable waste management.
+
+Q: Who can use BioBinConnect?
+A: Five types of users: Households (waste generators), Collectors (pickup agents), Compost Managers (waste processors), Farmers (end consumers), and Admin (system manager).
+
+Q: How do I register?
+A: Visit the website, click "Sign Up", select your role, fill the registration form, upload required documents, and wait for admin approval.
+
+Q: How long does approval take?
+A: Admin typically reviews and approves registrations within 24-48 hours.
+
+Q: Is BioBinConnect free to use?
+A: Households pay monthly service fees (₹50-₹100). Other stakeholders earn money through the platform.
+
+HOUSEHOLD QUESTIONS:
+
+Q: How do I request a pickup?
+A: Login, go to "Request Pickup", select bin type, enter estimated weight, and submit. A collector will be auto-assigned.
+
+Q: How much does pickup service cost?
+A: Medium bin (25kg): ₹50/month, Large bin (50kg): ₹100/month.
+
+Q: When will my waste be collected?
+A: Based on your route's schedule. You'll receive an email with pickup details and assigned collector.
+
+Q: Can I choose my collector?
+A: No, collectors are automatically assigned based on your route and the current day.
+
+Q: How do I pay?
+A: Go to "Make Payment", select payment method (UPI/Cash/Card), and complete the transaction.
+
+COLLECTOR QUESTIONS:
+
+Q: How do I get assigned to pickups?
+A: Admin assigns you to routes and days. When households on your route request pickups on your assigned days, you're automatically assigned.
+
+Q: How much do I earn?
+A: ₹1,000 per day worked. Days are counted when you log collections.
+
+Q: How do I log a collection?
+A: After collecting waste, go to "Log Collection", enter actual weight, add notes, and submit.
+
+Q: When do I get paid?
+A: Admin processes salary payments. You'll receive email confirmation when paid.
+
+Q: What happens to waste after 30 days?
+A: Waste automatically expires and becomes unavailable for sale.
+
+FARMER QUESTIONS:
+
+Q: What products can I buy?
+A: Two types: Organic waste (₹10/kg) and Compost (₹100-300/kg based on grade).
+
+Q: What's the difference between waste and compost?
+A: Waste is raw biodegradable material. Compost is processed, high-quality organic fertilizer.
+
+Q: How do I place an order?
+A: Browse products, select quantity, enter delivery address, choose payment method, and place order.
+
+Q: How long does delivery take?
+A: Admin assigns delivery after order placement. Typical delivery: 1-3 days.
+
+Q: Can I return products?
+A: Contact admin for any quality issues or concerns.
+
+COMPOST MANAGER QUESTIONS:
+
+Q: How do I create a batch?
+A: Select available waste, enter batch name, system calculates output, select grade, set price, and create.
+
+Q: What is the conversion ratio?
+A: 4:1 ratio - 4kg of waste produces 1kg of compost.
+
+Q: How do I price my compost?
+A: Based on quality grade: Premium (₹250-300), A (₹200-250), B (₹150-200), C (₹100-150).
+
+Q: How much do I earn?
+A: ₹1,000 per day worked. Days are counted when you create batches.
+
+Q: When do I get paid?
+A: Admin processes salary payments. You'll receive email confirmation.
+
+ADMIN QUESTIONS:
+
+Q: How do I approve users?
+A: Go to "User Management", review pending registrations, verify documents, and approve or reject.
+
+Q: How do I assign collectors to routes?
+A: Go to "Collector Assignment", select collector, route, and day of week.
+
+Q: How do I process salaries?
+A: Go to "Salary Management", view unpaid days, select days to pay, enter UPI PIN, and confirm.
+
+Q: How do I view reports?
+A: Go to "Reports" or "Payment Analytics" for comprehensive financial and operational reports.
+
+Q: Can I export data?
+A: Yes, most reports have Excel and PDF export options.
+
+TECHNICAL QUESTIONS:
+
+Q: What technology is used?
+A: Django 6.0 (Python), MySQL 8.0, HTML5, CSS3, JavaScript.
+
+Q: Is it mobile-friendly?
+A: Yes, responsive design works on all devices.
+
+Q: Is my data secure?
+A: Yes, we use CSRF protection, password hashing, and secure authentication.
+
+Q: Can I access offline?
+A: No, internet connection required. Mobile app with offline features is planned.
+
+Q: What browsers are supported?
+A: All modern browsers: Chrome, Firefox, Safari, Edge.
+
+================================================================================
+                          CONTACT & SUPPORT
+================================================================================
+
+CONTACT INFORMATION:
+- Email: contact@biobinconnect.com
+- Phone: +91 9746573645
+- Location: Green Valley, Eco District, Kerala, India
+- Operating Hours: Monday - Friday: 08:00 AM - 06:00 PM
+
+SUPPORT CHANNELS:
+- Email support for all inquiries
+- Phone support during operating hours
+- Contact form on website
+- Admin can be reached through platform
+
+SOCIAL MEDIA:
+- Platform information available on website
+- Updates and announcements via email
+
+================================================================================
+                          FUTURE ENHANCEMENTS
+================================================================================
+
+PLANNED FEATURES:
+
+1. Mobile Application (iOS/Android)
+2. In-app messaging between stakeholders
+3. GPS route optimization for collectors
+4. Real-time delivery tracking
+5. QR code system for pickups
+6. Photo documentation
+7. Rating and review system
+8. Multi-language support (Hindi, Malayalam, Tamil)
+9. Dark mode
+10. AI chatbot for 24/7 support
+11. WhatsApp integration
+12. Recurring orders for farmers
+13. Advanced analytics
+14. Gamification and rewards
+15. Two-factor authentication
+
+================================================================================
+                          CONCLUSION
+================================================================================
+
+BioBinConnect is a comprehensive, fully-functional waste management platform that digitizes the entire lifecycle of biodegradable waste from collection to agricultural use. With 100+ features across 6 stakeholder types, automated workflows, real-time tracking, and comprehensive reporting, BioBinConnect creates a sustainable circular economy that benefits all participants.
+
+The platform is production-ready, secure, and scalable, serving as a model for modern waste management systems.
+
+For more information, visit our website or contact us at contact@biobinconnect.com.
+
+================================================================================
+                          END OF DOCUMENT
+================================================================================

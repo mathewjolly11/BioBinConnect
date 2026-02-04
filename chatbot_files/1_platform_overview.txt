@@ -1,0 +1,35 @@
+BIOBINCONNECT - PLATFORM OVERVIEW
+
+WHAT IS BIOBINCONNECT?
+BioBinConnect is a web-based biodegradable waste management platform connecting households, collectors, compost managers, and farmers in a circular economy.
+
+MISSION:
+Create a sustainable, zero-waste circular economy by connecting waste generators with processors and end-users through technology.
+
+CONTACT:
+- Email: contact@biobinconnect.com
+- Phone: +91 9746573645
+- Location: Kerala, India
+- Hours: Monday-Friday 08:00 AM - 06:00 PM
+
+TECHNOLOGY:
+- Framework: Django 6.0 (Python)
+- Database: MySQL 8.0
+- Frontend: HTML5, CSS3, JavaScript
+
+CURRENT SCALE:
+- Total Users: 27 (13 Households, 6 Collectors, 2 Managers, 4 Farmers, 1 Admin)
+- Total Pickups: 56 collections (~2,500 kg waste)
+- Compost Produced: 8 batches (~363.5 kg)
+- Conversion Ratio: 4:1 (4kg waste = 1kg compost)
+
+STAKEHOLDER TYPES:
+1. Guest - Public visitors, can register
+2. Household - Waste generators, request pickups
+3. Collector - Pickup agents, collect waste
+4. Farmer - End consumers, buy waste/compost
+5. Compost Manager - Process waste into compost
+6. Admin - System manager, oversees all operations
+
+HOW IT WORKS:
+Households → Request Pickup → Collectors Collect → Inventory → Compost Managers Process → Farmers Purchase → Circular Economy Complete

@@ -1,0 +1,49 @@
+PRICING & PAYMENTS
+
+HOUSEHOLD COSTS:
+- Medium Bin (25kg): ₹50 per month
+- Large Bin (50kg): ₹100 per month
+- Payment methods: UPI, Cash, Card
+
+FARMER PURCHASES:
+A. Organic Waste:
+   - Price: ₹10 per kg
+   - From collectors
+
+B. Compost:
+   - Premium: ₹250-300/kg
+   - Grade A: ₹200-250/kg
+   - Grade B: ₹150-200/kg
+   - Grade C: ₹100-150/kg
+   - Average: ₹200/kg
+   - From compost managers
+
+COLLECTOR EARNINGS:
+- Rate: ₹1,000 per day worked
+- Example: 5 days = ₹5,000
+- Paid by admin
+
+MANAGER EARNINGS:
+- Rate: ₹1,000 per day worked
+- Example: 5 days = ₹5,000
+- Paid by admin
+
+PAYMENT METHODS:
+All users can use:
+- UPI (Unified Payments Interface)
+- Cash on Delivery
+- Card Payment
+
+TRANSACTION TRACKING:
+Every payment includes:
+- Transaction ID (auto-generated)
+- Amount
+- Payment method
+- Date and time
+- Status
+
+PAYMENT SECURITY:
+- Salary payments require UPI PIN
+- All transactions recorded
+- Email confirmations sent
+- Complete audit trail

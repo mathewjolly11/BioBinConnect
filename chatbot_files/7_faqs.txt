@@ -1,0 +1,91 @@
+FREQUENTLY ASKED QUESTIONS
+
+GENERAL:
+
+Q: What is BioBinConnect?
+A: A platform connecting households, collectors, managers, and farmers for biodegradable waste management.
+
+Q: Who can use it?
+A: Households, Collectors, Compost Managers, Farmers, and Admin.
+
+Q: How do I register?
+A: Click "Sign Up", select role, fill form, upload documents, wait for approval.
+
+Q: How long does approval take?
+A: 24-48 hours typically.
+
+Q: Is it free?
+A: Households pay ₹50-100/month. Others earn money.
+
+HOUSEHOLD:
+
+Q: How to request pickup?
+A: Login → Request Pickup → Select bin → Enter weight → Submit.
+
+Q: Pickup cost?
+A: Medium (25kg): ₹50/month, Large (50kg): ₹100/month.
+
+Q: When is collection?
+A: Based on route schedule. Email sent with details.
+
+Q: Can I choose collector?
+A: No, auto-assigned by system.
+
+COLLECTOR:
+
+Q: How to get pickups?
+A: Admin assigns routes. Auto-assigned when households request.
+
+Q: How much do I earn?
+A: ₹1,000 per day worked.
+
+Q: How to log collection?
+A: After collecting, go to Log Collection, enter weight, submit.
+
+Q: When paid?
+A: Admin processes. Email confirmation sent.
+
+FARMER:
+
+Q: What can I buy?
+A: Organic waste (₹10/kg) or Compost (₹100-300/kg).
+
+Q: Difference between waste and compost?
+A: Waste is raw. Compost is processed fertilizer.
+
+Q: How to order?
+A: Browse → Select → Enter quantity → Address → Payment method → Place order.
+
+Q: Delivery time?
+A: 1-3 days after admin assigns.
+
+MANAGER:
+
+Q: How to create batch?
+A: Select waste → Enter name → System calculates → Select grade → Set price → Create.
+
+Q: Conversion ratio?
+A: 4:1 (4kg waste = 1kg compost).
+
+Q: How to price?
+A: Based on grade: Premium (₹250-300), A (₹200-250), B (₹150-200), C (₹100-150).
+
+Q: When paid?
+A: Admin processes. Email sent.
+
+TECHNICAL:
+
+Q: What technology?
+A: Django 6.0, MySQL 8.0, HTML5, CSS3, JavaScript.
+
+Q: Mobile-friendly?
+A: Yes, responsive design.
+
+Q: Is data secure?
+A: Yes, CSRF protection, password hashing, secure authentication.
+
+Q: Offline access?
+A: No, internet required.
+
+Q: Supported browsers?
+A: Chrome, Firefox, Safari, Edge.

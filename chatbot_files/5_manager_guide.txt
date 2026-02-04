@@ -1,0 +1,59 @@
+COMPOST MANAGER USER GUIDE
+
+WHO ARE COMPOST MANAGERS?
+Licensed facilities that convert organic waste into high-quality compost.
+
+HOW TO REGISTER:
+1. Visit website, click "Sign Up"
+2. Select "Compost Manager" role
+3. Fill form: Name, License Number, Facility Name, Phone, Email, Password
+4. Upload license photo
+5. Wait for admin approval
+
+HOW TO CREATE BATCH:
+1. Login to dashboard
+2. Go to "Create Batch"
+3. Select available waste from collectors
+4. Enter batch name (e.g., "Batch AA")
+5. System auto-calculates output:
+   - Conversion: 4kg waste = 1kg compost
+   - Example: 160kg waste → 40kg compost
+6. Select quality grade (Premium/A/B/C)
+7. Set price per kg based on grade
+8. Create batch (Status: Processing)
+9. Update to "Ready" when complete
+10. Farmers can now order
+
+QUALITY GRADES & PRICING:
+- Premium: ₹250-300/kg (perfect quality)
+- Grade A: ₹200-250/kg (excellent)
+- Grade B: ₹150-200/kg (good)
+- Grade C: ₹100-150/kg (standard)
+
+EARNINGS:
+- Rate: ₹1,000 per day worked
+- Example: Work 5 days = ₹5,000
+- Payment: Processed by admin
+
+BATCH STATUS:
+- Processing: Composting in progress
+- Ready: Available for sale
+- Sold: Purchased by farmers (auto-updated)
+
+FEATURES:
+- View available waste
+- Create compost batches
+- Manage batches
+- Edit batch details
+- Update status
+- Track earnings
+
+COMMON QUESTIONS:
+Q: What's the conversion ratio?
+A: 4:1 - Four kg waste produces one kg compost.
+
+Q: How do I price compost?
+A: Based on quality grade. Premium is highest.
+
+Q: When do I get paid?
+A: Admin processes payments. Email confirmation sent.

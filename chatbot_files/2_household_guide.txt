@@ -1,0 +1,44 @@
+HOUSEHOLD USER GUIDE
+
+WHO ARE HOUSEHOLDS?
+Residential users who generate organic waste and need regular pickup services.
+
+HOW TO REGISTER:
+1. Visit website, click "Sign Up"
+2. Select "Household" role
+3. Fill form: Name, Aadhaar, House Number, Phone, Email, Password
+4. Upload photo
+5. Wait for admin approval (24-48 hours)
+
+HOW TO REQUEST PICKUP:
+1. Login to dashboard
+2. Click "Request Pickup"
+3. Select bin type:
+   - Medium (25kg): ₹50/month
+   - Large (50kg): ₹100/month
+4. Enter estimated weight
+5. Submit - Collector auto-assigned
+6. Receive email confirmation
+
+PAYMENT:
+- Monthly service fee: ₹50 or ₹100
+- Payment methods: UPI, Cash, Card
+- Go to "Make Payment" to pay
+
+FEATURES:
+- Dashboard with statistics
+- Request pickup
+- View pickup history
+- Payment history
+- Profile management
+- Email notifications
+
+COMMON QUESTIONS:
+Q: When will waste be collected?
+A: Based on your route schedule. You'll get email with details.
+
+Q: Can I choose my collector?
+A: No, auto-assigned based on route and day.
+
+Q: How do I pay?
+A: Go to "Make Payment", select method, complete transaction.

@@ -1,0 +1,49 @@
+COLLECTOR USER GUIDE
+
+WHO ARE COLLECTORS?
+Licensed professionals who collect waste from households and deliver to farmers/managers.
+
+HOW TO REGISTER:
+1. Visit website, click "Sign Up"
+2. Select "Collector" role
+3. Fill form: Name, License Number, Vehicle Number, Phone, Email, Password
+4. Upload license photo
+5. Wait for admin approval
+
+HOW TO LOG COLLECTION:
+1. Visit household and collect waste
+2. Login to dashboard
+3. Go to "Log Collection"
+4. Enter actual weight collected
+5. Add notes (optional)
+6. Submit
+7. Email sent to household automatically
+
+EARNINGS:
+- Rate: ₹1,000 per day worked
+- Example: Work 5 days = ₹5,000
+- Payment: Processed by admin
+- Track unpaid vs paid earnings in dashboard
+
+FEATURES:
+- View assigned pickups for today
+- Log collections
+- View inventory (Available/Sold/Expired)
+- Sales orders from farmers
+- Update delivery status
+- Earnings tracker
+
+INVENTORY:
+- Waste expires after 30 days automatically
+- Status: Available → Sold → Expired
+- Farmers can order your available waste
+
+COMMON QUESTIONS:
+Q: How do I get assigned pickups?
+A: Admin assigns you to routes and days. Auto-assigned when households request.
+
+Q: When do I get paid?
+A: Admin processes payments. You'll get email confirmation.
+
+Q: What happens after 30 days?
+A: Waste auto-expires and becomes unavailable.

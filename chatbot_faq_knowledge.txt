@@ -1,0 +1,246 @@
+BIOBINCONNECT - FAQ & KNOWLEDGE BASE
+
+=== WHAT IS BIOBINCONNECT? ===
+BioBinConnect is a web platform connecting households, waste collectors, compost managers, and farmers in a circular waste management economy. Built with Django 6.0 and MySQL.
+
+Contact: +91 9746573645 | contact@biobinconnect.com
+Hours: Monday-Friday 08:00 AM - 06:00 PM
+Location: Kerala, India
+
+=== REGISTRATION & LOGIN ===
+
+Q: How do I register?
+A: Click "Sign Up", select your role (Household/Collector/Manager/Farmer), fill the form with required details, upload documents, and submit. Wait for admin approval (24-48 hours).
+
+Q: What documents do I need?
+A: Household/Farmer: Aadhaar card photo. Collector/Manager: License photo.
+
+Q: How long does approval take?
+A: Typically 24-48 hours. Admin reviews documents and approves/rejects.
+
+Q: I forgot my password. What do I do?
+A: Contact admin at contact@biobinconnect.com for password reset.
+
+=== HOUSEHOLD USERS ===
+
+Q: How do I request a pickup?
+A: Login → Dashboard → Request Pickup → Select bin type (Medium 25kg or Large 50kg) → Enter estimated weight → Submit. A collector will be auto-assigned.
+
+Q: How much does pickup cost?
+A: Medium Bin (25kg): ₹50/month | Large Bin (50kg): ₹100/month
+
+Q: When will my waste be collected?
+A: Based on your route schedule. You'll receive an email with pickup details, assigned collector name, and scheduled date.
+
+Q: Can I choose my collector?
+A: No. Collectors are automatically assigned based on your house route and the current day of week.
+
+Q: How do I pay?
+A: Go to "Make Payment" → Select payment method (UPI/Cash/Card) → Enter amount → Complete transaction. You'll receive a transaction ID and email receipt.
+
+Q: What payment methods are accepted?
+A: UPI, Cash on Delivery, and Card payments.
+
+=== COLLECTOR USERS ===
+
+Q: How do I get assigned to pickups?
+A: Admin assigns you to specific routes and days. When households on your assigned route request pickups on your days, you're automatically assigned.
+
+Q: How much do I earn?
+A: ₹1,000 per day worked. Example: Work 5 days = ₹5,000 total.
+
+Q: How do I log a collection?
+A: After collecting waste from household → Login → Go to "Log Collection" → Enter actual weight collected → Add notes (optional) → Submit. Email confirmation is automatically sent to the household.
+
+Q: When do I get paid?
+A: Admin processes salary payments. You'll receive an email confirmation when payment is completed. Track unpaid vs paid earnings in your dashboard.
+
+Q: What happens to waste after 30 days?
+A: Waste automatically expires and becomes unavailable for sale to farmers.
+
+Q: How do I update delivery status?
+A: Go to "Sales Orders" → Find the farmer order → Click "Update Status" → Mark as delivered.
+
+=== FARMER USERS ===
+
+Q: What products can I buy?
+A: Two types: 
+1. Organic Waste - Raw biodegradable waste at ₹10/kg for direct fertilizer use
+2. Compost - Processed fertilizer at ₹100-300/kg based on quality grade
+
+Q: What's the difference between waste and compost?
+A: Waste is raw organic material from households. Compost is processed, high-quality organic fertilizer created by compost managers with graded quality.
+
+Q: What are the compost quality grades?
+A: Premium (₹250-300/kg - highest quality), Grade A (₹200-250/kg), Grade B (₹150-200/kg), Grade C (₹100-150/kg). Average price is ₹200/kg.
+
+Q: How do I place an order?
+A: Login → Browse "Waste" or "Compost" → Select product → Enter quantity (kg) → Enter delivery address → Select payment method → Review total → Place order.
+
+Q: How long does delivery take?
+A: Typically 1-3 days after admin assigns the delivery.
+
+Q: Can I track my order?
+A: Yes. Go to "View Orders" to see status: Pending → Processing → Shipped → Delivered → Completed.
+
+Q: Can I return products?
+A: Contact admin for any quality issues or concerns.
+
+=== COMPOST MANAGER USERS ===
+
+Q: How do I create a compost batch?
+A: Login → Create Batch → Select available waste from collectors → Enter batch name → System auto-calculates compost output → Select quality grade → Set price per kg → Create.
+
+Q: What is the conversion ratio?
+A: 4:1 ratio. Four kg of waste produces one kg of compost. Example: 160kg waste → 40kg compost.
+
+Q: How do I price my compost?
+A: Based on quality grade. Premium: ₹250-300/kg, Grade A: ₹200-250/kg, Grade B: ₹150-200/kg, Grade C: ₹100-150/kg.
+
+Q: How much do I earn?
+A: ₹1,000 per day worked. Example: Work 5 days = ₹5,000.
+
+Q: When do I get paid?
+A: Admin processes salary payments. You'll receive email confirmation.
+
+Q: What are batch statuses?
+A: Processing (composting in progress) → Ready (available for sale) → Sold (purchased by farmer, auto-updated).
+
+=== PRICING SUMMARY ===
+
+Household Costs:
+- Medium Bin (25kg): ₹50/month
+- Large Bin (50kg): ₹100/month
+
+Farmer Purchases:
+- Organic Waste: ₹10/kg
+- Compost Premium: ₹250-300/kg
+- Compost Grade A: ₹200-250/kg
+- Compost Grade B: ₹150-200/kg
+- Compost Grade C: ₹100-150/kg
+
+Worker Earnings:
+- Collectors: ₹1,000/day
+- Managers: ₹1,000/day
+
+=== HOW IT WORKS ===
+
+WASTE COLLECTION FLOW:
+1. Household requests pickup
+2. System auto-assigns collector based on route + day
+3. Collector receives notification
+4. Collector visits and collects waste
+5. Collector logs actual weight
+6. Household receives confirmation
+7. Waste added to collector's inventory
+
+COMPOST CREATION FLOW:
+1. Manager browses available waste
+2. Manager selects waste and creates batch
+3. System calculates: Waste ÷ 4 = Compost output
+4. Manager sets grade and price
+5. Batch status: Processing
+6. Manager updates to "Ready" when complete
+7. Farmers can now order
+
+FARMER ORDER FLOW:
+1. Farmer browses waste or compost
+2. Farmer places order with quantity and address
+3. Admin assigns delivery
+4. Product delivered
+5. Farmer makes payment
+6. Order complete
+
+=== FEATURES ===
+
+Auto-Assignment: Collectors automatically assigned based on routes and schedules
+Email Notifications: Confirmations for pickups, deliveries, payments
+Payment Tracking: Complete transaction history with IDs
+Inventory Management: Auto-expiry after 30 days
+Dashboard Statistics: Real-time stats for all users
+Multiple Payment Methods: UPI, Cash, Card
+Salary Automation: Auto-calculation based on days worked
+Export Reports: Excel and PDF exports available
+
+=== SYSTEM STATISTICS ===
+
+Current Scale:
+- Total Users: 27 (13 Households, 6 Collectors, 2 Managers, 4 Farmers, 1 Admin)
+- Total Pickups: 56 collections
+- Waste Collected: ~2,500 kg
+- Compost Batches: 8 batches
+- Compost Produced: ~363.5 kg
+- Conversion Ratio: 4:1
+
+=== TECHNICAL INFO ===
+
+Q: What technology is used?
+A: Django 6.0 (Python), MySQL 8.0, HTML5, CSS3, JavaScript
+
+Q: Is it mobile-friendly?
+A: Yes, responsive design works on all devices.
+
+Q: Is my data secure?
+A: Yes. CSRF protection, password hashing, secure authentication, UPI PIN for salary payments.
+
+Q: Can I use it offline?
+A: No, internet connection required.
+
+Q: What browsers are supported?
+A: Chrome, Firefox, Safari, Edge - all modern browsers.
+
+=== TROUBLESHOOTING ===
+
+Q: I can't login after registration.
+A: Wait for admin approval (24-48 hours). Check your email for approval confirmation.
+
+Q: I didn't receive email confirmation.
+A: Check spam folder. If still missing, contact admin.
+
+Q: My pickup request shows "Pending" for long time.
+A: Contact admin. There may be no collector assigned to your route for that day.
+
+Q: Payment failed. What do I do?
+A: Try again with different payment method. Contact admin if issue persists.
+
+Q: How do I contact support?
+A: Email: contact@biobinconnect.com | Phone: +91 9746573645 | Hours: Mon-Fri 8AM-6PM
+
+=== ADMIN FUNCTIONS ===
+
+Admin manages:
+- User approvals/rejections
+- Route and collector assignments
+- Salary payments (with UPI PIN security)
+- Order assignments
+- System settings
+- Financial reports
+- Transaction tracking
+
+=== WORKFLOWS ===
+
+HOUSEHOLD WORKFLOW:
+Login → Request Pickup → Wait for Collection → Receive Confirmation → Pay Monthly Fee
+
+COLLECTOR WORKFLOW:
+Login → Check Assigned Pickups → Visit Households → Collect Waste → Log Collection → Track Earnings
+
+FARMER WORKFLOW:
+Login → Browse Products → Place Order → Wait for Delivery → Receive Product → Make Payment
+
+MANAGER WORKFLOW:
+Login → Browse Waste → Create Batch → Process Compost → Mark Ready → Farmers Order → Earn Salary
+
+=== CONTACT & SUPPORT ===
+
+Email: contact@biobinconnect.com
+Phone: +91 9746573645
+Location: Green Valley, Eco District, Kerala, India
+Operating Hours: Monday - Friday: 08:00 AM - 06:00 PM
+Website: BioBinConnect Platform
+
+For urgent issues, call during operating hours.
+For general inquiries, email anytime.
+Response time: Within 24 hours.
+
+=== END ===
