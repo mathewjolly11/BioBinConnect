@@ -66,6 +66,10 @@
       type="text/css"
     />
 
+    <!-- Botpress Chatbot -->
+    <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/02/04/10/20260204100156-GVHRJ1QR.js" defer></script>
+
     <style>
       /* Custom dropdown styling for My Work menu */
       #mainmenu > li > ul {
@@ -74,23 +78,28 @@
         box-shadow: 0 4px 12px rgba(108, 154, 46, 0.3) !important;
       }
 
-      #mainmenu > li > ul li a {
-        color: #ffffff !important;
-        padding: 12px 20px !important;
+      #mainmenu > li > ul > li > a {
+        color: white !important;
+        padding: 10px 20px !important;
         transition: all 0.3s ease !important;
       }
 
-      #mainmenu > li > ul li a:hover {
-        background: #5a8226 !important;
+      #mainmenu > li > ul > li > a:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
         padding-left: 25px !important;
       }
 
-      #mainmenu > li > ul li {
+      #mainmenu > li > ul > li {
         border-bottom: 1px solid rgba(255, 255, 255, 0.1) !important;
       }
 
-      #mainmenu > li > ul li:last-child {
+      #mainmenu > li > ul > li:last-child {
         border-bottom: none !important;
+      }
+
+      /* Fix for chatbot spacebar scrolling */
+      body.chatbot-no-scroll {
+        overflow: hidden !important;
       }
     </style>
   </head>
@@ -443,6 +452,40 @@
     <script src="{% static 'js/accessibility-toolbar.js' %}?v=4.13"></script>
     <script src="{% static 'js/voice-commands.js' %}?v=4.13"></script>
     <script src="{% static 'js/mic-level-monitor.js' %}?v=4.13"></script>
+
+    <!-- Prevent spacebar scrolling when chatbot is open -->
+    <script>
+      (function() {
+        // Monitor chatbot open/close state
+        const observer = new MutationObserver(function(mutations) {
+          const chatbotWidget = document.querySelector('[id*="bp-web-widget"]') || 
+                                document.querySelector('[class*="bp-widget"]') ||
+                                document.querySelector('iframe[src*="botpress"]');
+          
+          if (chatbotWidget) {
+            // Check if chatbot is visible/open
+            const isOpen = chatbotWidget.style.display !== 'none' && 
+                          chatbotWidget.offsetParent !== null;
+            
+            if (isOpen) {
+              document.body.classList.add('chatbot-no-scroll');
+            } else {
+              document.body.classList.remove('chatbot-no-scroll');
+            }
+          }
+        });
+        
+        // Start observing when DOM is ready
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+          });
+        }
+      })();
+    </script>
 
     <script>
       // Prevent back button after logout

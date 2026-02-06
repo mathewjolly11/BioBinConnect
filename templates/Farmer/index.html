@@ -1,93 +1,89 @@
 {% extends 'Farmer/base.html' %} {% load static %} {% block title %}Dashboard -
-BioBinConnect{% endblock %} 
-
-{% block extra_css %}
+BioBinConnect{% endblock %} {% block extra_css %}
 <style>
-/* Fix button sizing issues - Prevent all enlarging */
-.btn {
-  max-width: 100% !important;
-  width: auto !important;
-  flex-grow: 0 !important;
-  flex-shrink: 1 !important;
-  flex-basis: auto !important;
-  box-sizing: border-box !important;
-  display: inline-block !important;
-  vertical-align: top !important;
-}
+  /* Fix button sizing issues - Prevent all enlarging */
+  .btn {
+    max-width: 100% !important;
+    width: auto !important;
+    flex-grow: 0 !important;
+    flex-shrink: 1 !important;
+    flex-basis: auto !important;
+    box-sizing: border-box !important;
+    display: inline-block !important;
+    vertical-align: top !important;
+  }
 
-/* Specific hero button fixes */
-.hero-card .btn {
-  max-width: 160px !important;
-  min-width: 120px !important;
-  width: auto !important;
-  flex: 0 0 auto !important;
-}
+  /* Specific hero button fixes */
+  .hero-card .btn {
+    max-width: 160px !important;
+    min-width: 120px !important;
+    width: auto !important;
+    flex: 0 0 auto !important;
+  }
 
-/* Flex container fixes */
-.d-flex {
-  flex-wrap: wrap !important;
-}
+  /* Flex container fixes */
+  .d-flex {
+    flex-wrap: wrap !important;
+  }
 
-.d-flex .btn {
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-}
+  .d-flex .btn {
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+  }
 
-/* Action buttons - prevent expansion */
-.action-btn {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-}
+  /* Action buttons - prevent expansion */
+  .action-btn {
+    display: block !important;
+    width: 100% !important;
+    max-width: 100% !important;
+  }
 
-.action-btn > div {
-  width: 100% !important;
-  max-width: 100% !important;
-  min-width: 0 !important;
-  flex: none !important;
-}
+  .action-btn > div {
+    width: 100% !important;
+    max-width: 100% !important;
+    min-width: 0 !important;
+    flex: none !important;
+  }
 
-/* Text content constraints */
-.action-btn h6,
-.action-btn small {
-  word-break: break-word !important;
-  overflow-wrap: break-word !important;
-  max-width: 100% !important;
-}
+  /* Text content constraints */
+  .action-btn h6,
+  .action-btn small {
+    word-break: break-word !important;
+    overflow-wrap: break-word !important;
+    max-width: 100% !important;
+  }
 
-/* Global container fixes */
-* {
-  box-sizing: border-box !important;
-}
+  /* Global container fixes */
+  * {
+    box-sizing: border-box !important;
+  }
 
-/* Farmer browse buttons - LOCK SIZE COMPLETELY */
-.farmer-browse-btn {
-  width: 140px !important;
-  max-width: 140px !important;
-  min-width: 140px !important;
-  height: 40px !important;
-  max-height: 40px !important;
-  min-height: 40px !important;
-  flex: none !important;
-  flex-grow: 0 !important;
-  flex-shrink: 0 !important;
-  flex-basis: 140px !important;
-  display: inline-block !important;
-  overflow: hidden !important;
-  text-overflow: ellipsis !important;
-  white-space: nowrap !important;
-}
+  /* Farmer browse buttons - LOCK SIZE COMPLETELY */
+  .farmer-browse-btn {
+    width: 140px !important;
+    max-width: 140px !important;
+    min-width: 140px !important;
+    height: 40px !important;
+    max-height: 40px !important;
+    min-height: 40px !important;
+    flex: none !important;
+    flex-grow: 0 !important;
+    flex-shrink: 0 !important;
+    flex-basis: 140px !important;
+    display: inline-block !important;
+    overflow: hidden !important;
+    text-overflow: ellipsis !important;
+    white-space: nowrap !important;
+  }
 
-.farmer-browse-btn:hover {
-  transform: none !important;
-  width: 140px !important;
-  max-width: 140px !important;
-  min-width: 140px !important;
-}
+  .farmer-browse-btn:hover {
+    transform: none !important;
+    width: 140px !important;
+    max-width: 140px !important;
+    min-width: 140px !important;
+  }
 </style>
-{% endblock %}
-
-{% block content %}
+{% endblock %} {% block content %}
 <section id="main-content" style="background-color: #f3f4f6; min-height: 100vh">
   <br /><br />
   <section class="wrapper main-wrapper" style="padding: 20px">
@@ -136,9 +132,18 @@ BioBinConnect{% endblock %}
                   max-width: 500px;
                 "
               >
-                {{ available_waste|floatformat:0 }}kg waste and {{available_compost|floatformat:0 }} packets compost available for purchase.
+                {{ available_waste|floatformat:0 }}kg waste and
+                {{available_compost|floatformat:0 }} packets compost available
+                for purchase.
               </p>
-              <div style="display: flex; gap: 10px; flex-wrap: wrap; max-width: 100%;">
+              <div
+                style="
+                  display: flex;
+                  gap: 10px;
+                  flex-wrap: wrap;
+                  max-width: 100%;
+                "
+              >
                 <a
                   href="{% url 'farmer_browse_waste' %}"
                   style="
@@ -175,7 +180,6 @@ BioBinConnect{% endblock %}
                   "
                   >Browse Compost</a
                 >
-                 
               </div>
             </div>
             <div class="col-md-4 text-center d-none d-md-block">
@@ -576,7 +580,7 @@ BioBinConnect{% endblock %}
             <a
               href="{% url 'farmer_browse_waste' %}"
               class="action-btn d-block"
-              style="text-decoration: none; max-width: 100%; overflow: hidden;"
+              style="text-decoration: none; max-width: 100%; overflow: hidden"
             >
               <div
                 style="
@@ -607,7 +611,7 @@ BioBinConnect{% endblock %}
             <a
               href="{% url 'farmer_browse_compost' %}"
               class="action-btn d-block"
-              style="text-decoration: none; max-width: 100%; overflow: hidden;"
+              style="text-decoration: none; max-width: 100%; overflow: hidden"
             >
               <div
                 style="

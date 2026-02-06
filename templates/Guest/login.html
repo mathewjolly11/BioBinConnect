@@ -18,7 +18,7 @@
         </div>
         <div class="input-box">{{ login_form.password }}</div>
         <div class="forgot-link">
-          <a href="#">Forgot Password?</a>
+          <a href="{% url 'forgot_password_request' %}">Forgot Password?</a>
         </div>
         <button
           type="submit"
@@ -518,7 +518,9 @@
     border-width: 4px !important;
     width: 50px !important;
     height: 50px !important;
-    animation: spin 1s linear infinite, colorShift 3s ease-in-out infinite !important;
+    animation:
+      spin 1s linear infinite,
+      colorShift 3s ease-in-out infinite !important;
   }
 
   @keyframes spin {
@@ -723,72 +725,85 @@
 </div>
 {% endif %}
 
-<script>
-  // Check if there are error messages on page load
-  {% if messages %}
-  const hasErrorMessages = {% for message in messages %}{% if message.tags == 'error' %}true{% endif %}{% endfor %} || false;
-  const errorMessage = "{% for message in messages %}{% if message.tags == 'error' %}{{ message.message|escapejs }}{% endif %}{% endfor %}";
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
 
-  if (hasErrorMessages) {
-    // Clear the error messages from DOM FIRST
-    const messagesData = document.getElementById('messages-data');
-    if (messagesData) {
-      messagesData.remove();
-    }
-
-    // Close loader then show error alert
-    if (typeof Swal !== 'undefined') {
-      Swal.close();
-      setTimeout(() => {
-        Swal.fire({
-          title: "Login Failed!",
-          text: errorMessage,
-          icon: "error",
-          confirmButtonText: "Try Again",
-          confirmButtonColor: "#ef4444",
-        });
-      }, 100);
-    }
-  } else {
-    // Just close the loader for non-error messages
-    if (typeof Swal !== 'undefined') {
-      Swal.close();
-    }
-  }
-  {% else %}
-  // No messages - just close any loader
-  if (typeof Swal !== 'undefined') {
-    Swal.close();
-  }
-  {% endif %}
+<script id="messages-data" type="application/json">
+  [
+    {% for message in messages %}
+      {
+        "message": "{{ message.message|escapejs }}",
+        "tags": "{{ message.tags|default:'' }}"
+      }{% if not forloop.last %},{% endif %}
+    {% endfor %}
+  ]
 </script>
 
 <script>
-  // Read data from hidden HTML elements (no Django template syntax here!)
+  // Check for messages on page load
+  const messagesDataElement = document.getElementById("messages-data");
+  if (messagesDataElement) {
+    try {
+      const messages = JSON.parse(messagesDataElement.textContent);
+
+      const hasErrorMessages = messages.some((m) => m.tags.includes("error"));
+      const hasSuccessMessages = messages.some((m) =>
+        m.tags.includes("success"),
+      );
+
+      const errorMessage = messages
+        .filter((m) => m.tags.includes("error"))
+        .map((m) => m.message)
+        .join(" ");
+      const successMessage = messages
+        .filter((m) => m.tags.includes("success"))
+        .map((m) => m.message)
+        .join(" ");
+
+      if (hasErrorMessages) {
+        if (typeof Swal !== "undefined") {
+          Swal.close();
+          setTimeout(() => {
+            Swal.fire({
+              title: "Login Failed!",
+              text: errorMessage,
+              icon: "error",
+              confirmButtonText: "Try Again",
+              confirmButtonColor: "#ef4444",
+            });
+          }, 100);
+        }
+      } else if (hasSuccessMessages) {
+        if (typeof Swal !== "undefined") {
+          Swal.close();
+          setTimeout(() => {
+            Swal.fire({
+              title: "Success!",
+              text: successMessage,
+              icon: "success",
+              confirmButtonText: "Continue",
+              confirmButtonColor: "#10b981",
+              timer: 5000,
+              timerProgressBar: true,
+            });
+          }, 100);
+        }
+      } else {
+        // Just close the loader if no messages
+        if (typeof Swal !== "undefined") {
+          Swal.close();
+        }
+      }
+    } catch (e) {
+      console.error("Error parsing messages JSON:", e);
+    }
+  }
+
+  // Read data from hidden HTML elements
   document.addEventListener("DOMContentLoaded", function () {
     // Check for show register flag
     const showRegisterFlag = document.getElementById("show-register-flag");
     if (showRegisterFlag) {
       document.body.dataset.showRegister = showRegisterFlag.dataset.value;
-    }
-
-    // Process messages from hidden elements
-    const messagesContainer = document.getElementById("messages-data");
-    if (messagesContainer) {
-      const messageItems = messagesContainer.querySelectorAll(".message-item");
-      const messages = [];
-
-      messageItems.forEach((item) => {
-        messages.push({
-          message: item.dataset.message,
-          tags: item.dataset.tags,
-          adminUrl: item.dataset.adminUrl,
-        });
-      });
-
-      if (messages.length > 0) {
-        document.body.dataset.messageData = JSON.stringify(messages);
-      }
     }
   });
 </script>

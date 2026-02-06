@@ -1,6 +1,8 @@
 from django.urls import path
 from GuestApp import views
 from GuestApp import api_views
+from GuestApp import password_reset_views
+
 
 urlpatterns = [
     path('', views.index, name='guest_index'),
@@ -19,6 +21,12 @@ urlpatterns = [
     
     # Voice accessibility test page
     path('test-voice/', views.test_voice, name='test_voice'),
+    
+    # Password Reset URLs
+    path('forgot-password/', password_reset_views.forgot_password_request, name='forgot_password_request'),
+    path('verify-otp/', password_reset_views.verify_otp, name='verify_otp'),
+    path('resend-otp/', password_reset_views.resend_otp, name='resend_otp'),
+    path('reset-password/', password_reset_views.reset_password, name='reset_password'),
     
     # API endpoints
     path('api/validate-house-number/', api_views.validate_house_number, name='validate_house_number'),

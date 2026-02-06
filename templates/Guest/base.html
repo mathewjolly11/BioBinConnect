@@ -30,6 +30,17 @@
     <!-- Voice Accessibility CSS -->
     <link href="{% static 'css/voice-accessibility.css' %}" rel="stylesheet" type="text/css" />
 
+    <!-- Botpress Chatbot -->
+    <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
+    <script src="https://files.bpcontent.cloud/2026/02/04/10/20260204100156-GVHRJ1QR.js" defer></script>
+
+    <!-- Fix for chatbot spacebar scrolling -->
+    <style>
+      body.chatbot-no-scroll {
+        overflow: hidden !important;
+      }
+    </style>
+
 </head>
 
 <body>
@@ -120,7 +131,7 @@
                             </div>
                             <div class="de-flex-col">
                                 <div class="menu_side_area">
-                                    <a href="{% url 'booking' %}" class="btn-main">Schedule Pickup</a>
+                                    <a href="#" onclick="showScheduleAlert(event)" class="btn-main">Schedule Pickup</a>
                                     <a href="{% url 'login' %}" class="btn-main" style="margin-left: 10px;">Login/Register</a>
                                     <span id="menu-btn"></span>
                                 </div>
@@ -169,7 +180,7 @@
                                     <ul>
                                         <li><a href="{% url 'signup' %}">Sign Up</a></li>
                                         <li><a href="{% url 'login' %}">Login</a></li>
-                                        <li><a href="{% url 'booking' %}">Schedule Pickup</a></li>
+                                    <li><a href="#" onclick="showScheduleAlert(event)">Schedule Pickup</a></li>
                                     </ul>
                                     </ul>
                                 </div>
@@ -285,7 +296,70 @@
     <script src="{% static 'js/accessibility-toolbar.js' %}?v=4.13"></script>
     <script src="{% static 'js/voice-commands.js' %}?v=4.13"></script>
     <script src="{% static 'js/mic-level-monitor.js' %}?v=4.13"></script>
+
+    <!-- Prevent spacebar scrolling when chatbot is open -->
+    <script>
+      (function() {
+        // Monitor chatbot open/close state
+        const observer = new MutationObserver(function(mutations) {
+          const chatbotWidget = document.querySelector('[id*="bp-web-widget"]') || 
+                                document.querySelector('[class*="bp-widget"]') ||
+                                document.querySelector('iframe[src*="botpress"]');
+          
+          if (chatbotWidget) {
+            // Check if chatbot is visible/open
+            const isOpen = chatbotWidget.style.display !== 'none' && 
+                          chatbotWidget.offsetParent !== null;
+            
+            if (isOpen) {
+              document.body.classList.add('chatbot-no-scroll');
+            } else {
+              document.body.classList.remove('chatbot-no-scroll');
+            }
+          }
+        });
+        
+        // Start observing when DOM is ready
+        if (document.body) {
+          observer.observe(document.body, {
+            childList: true,
+            subtree: true,
+            attributes: true,
+            attributeFilter: ['style', 'class']
+          });
+        }
+      })();
+    </script>
     
+    <!-- Custom Scheduler Alert -->
+    <script>
+      function showScheduleAlert(e) {
+        e.preventDefault();
+        
+        // Check if user is authenticated (Django template tag)
+        const isAuthenticated = "{{ user.is_authenticated|yesno:'true,false' }}" === "true";
+        
+        if (isAuthenticated) {
+            window.location.href = "{% url 'booking' %}";
+        } else {
+            Swal.fire({
+                title: 'Authentication Required',
+                text: 'Please Login or Register as a Household to schedule a waste pickup.',
+                icon: 'info',
+                showCancelButton: true,
+                confirmButtonText: 'Login / Register',
+                cancelButtonText: 'Close',
+                confirmButtonColor: '#6c9a2e',
+                cancelButtonColor: '#6c757d',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = "{% url 'login' %}";
+                }
+            });
+        }
+      }
+    </script>
 </body>
 
 </html>

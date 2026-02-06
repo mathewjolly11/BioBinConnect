@@ -28,15 +28,10 @@ env11/
 .DS_Store
 Thumbs.db
 desktop.ini
+.env
 
 # Backup files (safe to ignore)
 *.bak
 *.tmp
 
 # Keep important files
-!.gitignore
-!.env
-!db_biobinconnect.sql
-!STAKEHOLDER_SUMMARY.txt
-!SYSTEM_IMPROVEMENTS.txt
-!workflow_analysis_report.txt

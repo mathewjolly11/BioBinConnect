@@ -157,23 +157,23 @@ MEDIA_ROOT=os.path.join(BASE_DIR,'media')
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
 
 # Email Configuration (Gmail SMTP)
-# Check if email credentials are properly configured
+# Using same configuration as registration emails
 EMAIL_HOST_USER = os.environ.get('EMAIL_HOST_USER')
 EMAIL_HOST_PASSWORD = os.environ.get('EMAIL_HOST_PASSWORD')
 
-if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD and EMAIL_HOST_USER != 'your-email@gmail.com':
-    # Production SMTP configuration
-    EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
-    EMAIL_HOST = 'smtp.gmail.com'
-    EMAIL_PORT = 587
-    EMAIL_USE_TLS = True
+# SMTP Backend (same as registration)
+EMAIL_BACKEND = 'django.core.mail.backends.smtp.EmailBackend'
+EMAIL_HOST = 'smtp.gmail.com'
+EMAIL_PORT = 587
+EMAIL_USE_TLS = True
+EMAIL_USE_SSL = False
+
+if EMAIL_HOST_USER and EMAIL_HOST_PASSWORD:
     DEFAULT_FROM_EMAIL = f'BioBinConnect <{EMAIL_HOST_USER}>'
+    print(f"✅ Email configured: {EMAIL_HOST_USER}")
 else:
-    # Development fallback - use console backend
-    EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
-    EMAIL_HOST_USER = 'noreply@biobinconnect.local'
     DEFAULT_FROM_EMAIL = 'BioBinConnect <noreply@biobinconnect.local>'
-    print("⚠️ Email credentials not configured. Using console backend for development.")
+    print("⚠️ Email credentials not configured")
 
 # Site URL for email links
 SITE_URL = os.environ.get('SITE_URL', 'http://127.0.0.1:8000')
