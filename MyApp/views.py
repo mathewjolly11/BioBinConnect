@@ -1188,20 +1188,24 @@ def create_initial_admin(request):
     User = get_user_model()
     
     # Check if admin already exists
-    if User.objects.filter(username='admin').exists():
+    if User.objects.filter(email='admin@biobinconnect.com').exists():
         return HttpResponse('❌ Admin user already exists! Delete this URL from urls.py for security.')
     
     try:
         # Create superuser
         admin_user = User.objects.create_superuser(
-            username='admin',
             email='admin@biobinconnect.com',
+            name='Admin',
             password='BioBin@2026',  # Change this after first login!
-            user_type='Admin'
         )
+        admin_user.role = 'admin'
+        admin_user.is_verified = True
+        admin_user.account_status = 'Approved'
+        admin_user.save()
+        
         return HttpResponse('''
             ✅ Admin user created successfully!<br><br>
-            <strong>Username:</strong> admin<br>
+            <strong>Email:</strong> admin@biobinconnect.com<br>
             <strong>Password:</strong> BioBin@2026<br><br>
             <strong>⚠️ IMPORTANT:</strong><br>
             1. Login immediately and change your password!<br>
