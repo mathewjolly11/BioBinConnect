@@ -50,7 +50,9 @@ allowed_hosts_env = os.environ.get('ALLOWED_HOSTS', 'localhost,127.0.0.1')
 ALLOWED_HOSTS = allowed_hosts_env.split(',')
 # Add Render hostname if available
 if 'RENDER_EXTERNAL_HOSTNAME' in os.environ:
-    ALLOWED_HOSTS.append(os.environ['https://biobinconnect.onrender.com/'])
+    ALLOWED_HOSTS.append(os.environ['RENDER_EXTERNAL_HOSTNAME'])
+# Explicitly add your Render domain
+ALLOWED_HOSTS.append('biobinconnect.onrender.com')
 
 
 # Application definition
