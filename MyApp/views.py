@@ -2,7 +2,7 @@ from django.shortcuts import redirect, render
 from django.contrib import messages
 from django.db.models import Sum, Count
 from django.utils import timezone
-from datetime import timedelta, datetime
+from datetime import timedelta, datetime, date
 from MyApp.decorators import admin_required
 
 from MyApp.forms import DistrictForm,LocationForm,RAForm
@@ -73,6 +73,16 @@ def get_recent_activities():
     )
     activities = []
     
+    # Helper to ensure sorting compatibility
+    def make_aware_if_naive(dt):
+        if dt is None: return None
+        # Handle Date objects by converting to datetime first
+        if isinstance(dt, date) and not isinstance(dt, datetime):
+            dt = datetime.combine(dt, datetime.min.time())
+        if timezone.is_naive(dt):
+            return timezone.make_aware(dt)
+        return dt
+
     # 1. New User Registrations
     users = CustomUser.objects.order_by('-date_joined')[:5]
     for u in users:
@@ -80,20 +90,18 @@ def get_recent_activities():
             'type': 'User',
             'icon': 'fa-user-plus',
             'color': 'primary',
-            'time': u.date_joined,
+            'time': make_aware_if_naive(u.date_joined),
             'description': f"New user registered: {u.name} ({u.role})"
         })
         
     # 2. Pickup Requests
     pickups = tbl_PickupRequest.objects.order_by('-scheduled_date')[:5]
     for p in pickups:
-        # Convert date to datetime for sorting compatibility
-        dt = datetime.combine(p.scheduled_date, datetime.min.time())
         activities.append({
             'type': 'Pickup',
             'icon': 'fa-truck',
             'color': 'info',
-            'time': timezone.make_aware(dt) if timezone.is_naive(dt) else dt,
+            'time': make_aware_if_naive(p.scheduled_date),
             'description': f"Pickup requested by {p.household.household_name}"
         })
 
@@ -104,7 +112,7 @@ def get_recent_activities():
             'type': 'Order',
             'icon': 'fa-shopping-cart',
             'color': 'success',
-            'time': o.Order_Date,
+            'time': make_aware_if_naive(o.Order_Date),
             'description': f"New order #{o.Order_id} from {o.Buyer_id.farmer_name} (₹{o.Total_Amount})"
         })
         
@@ -115,23 +123,24 @@ def get_recent_activities():
             'type': 'Payment',
             'icon': 'fa-credit-card',
             'color': 'warning',
-            'time': pay.payment_date,
+            'time': make_aware_if_naive(pay.payment_date),
             'description': f"Payment received from {pay.household.household_name} (₹{pay.amount})"
         })
         
-    # 5. Compost Batches (using Date_Created)
+    # 5. Compost Batches
     batches = tbl_CompostBatch.objects.order_by('-Date_Created')[:5]
     for b in batches:
-        dt = datetime.combine(b.Date_Created, datetime.min.time())
         activities.append({
             'type': 'Batch',
             'icon': 'fa-flask',
-            'color': 'purple', # Will use custom css or mapped class
-            'time': timezone.make_aware(dt) if timezone.is_naive(dt) else dt,
+            'color': 'purple',
+            'time': make_aware_if_naive(b.Date_Created),
             'description': f"New compost batch created: {b.Batch_name}"
         })
     
     # Sort by time desc
+    # Ensure no None times get into the sort
+    activities = [a for a in activities if a['time'] is not None]
     activities.sort(key=lambda x: x['time'], reverse=True)
     return activities[:10]
 
