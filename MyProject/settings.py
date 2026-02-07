@@ -15,6 +15,7 @@ from pathlib import Path
 
 # Load environment variables from .env file using python-dotenv
 from dotenv import load_dotenv
+import dj_database_url  # Import database tool
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
@@ -111,10 +112,15 @@ DATABASES = {
         'ENGINE': 'django.db.backends.mysql',
         'NAME': 'db_biobinconnect',
         'USER': 'root',
-        'PASSWORD': os.environ.get('DB_PASSWORD', ''),  # Load from environment
+        'PASSWORD': os.environ.get('DB_PASSWORD', ''),
         'HOST': 'localhost',
     }
 }
+
+# Database configuration for Render + Supabase
+database_url = os.environ.get("DATABASE_URL")
+if database_url:
+    DATABASES["default"] = dj_database_url.parse(database_url)
 
 
 # Password validation

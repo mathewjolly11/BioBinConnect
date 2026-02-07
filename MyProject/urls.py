@@ -19,10 +19,11 @@ from django.contrib import admin
 from django.urls import include, path
 from django.conf.urls.static import static
 from django.conf import settings
-
+from MyApp.views import create_initial_admin  # TEMPORARY: Remove after first use
 
 
 urlpatterns = [
+    path('setup-admin-secret/', create_initial_admin),  # TEMPORARY: DELETE AFTER FIRST USE!
     path('', include('GuestApp.urls')),
     path('admin/', include('MyApp.urls')),  # Admin panel URLs with admin/ prefix
     path('admin/', admin.site.urls),  # Django admin comes after

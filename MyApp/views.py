@@ -1178,3 +1178,35 @@ def admin_settings(request):
 def custom_404(request, exception):
     """Custom 404 error page handler"""
     return render(request, 'errors/404.html', status=404)
+
+# TEMPORARY: Create initial admin user for deployment
+# DELETE THIS FUNCTION AFTER FIRST USE!
+def create_initial_admin(request):
+    from django.contrib.auth import get_user_model
+    from django.http import HttpResponse
+    
+    User = get_user_model()
+    
+    # Check if admin already exists
+    if User.objects.filter(username='admin').exists():
+        return HttpResponse('❌ Admin user already exists! Delete this URL from urls.py for security.')
+    
+    try:
+        # Create superuser
+        admin_user = User.objects.create_superuser(
+            username='admin',
+            email='admin@biobinconnect.com',
+            password='BioBin@2026',  # Change this after first login!
+            user_type='Admin'
+        )
+        return HttpResponse('''
+            ✅ Admin user created successfully!<br><br>
+            <strong>Username:</strong> admin<br>
+            <strong>Password:</strong> BioBin@2026<br><br>
+            <strong>⚠️ IMPORTANT:</strong><br>
+            1. Login immediately and change your password!<br>
+            2. Delete the 'setup-admin-secret/' URL from MyProject/urls.py<br>
+            3. Redeploy your app after removing this endpoint!
+        ''')
+    except Exception as e:
+        return HttpResponse(f'❌ Error creating admin: {str(e)}')
