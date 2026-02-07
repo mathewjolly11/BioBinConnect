@@ -19,14 +19,22 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
         {% if messages %}
         <div class="mb-4">
           {% for message in messages %}
-          <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+          <div
+            class="alert alert-{{ message.tags }} alert-dismissible fade show"
+            role="alert"
+          >
             {{ message }}
-            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            <button
+              type="button"
+              class="btn-close"
+              data-bs-dismiss="alert"
+              aria-label="Close"
+            ></button>
           </div>
           {% endfor %}
         </div>
         {% endif %}
-        
+
         <!-- Step 1: Pickup Request Details -->
         <div class="de_testi bg-white p-5 wow fadeInUp" id="step1">
           <h4 class="mb-4">Step 1: Pickup Request Details</h4>
@@ -130,7 +138,7 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
                 maxlength="4"
               />
             </div>
-           <button type="button" class="btn-main w-100" id="payWithUPI">
+            <button type="button" class="btn-main w-100" id="payWithUPI">
               <i class="fa fa-lock me-2"></i> Pay Securely
             </button>
           </div>
@@ -298,198 +306,218 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
 </style>
 
 <script>
-  let selectedPaymentMethod = '';
+  let selectedPaymentMethod = "";
   let paymentAmount = 0;
   let formSubmitted = false; // Flag to prevent duplicate submissions
 
   // Update payment amount when bin type changes
-  document.getElementById('id_bin_type').addEventListener('change', function () {
+  document
+    .getElementById("id_bin_type")
+    .addEventListener("change", function () {
       const selectedOption = this.options[this.selectedIndex];
       const binText = selectedOption.text;
 
       // Extract price from bin type text
-      if (binText.includes('₹50')) {
-          paymentAmount = 50;
-      } else if (binText.includes('₹100')) {
-          paymentAmount = 100;
+      if (binText.includes("₹50")) {
+        paymentAmount = 50;
+      } else if (binText.includes("₹100")) {
+        paymentAmount = 100;
       }
 
-      document.getElementById('payment-amount').textContent = paymentAmount;
-      document.getElementById('finalAmount').textContent = '₹' + paymentAmount;
-  });
+      document.getElementById("payment-amount").textContent = paymentAmount;
+      document.getElementById("finalAmount").textContent = "₹" + paymentAmount;
+    });
 
   // Proceed to payment step
-  document.getElementById('proceedToPayment').addEventListener('click', function () {
-      const date = document.getElementById('id_scheduled_date').value;
-      const time = document.getElementById('id_request_time').value;
-      const binType = document.getElementById('id_bin_type').value;
+  document
+    .getElementById("proceedToPayment")
+    .addEventListener("click", function () {
+      const date = document.getElementById("id_scheduled_date").value;
+      const time = document.getElementById("id_request_time").value;
+      const binType = document.getElementById("id_bin_type").value;
 
       if (!date || !time || !binType) {
-          Swal.fire({
-              icon: 'warning',
-              title: 'Missing Information',
-              text: 'Please fill all fields before proceeding to payment',
-              confirmButtonColor: '#6c9a2e'
-          });
-          return;
+        Swal.fire({
+          icon: "warning",
+          title: "Missing Information",
+          text: "Please fill all fields before proceeding to payment",
+          confirmButtonColor: "#6c9a2e",
+        });
+        return;
       }
 
       if (paymentAmount === 0) {
-          Swal.fire({
-              icon: 'warning',
-              title: 'Bin Type Required',
-              text: 'Please select a bin type',
-              confirmButtonColor: '#6c9a2e'
-          });
-          return;
+        Swal.fire({
+          icon: "warning",
+          title: "Bin Type Required",
+          text: "Please select a bin type",
+          confirmButtonColor: "#6c9a2e",
+        });
+        return;
       }
 
       // Show step 2
-      document.getElementById('step1').style.display = 'none';
-      document.getElementById('step2').style.display = 'block';
-  });
+      document.getElementById("step1").style.display = "none";
+      document.getElementById("step2").style.display = "block";
+    });
 
   // Back to step 1
-  document.getElementById('backToStep1').addEventListener('click', function () {
-      document.getElementById('step2').style.display = 'none';
-      document.getElementById('step1').style.display = 'block';
+  document.getElementById("backToStep1").addEventListener("click", function () {
+    document.getElementById("step2").style.display = "none";
+    document.getElementById("step1").style.display = "block";
 
-      // Reset payment method selection
-      selectedPaymentMethod = '';
-      document.querySelectorAll('.payment-method-card').forEach(card => {
-          card.classList.remove('selected');
-      });
-      document.getElementById('upiForm').style.display = 'none';
-      document.getElementById('codForm').style.display = 'none';
+    // Reset payment method selection
+    selectedPaymentMethod = "";
+    document.querySelectorAll(".payment-method-card").forEach((card) => {
+      card.classList.remove("selected");
+    });
+    document.getElementById("upiForm").style.display = "none";
+    document.getElementById("codForm").style.display = "none";
   });
 
   // Payment method selection
-  document.querySelectorAll('.payment-method-card').forEach(card => {
-      card.addEventListener('click', function () {
-          const method = this.getAttribute('data-method');
-          selectedPaymentMethod = method;
+  document.querySelectorAll(".payment-method-card").forEach((card) => {
+    card.addEventListener("click", function () {
+      const method = this.getAttribute("data-method");
+      selectedPaymentMethod = method;
 
-          // Remove selected class from all cards
-          document.querySelectorAll('.payment-method-card').forEach(c => {
-              c.classList.remove('selected');
-          });
-
-          // Add selected class to clicked card
-          this.classList.add('selected');
-
-          // Show appropriate form
-          if (method === 'UPI') {
-              document.getElementById('upiForm').style.display = 'block';
-              document.getElementById('codForm').style.display = 'none';
-          } else {
-              document.getElementById('codForm').style.display = 'block';
-              document.getElementById('upiForm').style.display = 'none';
-          }
+      // Remove selected class from all cards
+      document.querySelectorAll(".payment-method-card").forEach((c) => {
+        c.classList.remove("selected");
       });
+
+      // Add selected class to clicked card
+      this.classList.add("selected");
+
+      // Show appropriate form
+      if (method === "UPI") {
+        document.getElementById("upiForm").style.display = "block";
+        document.getElementById("codForm").style.display = "none";
+      } else {
+        document.getElementById("codForm").style.display = "block";
+        document.getElementById("upiForm").style.display = "none";
+      }
+    });
   });
 
   // Pay with UPI
-  document.getElementById('payWithUPI').addEventListener('click', function () {
-      if (formSubmitted) return; // Prevent duplicate submissions
+  document.getElementById("payWithUPI").addEventListener("click", function () {
+    if (formSubmitted) return; // Prevent duplicate submissions
 
-      const upiId = document.getElementById('upiId').value;
-      const upiPin = document.getElementById('upiPin').value;
+    const upiId = document.getElementById("upiId").value;
+    const upiPin = document.getElementById("upiPin").value;
 
-      if (!upiId || !upiPin) {
-          Swal.fire({
-              icon: 'warning',
-              title: 'UPI Details Required',
-              text: 'Please enter UPI ID and PIN',
-              confirmButtonColor: '#6c9a2e'
-          });
-          return;
-      }
+    if (!upiId || !upiPin) {
+      Swal.fire({
+        icon: "warning",
+        title: "UPI Details Required",
+        text: "Please enter UPI ID and PIN",
+        confirmButtonColor: "#6c9a2e",
+      });
+      return;
+    }
 
-      if (upiPin.length !== 4) {
-          Swal.fire({
-              icon: 'error',
-              title: 'Invalid PIN',
-              text: 'UPI PIN must be 4 digits',
-              confirmButtonColor: '#6c9a2e'
-          });
-          return;
-      }
+    // UPI ID Regex Validation
+    const upiIdRegex = /[a-zA-Z0-9.\-_]{2,256}@[a-zA-Z]{2,64}/;
+    if (!upiIdRegex.test(upiId)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid UPI ID",
+        text: "Please enter a valid UPI ID (e.g., name@bank)",
+        confirmButtonColor: "#6c9a2e",
+      });
+      return;
+    }
 
-      // Disable button to prevent double-click
-      this.disabled = true;
-      this.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i> Processing...';
+    // UPI PIN Validation (4 digits, numeric only)
+    const upiPinRegex = /^[0-9]{4}$/;
+    if (!upiPinRegex.test(upiPin)) {
+      Swal.fire({
+        icon: "error",
+        title: "Invalid PIN",
+        text: "UPI PIN must be exactly 4 numeric digits",
+        confirmButtonColor: "#6c9a2e",
+      });
+      return;
+    }
 
-      // Set payment method to UPI
-      selectedPaymentMethod = 'UPI';
-      processPayment();
+    // Disable button to prevent double-click
+    this.disabled = true;
+    this.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i> Processing...';
+
+    // Set payment method to UPI
+    selectedPaymentMethod = "UPI";
+    processPayment();
   });
 
   // Confirm COD
-  document.getElementById('confirmCOD').addEventListener('click', function () {
-      if (formSubmitted) return; // Prevent duplicate submissions
+  document.getElementById("confirmCOD").addEventListener("click", function () {
+    if (formSubmitted) return; // Prevent duplicate submissions
 
-      const name = document.getElementById('codName').value;
-      const phone = document.getElementById('codPhone').value;
+    const name = document.getElementById("codName").value;
+    const phone = document.getElementById("codPhone").value;
 
-      if (!name || !phone) {
-          Swal.fire({
-              icon: 'warning',
-              title: 'Details Required',
-              text: 'Please enter your name and phone number',
-              confirmButtonColor: '#6c9a2e'
-          });
-          return;
-      }
+    if (!name || !phone) {
+      Swal.fire({
+        icon: "warning",
+        title: "Details Required",
+        text: "Please enter your name and phone number",
+        confirmButtonColor: "#6c9a2e",
+      });
+      return;
+    }
 
-      // Disable button to prevent double-click
-      this.disabled = true;
-      this.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i> Processing...';
+    // Disable button to prevent double-click
+    this.disabled = true;
+    this.innerHTML = '<i class="fa fa-spinner fa-spin me-2"></i> Processing...';
 
-      // Set payment method to COD
-      selectedPaymentMethod = 'COD';
-      processPayment();
+    // Set payment method to COD
+    selectedPaymentMethod = "COD";
+    processPayment();
   });
 
   // Process payment and submit form
   function processPayment() {
-      if (formSubmitted) return; // Prevent duplicate submissions
-      formSubmitted = true; // Mark as submitted
+    if (formSubmitted) return; // Prevent duplicate submissions
+    formSubmitted = true; // Mark as submitted
 
-      // Show modal with loader
-      const paymentModal = document.getElementById('paymentModal');
-      const modal = new bootstrap.Modal(paymentModal, {
-          backdrop: 'static',
-          keyboard: false
-      });
-      modal.show();
+    // Show modal with loader
+    const paymentModal = document.getElementById("paymentModal");
+    const modal = new bootstrap.Modal(paymentModal, {
+      backdrop: "static",
+      keyboard: false,
+    });
+    modal.show();
 
-      // Simulate payment processing
+    // Simulate payment processing
+    setTimeout(function () {
+      // Generate transaction ID
+      const txnId = "TXN" + Date.now() + Math.floor(Math.random() * 1000);
+
+      // Show success state
+      document.getElementById("processingState").style.display = "none";
+      document.getElementById("successState").style.display = "block";
+      document.getElementById("transactionId").textContent = txnId;
+
+      // Start AJAX submission with email tracking
       setTimeout(function () {
-          // Generate transaction ID
-          const txnId = 'TXN' + Date.now() + Math.floor(Math.random() * 1000);
-
-          // Show success state
-          document.getElementById('processingState').style.display = 'none';
-          document.getElementById('successState').style.display = 'block';
-          document.getElementById('transactionId').textContent = txnId;
-
-          // Start AJAX submission with email tracking
-          setTimeout(function () {
-              submitWithEmailTracking();
-          }, 1500);
-      }, 2000); // 2 second loader
+        submitWithEmailTracking();
+      }, 1500);
+    }, 2000); // 2 second loader
   }
 
   // New function to handle AJAX submission with email status tracking
   function submitWithEmailTracking() {
-      // Hide the current modal
-      const paymentModal = bootstrap.Modal.getInstance(document.getElementById('paymentModal'));
-      paymentModal.hide();
+    // Hide the current modal
+    const paymentModal = bootstrap.Modal.getInstance(
+      document.getElementById("paymentModal"),
+    );
+    paymentModal.hide();
 
-      // Show email sending loader
-      Swal.fire({
-          title: 'Sending Confirmation Emails...',
-          html: `
+    // Show email sending loader
+    Swal.fire({
+      title: "Sending Confirmation Emails...",
+      html: `
               <div class="text-center">
                   <div class="spinner-border text-primary mb-3" role="status" style="width: 3rem; height: 3rem;">
                       <span class="visually-hidden">Loading...</span>
@@ -499,131 +527,159 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
                   </div>
               </div>
           `,
-          allowOutsideClick: false,
-          showConfirmButton: false,
-          didOpen: () => {
-              // Prepare form data
-              const formData = {
-                  scheduled_date: document.getElementById('id_scheduled_date').value,
-                  request_time: document.getElementById('id_request_time').value,
-                  bin_type: document.getElementById('id_bin_type').value,
-                  payment_method: selectedPaymentMethod
-              };
+      allowOutsideClick: false,
+      showConfirmButton: false,
+      didOpen: () => {
+        // Prepare form data
+        const formData = {
+          scheduled_date: document.getElementById("id_scheduled_date").value,
+          request_time: document.getElementById("id_request_time").value,
+          bin_type: document.getElementById("id_bin_type").value,
+          payment_method: selectedPaymentMethod,
+        };
 
-              // Update progress
-              document.getElementById('email-progress').innerHTML = `
+        // Update progress
+        document.getElementById("email-progress").innerHTML = `
                   <p><i class="fa fa-paper-plane text-info"></i> Creating pickup request...</p>
               `;
 
-              // Submit via AJAX
-              fetch('{% url "request_pickup_ajax" %}', {
-                  method: 'POST',
-                  headers: {
-                      'Content-Type': 'application/json',
-                      'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value
-                  },
-                  body: JSON.stringify(formData)
-              })
-              .then(response => response.json())
-              .then(data => {
-                  // Update progress
-                  document.getElementById('email-progress').innerHTML = `
+        // Submit via AJAX
+        fetch('{% url "request_pickup_ajax" %}', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            "X-CSRFToken": document.querySelector("[name=csrfmiddlewaretoken]")
+              .value,
+          },
+          body: JSON.stringify(formData),
+        })
+          .then((response) => response.json())
+          .then((data) => {
+            // Update progress
+            document.getElementById("email-progress").innerHTML = `
                       <p><i class="fa fa-check text-success"></i> Pickup request created!</p>
                       <p><i class="fa fa-envelope-o text-info"></i> Sending confirmation emails...</p>
                   `;
 
-                  setTimeout(() => {
-                      if (data.success) {
-                          // Show detailed success message with email status
-                          showDetailedSuccessMessage(data);
-                      } else {
-                          // Show error message
-                          Swal.fire({
-                              icon: 'error',
-                              title: 'Request Failed',
-                              html: `
+            setTimeout(() => {
+              if (data.success) {
+                // Show detailed success message with email status
+                showDetailedSuccessMessage(data);
+              } else {
+                // Show error message
+                Swal.fire({
+                  icon: "error",
+                  title: "Request Failed",
+                  html: `
                                   <p>${data.message}</p>
-                                  ${data.errors ? '<ul class="text-start">' + data.errors.map(err => `<li>${err}</li>`).join('') + '</ul>' : ''}
+                                  ${data.errors ? '<ul class="text-start">' + data.errors.map((err) => `<li>${err}</li>`).join("") + "</ul>" : ""}
                               `,
-                              confirmButtonColor: '#6c9a2e'
-                          }).then(() => {
-                              formSubmitted = false; // Allow retry
-                              // Re-enable submit buttons
-                              document.getElementById('payWithUPI').disabled = false;
-                              document.getElementById('payWithUPI').innerHTML = '<i class="fa fa-lock me-2"></i> Pay Securely';
-                              document.getElementById('confirmCOD').disabled = false;
-                              document.getElementById('confirmCOD').innerHTML = '<i class="fa fa-check me-2"></i> Confirm COD Payment';
-                          });
-                      }
-                  }, 1500);
-              })
-              .catch(error => {
-                  console.error('Error:', error);
-                  Swal.fire({
-                      icon: 'error',
-                      title: 'Network Error',
-                      text: 'Failed to submit request. Please check your internet connection.',
-                      confirmButtonColor: '#6c9a2e'
-                  }).then(() => {
-                      formSubmitted = false; // Allow retry
-                      // Re-enable submit buttons
-                      document.getElementById('payWithUPI').disabled = false;
-                      document.getElementById('payWithUPI').innerHTML = '<i class="fa fa-lock me-2"></i> Pay Securely';
-                      document.getElementById('confirmCOD').disabled = false;
-                      document.getElementById('confirmCOD').innerHTML = '<i class="fa fa-check me-2"></i> Confirm COD Payment';
-                  });
-              });
-          }
-      });
+                  confirmButtonColor: "#6c9a2e",
+                }).then(() => {
+                  formSubmitted = false; // Allow retry
+                  // Re-enable submit buttons
+                  document.getElementById("payWithUPI").disabled = false;
+                  document.getElementById("payWithUPI").innerHTML =
+                    '<i class="fa fa-lock me-2"></i> Pay Securely';
+                  document.getElementById("confirmCOD").disabled = false;
+                  document.getElementById("confirmCOD").innerHTML =
+                    '<i class="fa fa-check me-2"></i> Confirm COD Payment';
+                });
+              }
+            }, 1500);
+          })
+          .catch((error) => {
+            console.error("Error:", error);
+            Swal.fire({
+              icon: "error",
+              title: "Network Error",
+              text: "Failed to submit request. Please check your internet connection.",
+              confirmButtonColor: "#6c9a2e",
+            }).then(() => {
+              formSubmitted = false; // Allow retry
+              // Re-enable submit buttons
+              document.getElementById("payWithUPI").disabled = false;
+              document.getElementById("payWithUPI").innerHTML =
+                '<i class="fa fa-lock me-2"></i> Pay Securely';
+              document.getElementById("confirmCOD").disabled = false;
+              document.getElementById("confirmCOD").innerHTML =
+                '<i class="fa fa-check me-2"></i> Confirm COD Payment';
+            });
+          });
+      },
+    });
   }
 
   // Function to show detailed success message with email status
   function showDetailedSuccessMessage(data) {
-      const emailStatus = data.email_status;
-      const pickup = data.pickup_data;
+    const emailStatus = data.email_status;
+    const pickup = data.pickup_data;
 
-      let emailStatusHtml = '';
-      let emailIcon = 'success';
+    let emailStatusHtml = "";
+    let emailIcon = "success";
 
-      // Check email sending status
-      if (emailStatus.household_confirmation) {
-          emailStatusHtml += '<p class="mb-1 text-success"><i class="fa fa-check"></i> Confirmation email sent to you</p>';
+    // Check email sending status
+    if (
+      emailStatus.household_confirmation === true ||
+      emailStatus.household_confirmation === "True"
+    ) {
+      emailStatusHtml +=
+        '<p class="mb-1 text-success"><i class="fa fa-check"></i> Confirmation email sent to you</p>';
+    } else if (emailStatus.household_confirmation === "Skipped") {
+      emailStatusHtml +=
+        '<p class="mb-1" style="color: #6c757d;"><i class="fa fa-ban"></i> Email notifications disabled in settings</p>';
+    } else {
+      emailStatusHtml +=
+        '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Confirmation email failed to send</p>';
+      emailIcon = "warning";
+    }
+
+    if (pickup.collector) {
+      if (
+        emailStatus.collector_assignment === true ||
+        emailStatus.collector_assignment === "True"
+      ) {
+        emailStatusHtml +=
+          '<p class="mb-1 text-success"><i class="fa fa-check"></i> Assignment email sent to collector</p>';
+      } else if (emailStatus.collector_assignment === "Skipped") {
+        // Do nothing or show skipped message if desired
       } else {
-          emailStatusHtml += '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Confirmation email failed to send</p>';
-          emailIcon = 'warning';
+        emailStatusHtml +=
+          '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Collector assignment email failed</p>';
+        emailIcon = "warning";
       }
 
-      if (pickup.collector) {
-          if (emailStatus.collector_assignment) {
-              emailStatusHtml += '<p class="mb-1 text-success"><i class="fa fa-check"></i> Assignment email sent to collector</p>';
-          } else {
-              emailStatusHtml += '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Collector assignment email failed</p>';
-              emailIcon = 'warning';
-          }
-
-          if (emailStatus.pickup_scheduled) {
-              emailStatusHtml += '<p class="mb-1 text-success"><i class="fa fa-check"></i> Schedule notification sent to you</p>';
-          } else {
-              emailStatusHtml += '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Schedule notification failed to send</p>';
-              emailIcon = 'warning';
-          }
+      if (
+        emailStatus.pickup_scheduled === true ||
+        emailStatus.pickup_scheduled === "True"
+      ) {
+        emailStatusHtml +=
+          '<p class="mb-1 text-success"><i class="fa fa-check"></i> Schedule notification sent to you</p>';
+      } else if (emailStatus.pickup_scheduled === "Skipped") {
+        // Do nothing or show skipped message if desired
+      } else {
+        emailStatusHtml +=
+          '<p class="mb-1 text-warning"><i class="fa fa-exclamation-triangle"></i> Schedule notification failed to send</p>';
+        emailIcon = "warning";
       }
+    }
 
-      // Show any specific errors
-      if (emailStatus.errors.length > 0) {
-          emailStatusHtml += '<hr><p class="text-danger"><strong>Email Errors:</strong></p>';
-          emailStatusHtml += '<ul class="text-start text-danger">';
-          emailStatus.errors.forEach(error => {
-              emailStatusHtml += `<li>${error}</li>`;
-          });
-          emailStatusHtml += '</ul>';
-          emailIcon = 'warning';
-      }
+    // Show any specific errors
+    if (emailStatus.errors.length > 0) {
+      emailStatusHtml +=
+        '<hr><p class="text-danger"><strong>Email Errors:</strong></p>';
+      emailStatusHtml += '<ul class="text-start text-danger">';
+      emailStatus.errors.forEach((error) => {
+        emailStatusHtml += `<li>${error}</li>`;
+      });
+      emailStatusHtml += "</ul>";
+      emailIcon = "warning";
+    }
 
-      Swal.fire({
-          icon: emailIcon,
-          title: 'Pickup Request Created!',
-          html: `
+    Swal.fire({
+      icon: emailIcon,
+      title: "Pickup Request Created!",
+      html: `
               <div class="text-center" style="font-size: 0.9rem;">
                   <h6 class="text-success mb-2"><i class="fa fa-check-circle"></i> Payment Successful!</h6>
 
@@ -644,43 +700,51 @@ Pickup - BioBinConnect{% endblock %} {% block content %}
                       <strong>Scheduled Date:</strong> ${pickup.date}
                   </div>
 
-                  ${pickup.collector ? `
+                  ${
+                    pickup.collector
+                      ? `
                       <div class="alert alert-success py-2 mb-2" style="font-size: 0.85rem;">
                           <strong><i class="fa fa-user-circle"></i> Collector Assigned:</strong><br>
                           ${pickup.collector}<br>
                           <small>Status: <strong class="text-success">Approved</strong></small>
                       </div>
-                  ` : ''}
+                  `
+                      : ""
+                  }
 
-                  ${pickup.warning ? `
+                  ${
+                    pickup.warning
+                      ? `
                       <div class="alert alert-warning py-2 mb-2" style="font-size: 0.85rem;">
                           <i class="fa fa-exclamation-triangle"></i> ${pickup.warning}
                       </div>
-                  ` : ''}
+                  `
+                      : ""
+                  }
 
                   <hr class="my-2">
                   <h6 class="mb-2" style="font-size: 0.9rem;"><i class="fa fa-envelope"></i> Email Notifications:</h6>
                   <div style="font-size: 0.85rem;">${emailStatusHtml}</div>
               </div>
           `,
-          confirmButtonColor: '#6c9a2e',
-          confirmButtonText: 'View My Requests',
-          width: '600px',
-          customClass: {
-              popup: 'compact-modal'
-          }
-      }).then(() => {
-          // Redirect to view requests page
-          window.location.href = '{% url "view_requests" %}';
-      });
+      confirmButtonColor: "#6c9a2e",
+      confirmButtonText: "View My Requests",
+      width: "600px",
+      customClass: {
+        popup: "compact-modal",
+      },
+    }).then(() => {
+      // Redirect to view requests page
+      window.location.href = '{% url "view_requests" %}';
+    });
   }
 
   // Trigger change event on page load if bin type is already selected
-  window.addEventListener('DOMContentLoaded', function () {
-      const binTypeSelect = document.getElementById('id_bin_type');
-      if (binTypeSelect.value) {
-          binTypeSelect.dispatchEvent(new Event('change'));
-      }
+  window.addEventListener("DOMContentLoaded", function () {
+    const binTypeSelect = document.getElementById("id_bin_type");
+    if (binTypeSelect.value) {
+      binTypeSelect.dispatchEvent(new Event("change"));
+    }
   });
 </script>
 

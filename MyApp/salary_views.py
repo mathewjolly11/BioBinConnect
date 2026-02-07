@@ -95,9 +95,20 @@ def admin_salary_management(request):
 @never_cache
 def admin_pay_salary(request):
     """Process salary payment for selected dates"""
+    PRESET_PIN = "123456"  # In a real app, this should be in user profile or settings
+    
     if request.method == 'POST':
         action = request.POST.get('action')
+        input_pin = request.POST.get('upi_pin')
         
+        # Verify PIN first for all actions
+        if not input_pin or input_pin != PRESET_PIN:
+            if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                 return JsonResponse({'success': False, 'error': 'Incorrect PIN. Transaction not possible.'})
+            else:
+                messages.error(request, 'Incorrect PIN. Transaction not possible.')
+                return redirect('admin_salary_management')
+
         if action == 'pay_all_collectors':
             # Pay all collectors with unpaid days
             try:
@@ -108,23 +119,25 @@ def admin_pay_salary(request):
                 collectors = Collector.objects.filter(user__is_verified=True)
                 
                 for collector in collectors:
-                    unpaid_dates = tbl_WasteInventory.objects.filter(
+                    # Get unpaid dates (use list to force evaluation)
+                    unpaid_dates_qs = tbl_WasteInventory.objects.filter(
                         collector=collector,
                         salary_paid=False
                     ).values('collection_date__date').distinct()
                     
-                    if unpaid_dates.exists():
+                    unpaid_dates_count = unpaid_dates_qs.count()
+                    
+                    if unpaid_dates_count > 0:
+                        # Calculate amount first!
+                        amount = unpaid_dates_count * 1000
+                        total_amount += amount
+                        count += 1
+                        
                         # Mark all unpaid collections as paid
                         tbl_WasteInventory.objects.filter(
                             collector=collector,
                             salary_paid=False
                         ).update(salary_paid=True)
-                        
-                        # Calculate amount
-                        days_count = unpaid_dates.count()
-                        amount = days_count * 1000
-                        total_amount += amount
-                        count += 1
                         
                         # Create payment transaction
                         tbl_PaymentTransaction.objects.create(
@@ -136,10 +149,15 @@ def admin_pay_salary(request):
                             status='Success'
                         )
                 
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': True, 'message': f'Paid salaries to {count} collectors. Total amount: ₹{total_amount:,.2f}'})
+                
                 messages.success(request, f'Paid salaries to {count} collectors. Total amount: ₹{total_amount:,.2f}')
                 return redirect('admin_salary_management')
                 
             except Exception as e:
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'error': str(e)})
                 messages.error(request, f'Error paying collectors: {str(e)}')
                 return redirect('admin_salary_management')
         
@@ -153,23 +171,25 @@ def admin_pay_salary(request):
                 managers = CompostManager.objects.filter(user__is_verified=True)
                 
                 for manager in managers:
-                    unpaid_dates = tbl_CompostBatch.objects.filter(
+                    # Get unpaid dates (use list to force evaluation)
+                    unpaid_dates_qs = tbl_CompostBatch.objects.filter(
                         CompostManager_id=manager,
                         salary_paid=False
                     ).values('Date_Created').distinct()
                     
-                    if unpaid_dates.exists():
+                    unpaid_dates_count = unpaid_dates_qs.count()
+                    
+                    if unpaid_dates_count > 0:
+                        # Calculate amount first!
+                        amount = unpaid_dates_count * 1000
+                        total_amount += amount
+                        count += 1
+                        
                         # Mark all unpaid batches as paid
                         tbl_CompostBatch.objects.filter(
                             CompostManager_id=manager,
                             salary_paid=False
                         ).update(salary_paid=True)
-                        
-                        # Calculate amount
-                        days_count = unpaid_dates.count()
-                        amount = days_count * 1000
-                        total_amount += amount
-                        count += 1
                         
                         # Create payment transaction
                         tbl_PaymentTransaction.objects.create(
@@ -181,10 +201,15 @@ def admin_pay_salary(request):
                             status='Success'
                         )
                 
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                     return JsonResponse({'success': True, 'message': f'Paid salaries to {count} managers. Total amount: ₹{total_amount:,.2f}'})
+
                 messages.success(request, f'Paid salaries to {count} managers. Total amount: ₹{total_amount:,.2f}')
                 return redirect('admin_salary_management')
                 
             except Exception as e:
+                if request.headers.get('x-requested-with') == 'XMLHttpRequest':
+                    return JsonResponse({'success': False, 'error': str(e)})
                 messages.error(request, f'Error paying managers: {str(e)}')
                 return redirect('admin_salary_management')
         
@@ -192,14 +217,14 @@ def admin_pay_salary(request):
         try:
             user_type = request.POST.get('user_type')  # 'collector' or 'manager'
             user_id = request.POST.get('user_id')
-            upi_pin = request.POST.get('upi_pin')
+            # upi_pin = request.POST.get('upi_pin') # Already validated above
             selected_dates = request.POST.getlist('selected_dates[]')  # List of dates as strings
             
             if not selected_dates:
                 return JsonResponse({'success': False, 'error': 'No dates selected'})
                 
-            if not upi_pin or len(upi_pin) < 4:
-                return JsonResponse({'success': False, 'error': 'Invalid UPI Authorization'})
+            # if not upi_pin or len(upi_pin) < 4:  # Handled by global validation
+            #    return JsonResponse({'success': False, 'error': 'Invalid UPI Authorization'})
             
             # Calculate total amount
             total_days = len(selected_dates)
@@ -250,7 +275,6 @@ def admin_pay_salary(request):
             )
             
             success_msg = f'Salary of ₹{total_amount:,.2f} paid to {name} for {total_days} days'
-            # messages.success(request, success_msg)  <-- Removed to prevent duplicate alert
             return JsonResponse({
                 'success': True,
                 'message': success_msg,
@@ -258,7 +282,6 @@ def admin_pay_salary(request):
             })
             
         except Exception as e:
-            # messages.error(request, f'Error processing payment: {str(e)}') <-- Removed
             return JsonResponse({'success': False, 'error': str(e)})
     
     return JsonResponse({'success': False, 'error': 'Invalid request method'})

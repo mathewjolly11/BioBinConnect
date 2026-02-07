@@ -73,7 +73,8 @@ def create_compost_batch(request):
     
     # Get available waste
     available_waste = tbl_WasteInventory.objects.filter(
-        status='Available'
+        status='Available',
+        available_quantity_kg__gt=0
     ).select_related('collector')
     
     if request.method == 'POST':

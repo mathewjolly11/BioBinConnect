@@ -278,6 +278,16 @@ class SystemSettingsForm(forms.Form):
             'step': '0.50'
         })
     )
+
+    email_notifications_enabled = forms.BooleanField(
+        label='Enable Email Notifications',
+        help_text='If unchecked, no emails will be sent from the system.',
+        required=False,
+        widget=forms.CheckboxInput(attrs={
+            'class': 'form-check-input',
+            'role': 'switch'
+        })
+    )
     
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
@@ -287,4 +297,8 @@ class SystemSettingsForm(forms.Form):
         self.fields['expiry_warning_days'].initial = SystemSettings.get_setting('expiry_warning_days', '7')
         self.fields['auto_unavailable_days'].initial = SystemSettings.get_setting('auto_unavailable_days', '30')
         self.fields['waste_price_per_kg'].initial = SystemSettings.get_setting('waste_price_per_kg', '10.00')
+
+        # Load email setting (store as string 'True'/'False', convert to boolean for form)
+        email_setting = SystemSettings.get_setting('email_notifications_enabled', 'True')
+        self.fields['email_notifications_enabled'].initial = (email_setting == 'True')
 

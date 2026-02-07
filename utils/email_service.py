@@ -19,6 +19,14 @@ def send_email(subject, template_name, context, recipient_email):
         Boolean indicating success
     """
     try:
+        # Check system setting for email notifications
+        from MyApp.models import SystemSettings
+        email_enabled = SystemSettings.get_setting('email_notifications_enabled', 'True')
+        
+        if email_enabled == 'False':
+            print(f"⚠️ Email skipped: {subject} -> {recipient_email} (Notifications Disabled in Settings)")
+            return True # Return True to pretend success but skip sending
+            
         # Validate email address
         if not recipient_email or '@' not in recipient_email:
             print(f"❌ Invalid recipient email: {recipient_email}")

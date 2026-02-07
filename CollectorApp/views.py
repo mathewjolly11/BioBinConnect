@@ -348,25 +348,32 @@ def log_collection_ajax(request, pickup_id):
             try:
                 from utils.email_service import send_collection_completed_email
                 from django.conf import settings
+                from MyApp.models import SystemSettings
                 
-                # Check if household has a valid email
-                household_email = pickup_request.household.user.email
-                if not household_email or '@' not in household_email:
-                    email_status['errors'].append(f'Household has invalid email address: {household_email}')
-                    print(f"❌ Invalid household email: {household_email}")
+                # Check system setting
+                email_enabled = SystemSettings.get_setting('email_notifications_enabled', 'True')
+
+                if email_enabled == 'False':
+                    email_status['household_completion'] = 'Skipped'
                 else:
-                    email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
-                    if email_status['household_completion']:
-                        # Email sent successfully  
-                        if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
-                            print(f"✅ Collection completion email logged to console for {household_email}")
-                        else:
-                            print(f"✅ Collection completion email sent to {household_email}")
+                    # Check if household has a valid email
+                    household_email = pickup_request.household.user.email
+                    if not household_email or '@' not in household_email:
+                        email_status['errors'].append(f'Household has invalid email address: {household_email}')
+                        print(f"❌ Invalid household email: {household_email}")
                     else:
-                        if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
-                            email_status['errors'].append('Email logged to console (development mode)')
+                        email_status['household_completion'] = send_collection_completed_email(collection, pickup_request)
+                        if email_status['household_completion']:
+                            # Email sent successfully  
+                            if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+                                print(f"✅ Collection completion email logged to console for {household_email}")
+                            else:
+                                print(f"✅ Collection completion email sent to {household_email}")
                         else:
-                            email_status['errors'].append('Failed to send completion email (Gmail sending limit may be exceeded)')
+                            if settings.EMAIL_BACKEND == 'django.core.mail.backends.console.EmailBackend':
+                                email_status['errors'].append('Email logged to console (development mode)')
+                            else:
+                                email_status['errors'].append('Failed to send completion email (Gmail sending limit may be exceeded)')
                             
             except Exception as e:
                 error_msg = str(e)

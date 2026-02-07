@@ -9,6 +9,36 @@
         <div class="content-body">
           <p class="text-muted mb-4">Daily Rate: ₹{{ daily_rate }}/day</p>
 
+          {% if messages %}
+          <script>
+            document.addEventListener("DOMContentLoaded", function() {
+              const djangoMessages = [];
+              {% for message in messages %}
+                djangoMessages.push({
+                  tags: "{{ message.tags }}",
+                  text: "{{ message|escapejs }}"
+                });
+              {% endfor %}
+              
+              djangoMessages.forEach(function(msg) {
+                let title = "Notification";
+                let icon = "info";
+                if (msg.tags.includes('success')) { title = "Success!"; icon = "success"; }
+                else if (msg.tags.includes('error')) { title = "Error!"; icon = "error"; }
+                else if (msg.tags.includes('warning')) { title = "Warning!"; icon = "warning"; }
+                
+                Swal.fire({
+                  title: title,
+                  text: msg.text,
+                  icon: icon,
+                  confirmButtonColor: "#28a745",
+                  confirmButtonText: "Okay"
+                });
+              });
+            });
+          </script>
+          {% endif %}
+
           <!-- Collectors Section -->
           <div class="d-flex justify-content-between align-items-center mb-3">
             <h4 class="mt-4 mb-0">👷 Collectors</h4>
@@ -16,8 +46,8 @@
             <button
               type="button"
               class="btn btn-warning btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#payAllCollectorsModal"
+              data-toggle="modal"
+              data-target="#payAllCollectorsModal"
             >
               💰 Pay All Collectors
             </button>
@@ -87,8 +117,8 @@
             <button
               type="button"
               class="btn btn-warning btn-sm"
-              data-bs-toggle="modal"
-              data-bs-target="#payAllManagersModal"
+              data-toggle="modal"
+              data-target="#payAllManagersModal"
             >
               💰 Pay All Managers
             </button>
@@ -162,11 +192,7 @@
     <div class="modal-content">
       <div class="modal-header">
         <h5 class="modal-title">Pay Salary</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
+        <button type="button" class="btn-close" data-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <h6 id="modalPersonName"></h6>
@@ -204,7 +230,7 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Cancel
         </button>
         <button
@@ -225,11 +251,7 @@
     <div class="modal-content">
       <div class="modal-header bg-warning">
         <h5 class="modal-title">💰 Pay All Collectors</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
+        <button type="button" class="btn-close" data-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-warning">
@@ -262,16 +284,14 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Cancel
         </button>
         <form
-          method="post"
-          action="{% url 'admin_pay_salary' %}"
           style="display: inline"
+          onsubmit="confirmPayAll(event, 'collector')"
         >
           {% csrf_token %}
-          <input type="hidden" name="action" value="pay_all_collectors" />
           <button type="submit" class="btn btn-warning">
             <i class="fa fa-money"></i> Pay All Collectors
           </button>
@@ -287,11 +307,7 @@
     <div class="modal-content">
       <div class="modal-header bg-success">
         <h5 class="modal-title">💰 Pay All Managers</h5>
-        <button
-          type="button"
-          class="btn-close"
-          data-bs-dismiss="modal"
-        ></button>
+        <button type="button" class="btn-close" data-dismiss="modal"></button>
       </div>
       <div class="modal-body">
         <div class="alert alert-warning">
@@ -324,16 +340,14 @@
         </div>
       </div>
       <div class="modal-footer">
-        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">
           Cancel
         </button>
         <form
-          method="post"
-          action="{% url 'admin_pay_salary' %}"
           style="display: inline"
+          onsubmit="confirmPayAll(event, 'manager')"
         >
           {% csrf_token %}
-          <input type="hidden" name="action" value="pay_all_managers" />
           <button type="submit" class="btn btn-success">
             <i class="fa fa-money"></i> Pay All Managers
           </button>
@@ -342,6 +356,116 @@
     </div>
   </div>
 </div>
+
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+  // Function to handle Pay All Click with GPay style PIN
+  function confirmPayAll(event, userType) {
+    event.preventDefault(); // Stop form submission
+    
+    // Close the bootstrap modal first
+    if (userType === 'collector') {
+      $('#payAllCollectorsModal').modal('hide');
+    } else {
+      $('#payAllManagersModal').modal('hide');
+    }
+
+    // GPay Style PIN Prompt
+    Swal.fire({
+      title: "Enter UPI PIN",
+      text: "Authorize bulk payment with your 4-6 digit PIN",
+      input: "password",
+      inputAttributes: {
+        minlength: 4,
+        maxlength: 6,
+        autocapitalize: "off",
+        autocorrect: "off",
+        placeholder: "• • • • • •",
+        style: "text-align: center; letter-spacing: 5px; font-size: 24px;"
+      },
+      showCancelButton: true,
+      confirmButtonText: "Pay Securely",
+      confirmButtonColor: "#28a745",
+      showLoaderOnConfirm: true,
+      backdrop: `
+        rgba(0,0,0,0.8)
+        left top
+        no-repeat
+      `,
+      preConfirm: (pin) => {
+        if (!pin || pin.length < 4 || pin.length > 6 || isNaN(pin)) {
+          Swal.showValidationMessage("Invalid PIN. Please enter 4-6 digits.");
+          return false;
+        }
+        
+        // Artificial delay for realism
+        return new Promise((resolve) => {
+          setTimeout(() => {
+            resolve(pin);
+          }, 1000);
+        });
+      },
+      allowOutsideClick: () => !Swal.isLoading()
+    }).then((result) => {
+      if (result.isConfirmed) {
+        submitPayAll(userType, result.value);
+      }
+    });
+  }
+
+  function submitPayAll(userType, pin) {
+    const action = userType === 'collector' ? 'pay_all_collectors' : 'pay_all_managers';
+    const csrfToken = '{{ csrf_token }}';
+    
+    // Show Processing
+    Swal.fire({
+      title: "Processing Payment...",
+      html: "Contacting Bank Server...<br><span style='font-size:0.8em; color:#666'>Do not close this window</span>",
+      timer: 1500,
+      timerProgressBar: true,
+      didOpen: () => {
+        Swal.showLoading();
+      }
+    }).then(() => {
+      // Actually submit via AJAX
+      const formData = new FormData();
+      formData.append('action', action);
+      formData.append('upi_pin', pin);
+      
+      fetch('{% url "admin_pay_salary" %}', {
+        method: 'POST',
+        headers: {
+          'X-CSRFToken': csrfToken,
+          'X-Requested-With': 'XMLHttpRequest'
+        },
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          Swal.fire({
+            title: "Payment Successful!",
+            text: data.message,
+            icon: "success",
+            confirmButtonColor: "#28a745"
+          }).then(() => {
+            location.reload();
+          });
+        } else {
+          Swal.fire("Transaction Failed", data.error, "error");
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        Swal.fire("Error", "Network error occurred", "error");
+      });
+    });
+  }
+</script>
 
 <style>
   .table-responsive {

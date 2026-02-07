@@ -544,7 +544,7 @@ def admin_stock_management(request):
     
     # Calculate summary statistics
     waste_stats = {
-        'total_available': waste_inventory.filter(status__in=['Available', 'Used']).aggregate(
+        'total_available': waste_inventory.filter(status='Available').aggregate(
             total=Sum('available_quantity_kg'))['total'] or 0,
         'total_sold': waste_inventory.filter(status='Sold').aggregate(
             total=Sum('available_quantity_kg'))['total'] or 0,
@@ -587,7 +587,7 @@ def admin_stock_management(request):
         Status__in=['Active', 'Ready']
     ).aggregate(total=Sum('Stock_kg'))['total'] or 0
     
-    compost_kg_per_packet = 4  # 4kg per packet/pallet
+    compost_kg_per_packet = 1  # 1kg per packet
     total_compost_packets = total_compost_kg / compost_kg_per_packet
     
     # Calculate shortages

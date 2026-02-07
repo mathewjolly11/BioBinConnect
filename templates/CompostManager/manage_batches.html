@@ -13,15 +13,21 @@ BioBinConnect{% endblock %} {% block content %}
     </div>
   </div>
 
-  {% if messages %} {% for message in messages %}
-  <div
-    class="alert alert-{{ message.tags }} alert-dismissible fade show"
-    role="alert"
-  >
-    {{ message }}
-    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
-  </div>
-  {% endfor %} {% endif %}
+  {% if messages %}
+  <script>
+    document.addEventListener("DOMContentLoaded", function() {
+      {% for message in messages %}
+        Swal.fire({
+          title: "{% if message.tags == 'success' %}Success!{% elif message.tags == 'error' %}Error!{% else %}Notification{% endif %}",
+          text: "{{ message }}",
+          icon: "{% if message.tags == 'success' %}success{% elif message.tags == 'error' %}error{% elif message.tags == 'warning' %}warning{% else %}info{% endif %}",
+          confirmButtonColor: "#28a745",
+          confirmButtonText: "Okay"
+        });
+      {% endfor %}
+    });
+  </script>
+  {% endif %}
 
   <!-- Filter Tabs -->
   <ul class="nav nav-tabs mb-4">

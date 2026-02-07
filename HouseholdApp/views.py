@@ -457,9 +457,17 @@ def request_pickup_ajax(request):
             # Send pickup confirmation email to household
             try:
                 from utils.email_service import send_pickup_confirmation_email
-                email_status['household_confirmation'] = send_pickup_confirmation_email(req)
-                if not email_status['household_confirmation']:
-                    email_status['errors'].append('Failed to send confirmation email to household')
+                from MyApp.models import SystemSettings
+                
+                # Check system setting
+                email_enabled = SystemSettings.get_setting('email_notifications_enabled', 'True')
+                
+                if email_enabled == 'False':
+                    email_status['household_confirmation'] = 'Skipped'
+                else:
+                    email_status['household_confirmation'] = send_pickup_confirmation_email(req)
+                    if not email_status['household_confirmation']:
+                        email_status['errors'].append('Failed to send confirmation email to household')
             except Exception as e:
                 print(f"Household confirmation email failed: {e}")
                 email_status['errors'].append(f'Household email error: {str(e)}')
@@ -468,13 +476,22 @@ def request_pickup_ajax(request):
             if req.assigned_collector:
                 try:
                     from utils.email_service import send_pickup_assignment_email, send_pickup_scheduled_email
-                    email_status['collector_assignment'] = send_pickup_assignment_email(req)  # To collector
-                    email_status['pickup_scheduled'] = send_pickup_scheduled_email(req)   # To household
+                    from MyApp.models import SystemSettings
                     
-                    if not email_status['collector_assignment']:
-                        email_status['errors'].append('Failed to send assignment email to collector')
-                    if not email_status['pickup_scheduled']:
-                        email_status['errors'].append('Failed to send scheduled notification to household')
+                    # Check system setting
+                    email_enabled = SystemSettings.get_setting('email_notifications_enabled', 'True')
+
+                    if email_enabled == 'False':
+                        email_status['collector_assignment'] = 'Skipped'
+                        email_status['pickup_scheduled'] = 'Skipped'
+                    else:
+                        email_status['collector_assignment'] = send_pickup_assignment_email(req)  # To collector
+                        email_status['pickup_scheduled'] = send_pickup_scheduled_email(req)   # To household
+                        
+                        if not email_status['collector_assignment']:
+                            email_status['errors'].append('Failed to send assignment email to collector')
+                        if not email_status['pickup_scheduled']:
+                            email_status['errors'].append('Failed to send scheduled notification to household')
                         
                 except Exception as e:
                     print(f"Collector/Scheduled email notification failed: {e}")

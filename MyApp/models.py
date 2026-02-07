@@ -346,6 +346,7 @@ class tbl_PaymentTransaction(models.Model):
         ('CompostSale', 'Compost Sale'),
         ('WasteSale', 'Direct Waste Sale'),
         ('CollectorSalary', 'Collector Salary'),
+        ('ManagerSalary', 'Manager Salary'),
         ('ManagerFee', 'Manager Processing Fee'),
     ]
     

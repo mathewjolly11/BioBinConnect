@@ -115,7 +115,7 @@
                         <div>
                             <h6 class="card-subtitle mb-2">Available Waste</h6>
                             <h3 class="card-title mb-0">{{ waste_stats.total_available|floatformat:1 }} kg</h3>
-                            <small class="opacity-75">Includes Available & Used</small>
+                            <small class="opacity-75">Available for Sale</small>
                         </div>
                         <div class="align-self-center">
                             <i class="fas fa-trash fa-2x opacity-75"></i>
@@ -130,7 +130,7 @@
                     <div class="d-flex justify-content-between">
                         <div>
                             <h6 class="card-subtitle mb-2">Active Compost</h6>
-                            <h3 class="card-title mb-0">{{ compost_stats.total_active_floored }} kg</h3>
+                            <h3 class="card-title mb-0">{{ compost_stats.total_active_floored }} packets</h3>
                             <small class="opacity-75">Includes Active & Ready</small>
                         </div>
                         <div class="align-self-center">
@@ -284,9 +284,9 @@
                                             <th>Batch Name</th>
                                             <th>Manager</th>
                                             <th>Grade</th>
-                                            <th>Stock (kg)</th>
+                                            <th>Stock (packets)</th>
                                             <th>Source Waste (kg)</th>
-                                            <th>Price/kg</th>
+                                            <th>Price/packet</th>
                                             <th>Total Value</th>
                                             <th>Created Date</th>
                                             <th>Status</th>
@@ -304,7 +304,7 @@
                                                 </span>
                                             </td>
                                             <td>
-                                                <strong>{{ batch.stock_floored }} kg</strong>
+                                                <strong>{{ batch.stock_floored }} packets</strong>
                                                 {% if batch.Stock_kg < 50 %}
                                                 <i class="fas fa-exclamation-triangle text-warning ms-1" title="Low stock"></i>
                                                 {% endif %}

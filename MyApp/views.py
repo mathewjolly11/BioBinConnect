@@ -1142,6 +1142,14 @@ def admin_settings(request):
                 'Default price for waste sold to farmers per kilogram (in ₹)'
             )
             
+            # Save email notification setting
+            email_enabled = str(form.cleaned_data.get('email_notifications_enabled', False))
+            SystemSettings.set_setting(
+                'email_notifications_enabled',
+                email_enabled,
+                'Master switch to enable/disable all system emails'
+            )
+            
             messages.success(request, 'System settings updated successfully!')
             return redirect('admin_settings')
     else:
@@ -1153,6 +1161,7 @@ def admin_settings(request):
     current_expiry_days = SystemSettings.get_setting('expiry_warning_days', '7')
     current_unavailable_days = SystemSettings.get_setting('auto_unavailable_days', '30')
     current_waste_price = SystemSettings.get_setting('waste_price_per_kg', '10.00')
+    current_email_status = SystemSettings.get_setting('email_notifications_enabled', 'True')
     
     context = {
         'form': form,
@@ -1161,6 +1170,7 @@ def admin_settings(request):
         'current_expiry_days': current_expiry_days,
         'current_unavailable_days': current_unavailable_days,
         'current_waste_price': current_waste_price,
+        'current_email_status': current_email_status,
     }
     return render(request, 'Admin/settings.html', context)
 
