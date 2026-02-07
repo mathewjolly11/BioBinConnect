@@ -1,42 +1,4 @@
-{% extends "Admin/base.html" %} {% load static %} {% block content %} {% if messages %}
-<script id="django-messages" type="application/json">
-  [
-      {% for message in messages %}
-      {
-          "tags": "{{ message.tags }}",
-          "text": "{{ message }}",
-          "icon": "{% if message.tags == 'success' %}success{% elif message.tags == 'warning' %}warning{% elif message.tags == 'error' %}error{% else %}info{% endif %}",
-          "title": "{% if message.tags == 'success' %}Success!{% elif message.tags == 'warning' %}Warning!{% elif message.tags == 'error' %}Error!{% else %}Info{% endif %}",
-          "confirmButtonColor": "{% if message.tags == 'success' %}#28a745{% elif message.tags == 'warning' %}#ffc107{% else %}#17a2b8{% endif %}"
-      }{% if not forloop.last %},{% endif %}
-      {% endfor %}
-  ]
-</script>
-
-<script>
-  document.addEventListener("DOMContentLoaded", function () {
-    try {
-      const messages = JSON.parse(
-        document.getElementById("django-messages").textContent
-      );
-      if (messages && messages.length > 0) {
-        messages.forEach((msg) => {
-          Swal.fire({
-            icon: msg.icon,
-            title: msg.title,
-            text: msg.text,
-            timer: 3000,
-            showConfirmButton: true,
-            confirmButtonColor: msg.confirmButtonColor,
-          });
-        });
-      }
-    } catch (e) {
-      console.error("Error parsing messages:", e);
-    }
-  });
-</script>
-{% endif %}
+{% extends "Admin/base.html" %} {% load static %} {% block content %}
 <section id="main-content">
   <section class="wrapper main-wrapper">
     <div class="col-lg-12">

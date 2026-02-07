@@ -331,6 +331,48 @@
       })();
     </script>
     
+    <!-- Django Messages as JSON -->
+    <script id="django-messages" type="application/json">
+        [
+            {% if messages %}
+                {% for message in messages %}
+                {
+                    "tags": "{{ message.tags }}",
+                    "text": "{{ message|escapejs }}"
+                }{% if not forloop.last %},{% endif %}
+                {% endfor %}
+            {% endif %}
+        ]
+    </script>
+
+    <script>
+        // Global Message Handler
+        document.addEventListener('DOMContentLoaded', function () {
+            try {
+                const messagesEl = document.getElementById("django-messages");
+                if (messagesEl) {
+                    const messages = JSON.parse(messagesEl.textContent);
+                    if (messages && messages.length > 0) {
+                        messages.forEach((msg) => {
+                            Swal.fire({
+                                icon: msg.tags.includes("success") ? "success" : 
+                                      msg.tags.includes("error") ? "error" :
+                                      msg.tags.includes("warning") ? "warning" : "info",
+                                title: msg.tags.charAt(0).toUpperCase() + msg.tags.slice(1).replace('-', ' '),
+                                text: msg.text,
+                                timer: 3500,
+                                showConfirmButton: true,
+                                confirmButtonColor: '#6c9a2e'
+                            });
+                        });
+                    }
+                }
+            } catch (e) {
+                console.error("Error parsing Django messages:", e);
+            }
+        });
+    </script>
+    
     <!-- Custom Scheduler Alert -->
     <script>
       function showScheduleAlert(e) {

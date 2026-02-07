@@ -510,17 +510,6 @@
   </div>
 </div>
 
-<!-- Output Django Messages as JSON -->
-<script id="django-messages" type="application/json">
-  [
-      {% for message in messages %}
-      {
-          "tags": "{{ message.tags }}",
-          "text": "{{ message }}"
-      }{% if not forloop.last %},{% endif %}
-      {% endfor %}
-  ]
-</script>
 
 <script>
   let currentOrderId = null;
@@ -721,27 +710,6 @@
       });
   }
 
-  // Process Django Messages
-  document.addEventListener("DOMContentLoaded", function () {
-    try {
-      const messages = JSON.parse(
-        document.getElementById("django-messages").textContent,
-      );
-      if (messages && messages.length > 0) {
-        messages.forEach((msg) => {
-          Swal.fire({
-            icon: msg.tags.includes("success") ? "success" : "info",
-            title: msg.tags.charAt(0).toUpperCase() + msg.tags.slice(1),
-            text: msg.text,
-            timer: 2000,
-            showConfirmButton: false,
-          });
-        });
-      }
-    } catch (e) {
-      console.error("Error parsing messages:", e);
-    }
-  });
 </script>
 
 {% endblock %}
