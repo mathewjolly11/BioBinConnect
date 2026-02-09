@@ -80,6 +80,13 @@
       type="text/css"
     />
 
+    <!-- Centralized Responsive Fixes -->
+    <link
+      href="{% static 'css/responsive-fixes.css' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
+
     <!-- Botpress Chatbot -->
     <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
     <script
@@ -220,6 +227,16 @@
                       <a class="menu-item" href="{% url 'household_contact' %}"
                         >Contact</a
                       >
+                    </li>
+                    <!-- Mobile Only Action Buttons -->
+                    <li class="d-mobile-only menu-action">
+                      <a href="{% url 'request_pickup' %}">Schedule Pickup</a>
+                    </li>
+                    <li class="d-mobile-only menu-action">
+                      <a href="{% url 'household_profile' %}">My Profile</a>
+                    </li>
+                    <li class="d-mobile-only menu-action menu-action-alt">
+                      <a href="#" class="swal-logout">Logout</a>
                     </li>
                   </ul>
                   <!-- mainmenu end -->
@@ -523,9 +540,9 @@
 
       // Logout with SweetAlert confirmation (matching green eco-theme)
       document.addEventListener("DOMContentLoaded", function () {
-        const logoutBtn = document.getElementById("logout-btn");
-        if (logoutBtn) {
-          logoutBtn.addEventListener("click", function (e) {
+        const logoutBtns = document.querySelectorAll(".swal-logout");
+        logoutBtns.forEach((btn) => {
+          btn.addEventListener("click", function (e) {
             e.preventDefault();
             Swal.fire({
               title: "Logout Confirmation",
@@ -544,7 +561,7 @@
               }
             });
           });
-        }
+        });
       });
     </script>
   </body>

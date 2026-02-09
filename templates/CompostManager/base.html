@@ -58,6 +58,13 @@
       type="text/css"
     />
 
+    <!-- Centralized Responsive Fixes -->
+    <link
+      href="{% static 'css/responsive-fixes.css' %}"
+      rel="stylesheet"
+      type="text/css"
+    />
+
     <!-- SweetAlert2 CSS -->
     <link
       href="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.min.css"
@@ -212,6 +219,15 @@
                         >Contact</a
                       >
                     </li>
+                    <!-- Mobile Only Action Buttons -->
+                    <li class="d-mobile-only menu-action">
+                      <a href="{% url 'compost_manager_profile' %}"
+                        >My Profile</a
+                      >
+                    </li>
+                    <li class="d-mobile-only menu-action menu-action-alt">
+                      <a href="#" class="swal-logout">Logout</a>
+                    </li>
                   </ul>
                   <!-- mainmenu end -->
                 </div>
@@ -226,7 +242,7 @@
                     <a
                       href="#"
                       id="logout-btn"
-                      class="btn-main"
+                      class="btn-main swal-logout"
                       style="margin-left: 10px"
                       >Logout</a
                     >
@@ -540,9 +556,9 @@
 
       // Logout with SweetAlert confirmation (matching green eco-theme)
       document.addEventListener("DOMContentLoaded", function () {
-        const logoutBtn = document.getElementById("logout-btn");
-        if (logoutBtn) {
-          logoutBtn.addEventListener("click", function (e) {
+        const logoutBtns = document.querySelectorAll(".swal-logout");
+        logoutBtns.forEach((btn) => {
+          btn.addEventListener("click", function (e) {
             e.preventDefault();
             Swal.fire({
               title: "Logout Confirmation",
@@ -561,7 +577,7 @@
               }
             });
           });
-        }
+        });
       });
     </script>
   </body>

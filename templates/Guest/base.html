@@ -29,6 +29,9 @@
     
     <!-- Voice Accessibility CSS -->
     <link href="{% static 'css/voice-accessibility.css' %}" rel="stylesheet" type="text/css" />
+    
+    <!-- Centralized Responsive Fixes -->
+    <link href="{% static 'css/responsive-fixes.css' %}" rel="stylesheet" type="text/css" />
 
     <!-- Botpress Chatbot -->
     <script src="https://cdn.botpress.cloud/webchat/v3.5/inject.js"></script>
@@ -126,6 +129,9 @@
                                     </li>
                                     <li><a class="menu-item" href="blog.html">Blog</a></li> -->
                                     <li><a class="menu-item" href="{% url 'guest_contact' %}">Contact</a></li>
+                                    <!-- Mobile Only Action Buttons -->
+                                    <li class="d-mobile-only menu-action"><a href="#" onclick="showScheduleAlert(event)">Schedule Pickup</a></li>
+                                    <li class="d-mobile-only menu-action menu-action-alt"><a href="{% url 'login' %}">Login / Register</a></li>
                                 </ul>
                                 <!-- mainmenu end -->
                             </div>

@@ -1,0 +1,290 @@
+/* Centralized Mobile Responsiveness Fixes for BioBinConnect */
+
+/* 1. Universal Table Wrapper & Scroll */
+.table-responsive, 
+.content-body table, 
+.row table {
+    display: block;
+    width: 100%;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+    margin-bottom: 1rem;
+}
+
+/* 2. Mobile Menu (Wastewise Theme) Improvements */
+@media (max-width: 992px) {
+    #mainmenu {
+        padding: 20px 0 !important;
+        background: #1C4B41 !important; /* Eco-friendly dark green */
+    }
+
+    #mainmenu li a {
+        padding: 12px 25px !important;
+        font-size: 16px !important;
+        border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+        color: rgba(255, 255, 255, 0.9) !important;
+        display: block !important;
+        transition: all 0.3s ease;
+    }
+
+    #mainmenu li a:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+        padding-left: 35px !important;
+        color: #fff !important;
+    }
+
+    /* Fix for buttons in menu side area on mobile */
+    .menu_side_area {
+        display: flex !important;
+        align-items: center;
+        gap: 10px;
+        padding: 10px 15px;
+    }
+
+    .menu_side_area .btn-main {
+        padding: 8px 15px !important;
+        font-size: 13px !important;
+        white-space: nowrap;
+    }
+
+    /* Logo scaling */
+    header #logo img {
+        max-height: 40px !important;
+        width: auto !important;
+    }
+}
+
+/* 3. Section and Container Padding Fixes */
+@media (max-width: 768px) {
+    section {
+        padding: 40px 0 !important;
+    }
+
+    .container {
+        padding-left: 15px !important;
+        padding-right: 15px !important;
+    }
+
+    /* Grid stacking */
+    .row > [class*="col-"] {
+        margin-bottom: 20px;
+    }
+
+    /* Heading scaling */
+    h1 { font-size: 32px !important; line-height: 1.2 !important; }
+    h2 { font-size: 28px !important; }
+    h3 { font-size: 24px !important; }
+
+    /* Fix hero images/overlays */
+    .de-overlay {
+        opacity: 0.7 !important; /* Ensure text is readable */
+    }
+
+    /* Reduce spacing from excessive <br> tags on mobile */
+    .container > br {
+        display: none !important;
+    }
+}
+
+/* 4. Global Dashboard Specific Fixes (Farmer, Household, Compost Manager, Admin) */
+@media (max-width: 768px) {
+    #main-content {
+        margin-left: 0 !important;
+        padding-top: 80px !important; /* Fix for fixed header overlap */
+    }
+
+    .wrapper.main-wrapper {
+        padding: 15px !important;
+    }
+
+    .mobile-header {
+        box-shadow: 0 4px 10px rgba(0,0,0,0.1) !important;
+    }
+
+    /* Global Hero Card Scaling */
+    .hero-card, 
+    div[style*="background: linear-gradient"], 
+    div[style*="background-image: linear-gradient"] {
+        padding: 24px !important;
+        border-radius: 20px !important;
+    }
+
+    .hero-card h1, 
+    h1[style*="font-size: 2.5rem"] {
+        font-size: 1.75rem !important;
+        margin-bottom: 10px !important;
+    }
+
+    .hero-card p, 
+    p[style*="font-size: 1.1rem"] {
+        font-size: 0.95rem !important;
+        margin-bottom: 20px !important;
+    }
+
+    /* Hero Buttons Alignment */
+    .hero-card .d-flex.gap-3, 
+    .hero-card .d-flex.gap-10 {
+        flex-direction: column !important;
+        gap: 10px !important;
+    }
+
+    .hero-card .custom-btn, 
+    .hero-card .btn, 
+    .hero-card a[style*="width: 160px"],
+    .hero-card button[style*="padding: 12px 24px"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-right: 0 !important;
+        text-align: center !important;
+    }
+
+    /* Stat Cards */
+    .stat-card {
+        padding: 20px !important;
+        text-align: center;
+        margin-bottom: 15px !important;
+    }
+
+    .stat-card h3 {
+        font-size: 1.4rem !important;
+    }
+
+    /* Box/Card/Action Items adjustments */
+    .box, 
+    div[style*="border-radius: 20px; padding: 30px"],
+    div[style*="border-radius: 16px; padding: 40px"] {
+        padding: 20px !important;
+        margin-bottom: 20px !important;
+        border-radius: 16px !important;
+    }
+
+    /* Quick Action Buttons Scaling */
+    .action-btn div, 
+    div[style*="min-height: 80px"] {
+        padding: 15px !important;
+        min-height: 70px !important;
+    }
+
+    .action-btn span, 
+    div[style*="font-size: 1.5rem; margin-right: 16px"] {
+        font-size: 1.25rem !important;
+        margin-right: 12px !important;
+    }
+
+    /* Table Actions Scaling */
+    .table td .btn {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 5px !important;
+        margin-right: 0 !important;
+    }
+
+    /* Specialized browse buttons (Farmer) */
+    .farmer-browse-btn {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-bottom: 5px !important;
+    }
+}
+
+/* 5. Guest Pages Specific Fixes */
+@media (max-width: 768px) {
+    /* Home Hero Content */
+    #section-intro .abs.bottom-10 {
+        bottom: 20px !important;
+        position: relative !important;
+        padding: 50px 0;
+    }
+
+    #section-intro h1 {
+        font-size: 2.2rem !important;
+    }
+
+    /* Marquee Text Scaling */
+    .de-marquee-list span {
+        font-size: 20px !important;
+        padding: 10px !important;
+    }
+
+    .de-marquee-list img {
+        width: 25px !important;
+    }
+
+    /* Service hover items */
+    .hover-scale-1-1 {
+        transform: none !important;
+    }
+
+    .abs-centered {
+        position: relative !important;
+        transform: none !important;
+        top: 0 !important;
+        left: 0 !important;
+        padding: 20px 0;
+    }
+
+    .hover-mt-40 {
+        margin-top: 0 !important;
+    }
+
+    /* Counts/Timer Scaling */
+    .de_count h2 {
+        font-size: 32px !important;
+    }
+
+    /* Mission list */
+    .ul-check li {
+        margin-bottom: 15px !important;
+        font-size: 0.95rem !important;
+    }
+}
+
+/* 6. Custom Button Alignment */
+.d-flex.align-items-center.flex-col {
+    flex-wrap: wrap !important;
+}
+
+/* Fix for overlapping SweetAlerts or modals on very small screens */
+.swal2-popup {
+    font-size: 0.9rem !important;
+    width: 90% !important;
+}
+
+/* 7. Utility Classes for Device Visibility */
+@media (min-width: 993px) {
+    .d-mobile-only {
+        display: none !important;
+    }
+}
+
+@media (max-width: 992px) {
+    .d-desktop-only {
+        display: none !important;
+    }
+
+    /* Action buttons inside mobile menu */
+    #mainmenu li.menu-action {
+        padding: 10px 25px !important;
+        margin-top: 5px;
+    }
+
+    #mainmenu li.menu-action a {
+        background: #6c9a2e !important;
+        color: #fff !important;
+        border-radius: 5px !important;
+        text-align: center !important;
+        padding: 10px !important;
+        border-bottom: none !important;
+        font-weight: bold !important;
+    }
+
+    #mainmenu li.menu-action a:hover {
+        background: #5a8226 !important;
+        padding-left: 10px !important; /* Override the default padding-left animation */
+    }
+
+    #mainmenu li.menu-action-alt a {
+        background: transparent !important;
+        border: 1px solid #6c9a2e !important;
+    }
+}
